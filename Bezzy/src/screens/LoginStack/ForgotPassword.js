@@ -8,12 +8,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 export default class ForgotPassword extends React.Component {
     state = {};
     render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#69abff'}}>
+        <KeyboardAwareScrollView 
+        keyboardShouldPersistTaps='handled'
+        style={{flex: 1, backgroundColor: '#69abff'}}>
             <Header headerText={"Forgot Password"} isBackButton navigation={this.props.navigation}/>
-            <KeyboardAwareScrollView
-                keyboardShouldPersistTaps='handled'
+            <View
                 style={{
-                    flex: 1,
+                    height: heightToDp("100%"),
                     backgroundColor: '#fff',
                     borderTopWidth: 1,
                     borderTopColor: '#69abff',
@@ -78,7 +79,7 @@ export default class ForgotPassword extends React.Component {
                         </Text>
                     </TouchableOpacity>             
                 </View>
-            </KeyboardAwareScrollView>
-        </SafeAreaView>
+            </View>
+        </KeyboardAwareScrollView>
     )
 }

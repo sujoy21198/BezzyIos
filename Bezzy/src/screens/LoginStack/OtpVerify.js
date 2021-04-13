@@ -9,12 +9,13 @@ import OTPTextView from 'react-native-otp-textinput';
 export default class OtpVerify extends React.Component {
     state = {};
     render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#69abff'}}>
+        <KeyboardAwareScrollView 
+        keyboardShouldPersistTaps='handled'
+        style={{flex: 1, backgroundColor: '#69abff'}}>
             <Header headerText={"OTP Verification"} isBackButton navigation={this.props.navigation}/>
-            <KeyboardAwareScrollView
-                keyboardShouldPersistTaps='handled'
+            <View
                 style={{
-                    flex: 1,
+                    height: heightToDp("100%"),
                     backgroundColor: '#fff',
                     borderTopWidth: 1,
                     borderTopColor: '#69abff',
@@ -100,7 +101,7 @@ export default class OtpVerify extends React.Component {
                         Resend OTP?
                     </Text>             
                 </View>
-            </KeyboardAwareScrollView>
-        </SafeAreaView>
+            </View>
+        </KeyboardAwareScrollView>
     )
 }

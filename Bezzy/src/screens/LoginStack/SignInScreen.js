@@ -35,12 +35,13 @@ export default class SignInScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#69abff'}}>
+        <KeyboardAwareScrollView 
+        style={{flex: 1,backgroundColor: '#69abff'}}
+        keyboardShouldPersistTaps='handled'>
             <Header headerText={"Welcome to Bezzy"}/>
-            <KeyboardAwareScrollView
-                keyboardShouldPersistTaps='handled'
+            <View
                 style={{
-                    flex: 1,
+                    height: heightToDp('100%'),
                     backgroundColor: '#fff',
                     borderTopWidth: 1,
                     borderTopColor: '#69abff',
@@ -180,7 +181,7 @@ export default class SignInScreen extends React.Component {
                         </Text>
                     </TouchableOpacity>             
                 </View>
-            </KeyboardAwareScrollView>
-        </SafeAreaView>
+            </View>
+        </KeyboardAwareScrollView>
     )
 }
