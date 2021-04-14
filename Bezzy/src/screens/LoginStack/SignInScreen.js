@@ -4,41 +4,66 @@ import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios'
+import DataAccess from '../../components/DataAccess'
+import { Toast } from 'native-base';
 
 export default class SignInScreen extends React.Component {
-    state = {
-        email: "",
-        password: ""
-    };
+    constructor(props) {
+        super(props)
+        this.state = {
+            email: "",
+            password: "",
+            isEmailValid: ''
+        }
+    }
 
-    setEmail = text => {
+    setEmail = (text) => {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(!emailRegex.test(text.trim())) {
-            this.setState({isEmailValid: false, email: text.trim()})
+        if (!emailRegex.test(text.trim())) {
+            // this.setState({ isEmailValid: false, email: text.trim() })
+            // alert(this.state.email)
+            this.state.email = text
+            this.state.isEmailValid = false
         } else {
-            this.setState({email: text.trim(), isEmailValid: true});
+            this.setState({ email: text.trim(), isEmailValid: true });
         }
     }
 
     logIn = async () => {
-        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(this.state.email === "") {
-            return;
-        }
-        if(this.state.password === "") {
-            return;
-        }
-        if(!emailRegex.test(this.state.email.trim())) {
-            return;
-        } 
-        console.log("Call Sign In Api");
+        // let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        // if (this.state.email === "") {
+        //     return;
+        // }
+        // if (this.state.password === "") {
+        //     return;
+        // }
+        // if (!emailRegex.test(this.state.email.trim())) {
+        //     return;
+        // }
+        // console.log("Call Sign In Api");
+        await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
+            username: this.state.email,
+            password: this.state.password
+        }).then(function (response) {
+            console.log(response.data.resp)
+            if (response.data.resp === 'false') {
+                return Toast.show({
+                    text:response.data.message,
+                    duration:6000
+                })
+            }
+
+        }).catch(function (error) {
+            alert(error)
+        })
     }
 
     render = () => (
-        <KeyboardAwareScrollView 
-        style={{flex: 1,backgroundColor: '#69abff'}}
-        keyboardShouldPersistTaps='handled'>
-            <Header headerText={"Welcome to Bezzy"}/>
+        <KeyboardAwareScrollView
+            style={{ flex: 1, backgroundColor: '#69abff' }}
+            keyboardShouldPersistTaps='handled'>
+            <Header headerText={"Welcome to Bezzy"} />
             <View
                 style={{
                     height: heightToDp('100%'),
@@ -49,7 +74,7 @@ export default class SignInScreen extends React.Component {
                     borderTopRightRadius: 18,
                 }}
             >
-                <View 
+                <View
                     style={{
                         paddingVertical: heightToDp("6%"),
                         paddingHorizontal: widthToDp("3%")
@@ -72,11 +97,11 @@ export default class SignInScreen extends React.Component {
                         Let's get started
                     </Text>
                     <View
-                        style={{ 
+                        style={{
                             alignItems: 'center',
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("10%"), 
+                            marginTop: heightToDp("10%"),
                         }}
                     >
                         <TextInput
@@ -91,9 +116,9 @@ export default class SignInScreen extends React.Component {
                             placeholderTextColor="#808080"
                             onChangeText={this.setEmail}
                         />
-                    </View> 
+                    </View>
                     {
-                        !this.state.isEmailValid && this.state.email!=="" &&
+                        !this.state.isEmailValid && this.state.email !== "" &&
                         <Text
                             style={{
                                 color: "#ff0000"
@@ -101,12 +126,12 @@ export default class SignInScreen extends React.Component {
                         >Entered email address is not valid</Text>
                     }
                     <View
-                        style={{ 
+                        style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"), 
+                            marginTop: heightToDp("3%"),
                         }}
                     >
                         <TextInput
@@ -119,16 +144,16 @@ export default class SignInScreen extends React.Component {
                             placeholder="Password"
                             secureTextEntry={!this.state.showPassword}
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({password: text})}
+                            onChangeText={text => this.setState({ password: text })}
                         />
                         <Icon
                             name={this.state.showPassword ? "eye-off" : "eye"}
                             size={20}
                             color="#808080"
-                            onPress={() => this.setState({showPassword: !this.state.showPassword})}
-                            style={{marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%")}}
+                            onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                            style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
                         />
-                    </View>     
+                    </View>
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("3%"),
@@ -149,7 +174,7 @@ export default class SignInScreen extends React.Component {
                         >
                             Login
                         </Text>
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("2%")
@@ -157,14 +182,14 @@ export default class SignInScreen extends React.Component {
                         activeOpacity={0.7}
                         onPress={() => this.props.navigation.navigate("ForgotPassword")}
                     >
-                        <Text 
+                        <Text
                             style={{
                                 color: "#69abff"
                             }}
                         >
                             Forgot Password?
                         </Text>
-                    </TouchableOpacity>   
+                    </TouchableOpacity>
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("1%")
@@ -172,14 +197,14 @@ export default class SignInScreen extends React.Component {
                         activeOpacity={0.7}
                         onPress={() => this.props.navigation.navigate("SignUpScreen")}
                     >
-                        <Text 
+                        <Text
                             style={{
                                 color: "#69abff"
                             }}
                         >
                             New User? Register
                         </Text>
-                    </TouchableOpacity>             
+                    </TouchableOpacity>
                 </View>
             </View>
         </KeyboardAwareScrollView>
