@@ -4,9 +4,35 @@ import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess'
 
 export default class ForgotPassword extends React.Component {
-    state = {};
+    constructor(props){
+        super(props)
+        this.state={
+            email:''
+        }
+    }
+
+    forgotPassword = async() => {
+        var resp = false
+        await axios.post(DataAccess.BaseUrl+DataAccess.ForgotPass,{
+            email: this.state.email
+        }).then(function (response) {
+            console.log(response.data)
+            if(response.data.resp === "true"){
+                resp = true
+            }
+        }).catch(function (error) {
+            console.log(error)
+        })
+
+        if(resp === true){
+            this.props.navigation.navigate("OtpVerify")
+        }
+    }
+
     render = () => (
         <KeyboardAwareScrollView 
         keyboardShouldPersistTaps='handled'
@@ -66,7 +92,8 @@ export default class ForgotPassword extends React.Component {
                             borderRadius: 10
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.props.navigation.navigate("OtpVerify")}
+                        // onPress={() => this.props.navigation.navigate("OtpVerify")}
+                        onPress={() => this.forgotPassword()}
                     >
                         <Text
                             style={{

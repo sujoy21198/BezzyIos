@@ -9,6 +9,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Toast, ActionSheet } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } from 'react-native-permissions'
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess';
 
 export default class SignUpScreen extends React.Component {
     state = {
@@ -92,7 +94,7 @@ export default class SignUpScreen extends React.Component {
                 //     this.navigateToViewPhotos(imageData);
                 // }
                 this.state.imagePath = image.path
-                this.setState({isImagePathPresent : true})
+                this.setState({ isImagePathPresent: true })
                 console.log(image.path)
             })
             .catch(err => {
@@ -118,8 +120,8 @@ export default class SignUpScreen extends React.Component {
         })
             .then(images => {
                 this.state.imagePath = images.path
-                this.setState({isImagePathPresent : true})
-                console.log(images.path, "gallery")
+                this.setState({ isImagePathPresent: true })
+                console.log(images)
                 // if (images.length > 0) {
                 //     this.navigateToViewPhotos(images);
                 // }
@@ -141,14 +143,41 @@ export default class SignUpScreen extends React.Component {
 
     // SIGNUP FUNCTION
     signUp = async () => {
+        //create object with uri, type, image name
+        var photo = {
+            uri: this.state.imagePath,
+            type: 'image/jpeg',
+            name: 'photo.jpg',
+        };
+        var formData = new FormData()
+        formData.append('image', photo);
+        console.log(formData._parts,"formdata")
         if (!this.state.checkTerms) {
             return Toast.show({
                 text: "Please Agree To Our Terms & Conditions",
                 duration: 6000
             })
-        } else {
-
         }
+
+        await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/registration', {
+            username: "hi",
+            fullname: "hi",
+            email: "sujoysaha2198@gmail.com",
+            password: "12345678",
+            dob: "1998-01-08",
+            gender: "MALE",
+            user_profile_iamge: formData
+        },{
+            headers:{
+                headers: {
+                    'Content-Type':' multipart/form-data; boundary='+ formData._parts,
+                }
+            }
+        }).then(function (response) {
+            console.log(response.data)
+        }).catch(function (error) {
+            console.log(error)
+        })
     }
 
     render = () => (
