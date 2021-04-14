@@ -32,6 +32,7 @@ export default class SignInScreen extends React.Component {
             return;
         } 
         console.log("Call Sign In Api");
+        this.props.navigation.navigate("HomeScreen");
     }
 
     render = () => (
