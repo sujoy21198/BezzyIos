@@ -1,184 +1,142 @@
 import React from 'react';
-import { FlatList, Image, SafeAreaView, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { Card } from 'native-base'
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import Accordion from 'react-native-collapsible/Accordion';
+
+
+const SECTIONS = [
+    {
+        title: 'First',
+        content: 'Lorem ipsum...',
+        lastSeen: '1 Day Ago',
+        image: 'https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg',
+        postedTime: '2 minutues ago',
+        caption: 'Hi there'
+    },
+    {
+        title: 'Second',
+        content: 'Lorem ipsum...',
+        lastSeen: '2 Days Ago',
+        image: 'https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg',
+        postedTime: '2 minutues ago',
+        caption: 'Hi there'
+    },
+];
 
 export default class HomeScreen extends React.Component {
-    state = {
-        userList: [],
-        isFollowingPresent: true,
-        followingList: []
+    constructor(props) {
+        super(props)
+        this.state = {
+            activeSections: []
+        }
     }
 
-    componentDidMount = () => {
-        this.setState({
-            userList: [
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "Rockstar"
-                },
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "Rockstar"
-                },
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "Rockstar"
-                },
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "Rockstar"
-                },
-            ],
-            followingList: [
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "David Villareal",
-                    postTime: "100 days ago",
-                },
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "David Villareal",
-                    postTime: "100 days ago",
-                }
-                ,
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "David Villareal",
-                    postTime: "100 days ago",
-                },
-                {
-                    imageUrl: require("../../../assets/default_person.png"),
-                    name: "David Villareal",
-                    postTime: "100 days ago",
-                },
-            ]
-        })
-    }
+    _renderSectionTitle = section => {
+        return (
+            <View >
+                <Text>{section.content}</Text>
+            </View>
+        );
+    };
 
-    render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>
-            <Header isHomeScreen/>
-            <View style={{height: heightToDp("1%")}}/>
-            {
-                !this.state.isFollowingPresent ? 
-                <FlatGrid
-                    data={this.state.userList}
-                    itemDimension={widthToDp("30%")}
-                    // ItemSeparatorComponent={() => <View style={{width: widthToDp("10%"), height: 10}}/>}
-                    renderItem={({item, index}) => (
-                        <View 
-                            style={{
-                                paddingVertical: heightToDp("1%"),
-                                width: widthToDp("30%"),
-                                backgroundColor: "#fff",
-                                borderRadius: 10,
-                            }}
-                            key={index}
-                        >
-                            <Image 
-                                source={item.imageUrl}
-                                style={{height: heightToDp("13%"), width: widthToDp("30%")}}
-                                resizeMode="contain"
-                            />
-                            <Text
-                                style={{
-                                    textAlign: "center",
-                                    paddingVertical: heightToDp("0.8%"),
-                                }}
-                            >{item.name}</Text>
-                            <TouchableOpacity
-                                activeOpacity={0.7}
-                                style={{
-                                    backgroundColor: "#69abff",
-                                    borderRadius: 10,
-                                    alignItems: "center",
-                                    padding: 5,
-                                    marginHorizontal: 5
-                                }}
-                                // onPress={() => }
-                            >
-                                <Text style={{color: "#fff"}}>FOLLOW</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                /> :
-                <FlatGrid
-                    data={this.state.followingList}
-                    itemDimension={widthToDp("95%")}
-                    renderItem={({item, index}) => (
-                        <View
-                            style={{
-                                width: widthToDp("95%"),
-                                paddingBottom: heightToDp('1%'),
-                                paddingHorizontal: widthToDp("2%"),
-                                borderRadius: 10,
-                                backgroundColor: "#fff",
-                            }}
-                        >
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <Image
-                                        source={item.imageUrl}
-                                        resizeMode="contain"
-                                        style={{height: heightToDp("12%"), width: widthToDp("25%")}}
-                                    />
-                                    <View style={{paddingLeft: widthToDp("4%")}}>
-                                        <Text
-                                            style={{
-                                                fontWeight: 'bold'
-                                            }}
-                                        >{item.name}</Text>
-                                        <Text 
-                                            style={{
-                                                color: "#f1b45c",
-                                                marginTop: heightToDp("0.5%")
-                                            }}
-                                        >Posted {item.postTime}</Text>
-                                    </View>
-                                </View>
-                                <View 
-                                    style={{
-                                        alignSelf: 'flex-start'
-                                    }}
-                                >
-                                    <Image
-                                    source={require("../../../assets/ago.png")}
-                                    resizeMode="contain"
-                                    style={{height: heightToDp("5%"), width: widthToDp('5%')}}
-                                    />
-                                    <Icon
-                                        name="comments"
-                                        size={20}
-                                        color={"#69abff"}
-                                        style={{
-                                            marginTop: heightToDp("7%")
-                                        }}
-                                    />
-                                </View>
+    _renderHeader = section => {
+        return (
+            <View >
+                <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Image
+                            source={require("../../../assets/default_person.png")}
+                            style={{ height: heightToDp("13%"), width: widthToDp("22%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
+                        />
+                        <View>
+                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
+                                <Icon
+                                    name="bell"
+                                    size={20}
+                                    color={"#008000"}
+                                />
+                            </View>
+                            <View style={{ marginLeft: widthToDp("6%"), }}>
+                                <Text>{section.title}</Text>
+                            </View>
+                            <View style={{ marginLeft: widthToDp("6%"), }}>
+                                <Text style={{ color: '#ff0000' }}>{section.lastSeen}</Text>
+                            </View>
+                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
+                                <Icon
+                                    name="comments"
+                                    size={20}
+                                    color={"#87CEEB"}
+                                />
                             </View>
                         </View>
-                    )}
-                />
-            }
-            
-            
-            <View style={{height: heightToDp("10%")}}/>
-            <BottomTab isHomeFocused navigation={this.props.navigation}/>
-        </SafeAreaView>
-    )
+
+                    </View>
+                </Card>
+            </View>
+        );
+    };
+
+    _renderContent = section => {
+        return (
+            <View >
+                <Card style={{ height: heightToDp("60%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Image
+                            source={require("../../../assets/default_person.png")}
+                            style={{ height: heightToDp("8%"), width: widthToDp("10%"), marginLeft: widthToDp("4%"), borderRadius: 300, marginTop: heightToDp("2%") }}
+                        />
+                        <View>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("4%") }}>
+                                <Text>{section.title}</Text>
+                            </View>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
+                                <Text style={{ color: 'blue' }}>{section.postedTime}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View>
+                        <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
+                            <Text style={{ color: 'black' }}>{section.caption}</Text>
+                        </View>
+                    </View>
+                    <View style={{ alignSelf: 'center',marginTop:heightToDp("2%") }}>
+                        <Image
+                            style={{ height: heightToDp("20%"), width: widthToDp("60%") }}
+                            source={{ uri: 'https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg' }}
+                        />
+                    </View>
+                </Card>
+            </View>
+        );
+    };
+
+    _updateSections = activeSections => {
+        this.setState({ activeSections });
+    };
+
+    render() {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
+                <Header isHomeScreen />
+                <ScrollView>
+                    <Accordion
+                        sections={SECTIONS}
+                        activeSections={this.state.activeSections}
+                        //renderSectionTitle={this._renderSectionTitle}
+                        renderHeader={this._renderHeader}
+                        renderContent={this._renderContent}
+                        onChange={this._updateSections}
+                    />
+                    <View style={{ margin: 10 }}></View>
+                </ScrollView>
+                <BottomTab isHomeFocused navigation={this.props.navigation} />
+            </SafeAreaView>
+        )
+    }
 }
