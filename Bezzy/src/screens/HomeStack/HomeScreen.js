@@ -38,14 +38,30 @@ export default class HomeScreen extends React.Component {
                     imageUrl: require("../../../assets/default_person.png"),
                     name: "David Villareal",
                     postTime: "100 days ago",
+                },
+                {
+                    imageUrl: require("../../../assets/default_person.png"),
+                    name: "David Villareal",
+                    postTime: "100 days ago",
                 }
+                ,
+                {
+                    imageUrl: require("../../../assets/default_person.png"),
+                    name: "David Villareal",
+                    postTime: "100 days ago",
+                },
+                {
+                    imageUrl: require("../../../assets/default_person.png"),
+                    name: "David Villareal",
+                    postTime: "100 days ago",
+                },
             ]
         })
     }
 
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>
-            <Header isBottomTabScreen/>
+            <Header isHomeScreen/>
             <View style={{height: heightToDp("1%")}}/>
             {
                 !this.state.isFollowingPresent ? 
@@ -92,12 +108,12 @@ export default class HomeScreen extends React.Component {
                 /> :
                 <FlatGrid
                     data={this.state.followingList}
-                    // itemDimension={widthToDp("100%")}
+                    itemDimension={widthToDp("95%")}
                     renderItem={({item, index}) => (
                         <View
                             style={{
                                 width: widthToDp("95%"),
-                                paddingVertical: heightToDp('1%'),
+                                paddingBottom: heightToDp('1%'),
                                 paddingHorizontal: widthToDp("2%"),
                                 borderRadius: 10,
                                 backgroundColor: "#fff",
@@ -140,10 +156,10 @@ export default class HomeScreen extends React.Component {
                                         alignSelf: 'flex-start'
                                     }}
                                 >
-                                    <Icon
-                                        name="stopwatch"
-                                        size={20}
-                                        color={"#f1b45c"}
+                                    <Image
+                                    source={require("../../../assets/ago.png")}
+                                    resizeMode="contain"
+                                    style={{height: heightToDp("5%"), width: widthToDp('5%')}}
                                     />
                                     <Icon
                                         name="comments"
