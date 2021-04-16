@@ -144,13 +144,23 @@ export default class SignUpScreen extends React.Component {
     // SIGNUP FUNCTION
     signUp = async () => {
         //create object with uri, type, image name
-        var photo = {
-            uri: this.state.imagePath,
-            type: 'image/jpeg',
-            name: 'photo.jpg',
-        };
+        // var photo = {
+        //     uri: this.state.imagePath,
+        //     type: 'image/jpg',
+        //     name: '9612e891-be43-4945-885f-30c01c5798a6.jpg',
+        // };
         var formData = new FormData()
-        formData.append('image', photo);
+        formData.append('username','hi')
+        formData.append('fullname','sujoy')
+        formData.append('email','sujoysaha2198@gmail.com')
+        formData.append('password','1234567890')
+        formData.append('dob','09-09-1998')
+        formData.append('gender','MALE')
+        formData.append('user_profile_iamge',{
+            uri:this.state.imagePath,
+            name:'userProfile.jpg',
+            type:'image/jpg'
+        })
         console.log(formData._parts,"formdata")
         if (!this.state.checkTerms) {
             return Toast.show({
@@ -159,21 +169,7 @@ export default class SignUpScreen extends React.Component {
             })
         }
 
-        await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/registration', {
-            username: "hi",
-            fullname: "hi",
-            email: "sujoysaha2198@gmail.com",
-            password: "12345678",
-            dob: "1998-01-08",
-            gender: "MALE",
-            user_profile_iamge: formData
-        },{
-            headers:{
-                headers: {
-                    'Content-Type':' multipart/form-data; boundary='+ formData._parts,
-                }
-            }
-        }).then(function (response) {
+        await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData).then(function (response) {
             console.log(response.data)
         }).catch(function (error) {
             console.log(error)
