@@ -27,7 +27,7 @@ export default class Header extends React.Component {
         if(type === "block") {
             this.props.navigation.navigate("BlockList");
         } else if(type === "changePassword") {
-
+            this.props.navigation.navigate('ChangePassword');
         } else if(type === "logout") {
             this.props.navigation.navigate("SignInScreen")
         } 
@@ -175,7 +175,9 @@ export default class Header extends React.Component {
                                     >Block List</Text>
                                 </TouchableOpacity>
                                 <View style={{height: heightToDp("3%")}}/>
-                                <TouchableOpacity onPress={() => this.navigateToOtherScreen("changePassword")}>
+                                <TouchableOpacity 
+                                activeOpacity={0.7}
+                                onPress={() => this.navigateToOtherScreen("changePassword")}>
                                     <Text 
                                         style={{ 
                                             fontSize: widthToDp("4.6%"), 
