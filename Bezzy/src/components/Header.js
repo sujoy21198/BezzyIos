@@ -9,19 +9,6 @@ export default class Header extends React.Component {
     state = {
         openUserModal: false
     }
-    
-    componentDidMount = () => {
-        if(this.props.isHomeScreen || this.props.isMessageScreen || this.props.isSearchFocused || this.props.isProfileFocused) {
-            BackHandler.addEventListener("hardwareBackPress", () => undefined);
-        }
-    }
-
-    componentWillUnmount = () => {
-        if(this.props.isHomeScreen || this.props.isMessageScreen || this.props.isSearchFocused || this.props.isProfileFocused) {
-            BackHandler.removeEventListener("hardwareBackPress", () => undefined);
-        }
-    }
-
     navigateToOtherScreen = (type) => {
         this.RBSheet.close();
         if(type === "block") {
