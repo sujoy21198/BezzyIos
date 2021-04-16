@@ -16,6 +16,7 @@ import BlockList from './screens/HomeStack/BlockList';
 import EditProfileScreen from './screens/HomeStack/EditProfileScreen';
 import MessageScreen from './screens/HomeStack/MessageScreen';
 import PostScreen from './screens/HomeStack/PostScreen';
+import ChangePassword from './screens/HomeStack/ChangePassword';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,7 @@ const Navigation = () => (
             <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{headerShown: false}}/>
             <Stack.Screen name="MessageScreen" component={MessageScreen} options={{headerShown: false}}/>
             <Stack.Screen name="PostScreen" component={PostScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="ChangePassword" component={ChangePassword} options={{headerShown: false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

@@ -67,13 +67,16 @@ export default class HomeScreen extends React.Component {
                             <View style={{ marginLeft: widthToDp("6%"), }}>
                                 <Text style={{ color: '#ff0000' }}>{section.lastSeen}</Text>
                             </View>
-                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
+                            <TouchableOpacity 
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("MessageScreen")}
+                            style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
                                 <Icon
                                     name="comments"
                                     size={20}
                                     color={"#87CEEB"}
                                 />
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                     </View>
