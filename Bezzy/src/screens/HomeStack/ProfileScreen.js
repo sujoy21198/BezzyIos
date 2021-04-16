@@ -89,7 +89,7 @@ export default class ProfileScreen extends React.Component {
                             alignItems: 'center',
                         }}
                         activeOpacity={0.7}
-                        disabled={this.state.numberOfFollowers === 0}
+                        // disabled={this.state.numberOfFollowers === 0}
                         onPress={() => this.props.navigation.navigate("FollowerScreen", {user: "Demo User"})}
                     >   
                         <Text>{this.state.numberOfFollowers}</Text>

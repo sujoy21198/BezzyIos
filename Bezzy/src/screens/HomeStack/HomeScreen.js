@@ -168,6 +168,7 @@ export default class HomeScreen extends React.Component {
                                         style={{
                                             marginTop: heightToDp("7%")
                                         }}
+                                        onPress={() => this.props.navigation.navigate("MessageScreen")}
                                     />
                                 </View>
                             </View>
