@@ -3,7 +3,8 @@ const DataAccess = {
     SignIn: 'login',
     Registration: 'registration',
     ForgotPass:'forgotpassotpsend',
-    Search:'searchregisteruser'
+    Search:'searchregisteruser', 
+    SendOtp: 'verifyotp'
 }
 
 export default DataAccess

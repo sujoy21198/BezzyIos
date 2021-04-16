@@ -242,9 +242,9 @@ export default class SignUpScreen extends React.Component {
                 duration: 6000
             });
             this.props.navigation.navigate("OtpVerify")
-        } else if(response.data.resp === " false") {
+        } else if(response.data.resp === "false") {
             Toast.show({
-                text: response.data.reg_msg,
+                text: response.data.message,
                 style: {
                     backgroundColor: '#777'
                 },
@@ -517,6 +517,7 @@ export default class SignUpScreen extends React.Component {
                                 borderRadius: 10
                             }}
                             activeOpacity={0.7}
+                            disabled={this.state.isLoading}
                             onPress={this.signUp}
                         >
                             <Text

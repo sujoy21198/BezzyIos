@@ -1,35 +1,81 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
+import { Toast } from 'native-base';
 
 export default class ForgotPassword extends React.Component {
     constructor(props){
         super(props)
         this.state={
-            email:''
+            email:'',
+            isLoading: false,
+            isEmailValid: false
+        }
+    }
+
+    //SET EMAIL FUNCTION
+    setEmail = (text) => {
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!emailRegex.test(text.trim())) {
+            this.setState({ isEmailValid: false, email: text.trim() })
+        } else {
+            this.setState({ email: text.trim(), isEmailValid: true });
         }
     }
 
     forgotPassword = async() => {
-        var resp = false
-        await axios.post(DataAccess.BaseUrl+DataAccess.ForgotPass,{
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(this.state.email.trim() === "") {
+            return Toast.show({
+                text: "Please enter email",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(!emailRegex.test(this.state.email.trim())) {
+            return Toast.show({
+                text: "Please enter a valid email",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        this.setState({isLoading: true});
+        let response = await axios.post(DataAccess.BaseUrl+DataAccess.ForgotPass,{
             email: this.state.email
-        }).then(function (response) {
-            console.log(response.data)
-            if(response.data.resp === "true"){
-                resp = true
-            }
-        }).catch(function (error) {
-            console.log(error)
-        })
-
-        if(resp === true){
-            this.props.navigation.navigate("OtpVerify")
+        });
+        this.setState({isLoading: false});
+        if(response.data.resp === "true"){
+            Toast.show({
+                text: response.data.reg_msg,
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
+            this.props.navigation.navigate("OtpVerify", {userId : response.data.userID});
+        } else if(response.data.resp === "false"){
+            Toast.show({
+                text: response.data.reg_msg,
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
+        } else {
+            Toast.show({
+                text: "Some error happened. Please retry.",
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
         }
     }
 
@@ -80,9 +126,17 @@ export default class ForgotPassword extends React.Component {
                             }}
                             placeholder="Enter Mail Id"
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({email: text})}
-                        />
-                    </View> 
+                            onChangeText={this.setEmail}
+                        />       
+                    </View>                  
+                    {
+                        !this.state.isEmailValid && this.state.email !== "" &&
+                        <Text
+                            style={{
+                                color: "#ff0000"
+                            }}
+                        >Entered email address is not valid</Text>
+                    }
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("3%"),
@@ -92,7 +146,7 @@ export default class ForgotPassword extends React.Component {
                             borderRadius: 10
                         }}
                         activeOpacity={0.7}
-                        // onPress={() => this.props.navigation.navigate("OtpVerify")}
+                        disabled={this.state.isLoading}
                         onPress={() => this.forgotPassword()}
                     >
                         <Text
@@ -104,6 +158,21 @@ export default class ForgotPassword extends React.Component {
                         >
                             Next
                         </Text>
+                        {
+                            this.state.isLoading && 
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    right: widthToDp("4%"),
+                                    top: heightToDp('1.5%')
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size="small"
+                                    color="#fff"
+                                />
+                            </View>
+                        }
                     </TouchableOpacity>             
                 </View>
             </View>
