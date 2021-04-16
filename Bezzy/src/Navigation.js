@@ -10,6 +10,10 @@ import HomeScreen from './screens/HomeStack/HomeScreen';
 import ChatScreen from './screens/HomeStack/ChatScreen';
 import SearchScreen from './screens/HomeStack/SearchScreen';
 import ProfileScreen from './screens/HomeStack/ProfileScreen';
+import FollowingScreen from './screens/HomeStack/FollowingScreen';
+import FollowerScreen from './screens/HomeStack/FollowerScreen';
+import BlockList from './screens/HomeStack/BlockList';
+import EditProfileScreen from './screens/HomeStack/EditProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +29,10 @@ const Navigation = () => (
             <Stack.Screen name="ChatScreen" component={ChatScreen} options={{headerShown: false}}/>
             <Stack.Screen name="SearchScreen" component={SearchScreen} options={{headerShown: false}}/>
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="FollowingScreen" component={FollowingScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="FollowerScreen" component={FollowerScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="BlockList" component={BlockList} options={{headerShown: false}}/>
+            <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

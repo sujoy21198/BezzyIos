@@ -42,21 +42,22 @@ export default class SignInScreen extends React.Component {
         //     return;
         // }
         // console.log("Call Sign In Api");
-        await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
-            username: this.state.email,
-            password: this.state.password
-        }).then(function (response) {
-            console.log(response.data.resp)
-            if (response.data.resp === 'false') {
-                return Toast.show({
-                    text:response.data.message,
-                    duration:6000
-                })
-            }
+        // await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
+        //     username: this.state.email,
+        //     password: this.state.password
+        // }).then(function (response) {
+        //     console.log(response.data.resp)
+        //     if (response.data.resp === 'false') {
+        //         return Toast.show({
+        //             text:response.data.message,
+        //             duration:6000
+        //         })
+        //     }
 
-        }).catch(function (error) {
-            alert(error)
-        })
+        // }).catch(function (error) {
+        //     alert(error)
+        // })
+        this.props.navigation.navigate("HomeScreen")
     }
 
     render = () => (
