@@ -14,6 +14,8 @@ import FollowingScreen from './screens/HomeStack/FollowingScreen';
 import FollowerScreen from './screens/HomeStack/FollowerScreen';
 import BlockList from './screens/HomeStack/BlockList';
 import EditProfileScreen from './screens/HomeStack/EditProfileScreen';
+import MessageScreen from './screens/HomeStack/MessageScreen';
+import PostScreen from './screens/HomeStack/PostScreen';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +35,8 @@ const Navigation = () => (
             <Stack.Screen name="FollowerScreen" component={FollowerScreen} options={{headerShown: false}}/>
             <Stack.Screen name="BlockList" component={BlockList} options={{headerShown: false}}/>
             <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="MessageScreen" component={MessageScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="PostScreen" component={PostScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

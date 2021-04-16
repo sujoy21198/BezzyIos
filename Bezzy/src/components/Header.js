@@ -1,8 +1,9 @@
 import React from 'react';
-import { BackHandler, Image, Modal, Platform, SafeAreaView, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from './Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import RBSheet1 from 'react-native-raw-bottom-sheet';
 
 export default class Header extends React.Component {
     state = {
@@ -83,11 +84,48 @@ export default class Header extends React.Component {
                     </View>
                     {
                         this.props.isSearchFocused &&
-                        <Icon
-                            name={"search"}
-                            size={20}
-                            color="#a9a9a9"
-                        />
+                        <>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => this.RBSheet1.open()}
+                            >
+                                <Icon
+                                    name={"search"}
+                                    size={20}
+                                    color="#a9a9a9"
+                                />
+                            </TouchableOpacity>
+                            <RBSheet
+                                ref={ref => {
+                                    this.RBSheet1 = ref;
+                                }}
+                                height={heightToDp("6%")}
+                                // openDuration={250}
+                                customStyles={{
+                                    container: {
+                                        width: widthToDp("97%"),
+                                        position: 'absolute',
+                                        top: heightToDp("5.5%"),
+                                        alignItems: 'flex-start',
+                                        justifyContent: 'center',
+                                        paddingLeft: widthToDp("5%"),
+                                        backgroundColor: '#fff',
+                                        borderRadius: 15
+                                    },
+                                }}
+                            >
+                                <TextInput
+                                    placeholderTextColor="#808080"
+                                    placeholder="Search by name"
+                                    style={{
+                                        width: widthToDp("97%"),
+                                        color: "#777",
+                                        fontSize: widthToDp("3.5%")
+                                    }}
+                                    onChangeText={text => console.log(text)}
+                                />
+                            </RBSheet>
+                        </>
                     }
                     {
                         this.props.isHomeScreen &&
