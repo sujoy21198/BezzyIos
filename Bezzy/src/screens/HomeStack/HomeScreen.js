@@ -136,7 +136,7 @@ export default class HomeScreen extends React.Component {
                         renderContent={this._renderContent}
                         onChange={this._updateSections}
                     />
-                    <View style={{ margin: 10 }}></View>
+                    <View style={{ marginBottom: heightToDp("10%") }}></View>
                 </ScrollView>
                 <BottomTab isHomeFocused navigation={this.props.navigation} />
             </SafeAreaView>

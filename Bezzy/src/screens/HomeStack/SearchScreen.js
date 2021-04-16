@@ -43,7 +43,7 @@ export default class SearchScreen extends React.Component {
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
-                        <Text style={{ fontSize: widthToDp("5%") }}>Search for friends</Text>
+                        <Text style={{ fontSize: widthToDp("4.5%"),color:'#69abff',fontWeight: 'bold' }}>Search for friends</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}
