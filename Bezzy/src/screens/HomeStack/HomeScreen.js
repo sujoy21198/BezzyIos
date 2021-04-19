@@ -1,7 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
-import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
@@ -10,6 +9,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 
 const SECTIONS = [
@@ -42,28 +42,41 @@ export default class HomeScreen extends React.Component {
         }
     }
 
-    componentDidMount = async () => {
+    componentDidMount() {
         this.fetchHomeListing();
     }
 
     fetchHomeListing = async () => {
+        var userList = [], followingList = [];
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
-        if(response.data.status === "error") {
-            let responseUserList = await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
-                "log_userID": userId
-            });
-            if(responseUserList.data.resp === "success") {
-                console.warn(responseUserList);
-                this.setState({userList: responseUserList.data.all_user_list, isLoading: false, followingList: []});
-            } else {
-                this.setState({userList: [], isLoading: false, followingList: []});
-            }
-        } else {
-            // console.warn("Friend is there", response);
-            this.setState({followingList: response.data.total_feed_response.friend_list});
-            await AsyncStorage.setItem("numberOfFollowings", String(response.data.total_feed_response.friend_list.length));
-        }
+        await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId)
+            .then(async function(response) {
+                if(response.data.status === "error") {
+                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                        "log_userID": userId
+                    })
+                    .then(function(responseUserList) {
+                        if(responseUserList.data.resp === "success") {
+                            userList = responseUserList.data.all_user_list;
+                            followingList = [];
+                        } else {
+                            userList = [];
+                            followingList = [];
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+                } else {
+                    userList = [];
+                    followingList = response.data.total_feed_response.friend_list;
+                    // await AsyncStorage.setItem("numberOfFollowings", String(response.data.total_feed_response.friend_list.length));
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+        this.setState({userList, followingList})
     }
 
     _renderSectionTitle = section => {
@@ -75,7 +88,7 @@ export default class HomeScreen extends React.Component {
     };
 
     followUser = async (item, index) => {
-        console.warn(item, index);
+        this.RBSheet.open();
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
             "user_one_id" : userId,
@@ -88,12 +101,13 @@ export default class HomeScreen extends React.Component {
                 type: "success",
                 duration: 2000
             })
+        } else {
+            //
         }
-        // console.warn(response);
+        this.RBSheet.close();
     } 
 
     _renderHeader = section => {
-        console.warn(section);
         return (
             <View >
                 <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
@@ -172,10 +186,17 @@ export default class HomeScreen extends React.Component {
     };
 
     _updateSections = activeSections => {
+        // if(item.have_post === "No") {
+        //     this.setState({ activeSections : [] });
+        //     return;
+        // }
         this.setState({ activeSections });
     };
 
     render() {
+        var userList = [], followingList = [];
+        userList = this.state.userList;
+        followingList = this.state.followingList;
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
                 <Header isHomeScreen />
@@ -196,7 +217,7 @@ export default class HomeScreen extends React.Component {
                         this.state.followingList.length > 0 ?
                         <ScrollView>
                             <Accordion
-                                sections={this.state.followingList}
+                                sections={followingList}
                                 activeSections={this.state.activeSections}
                                 //renderSectionTitle={this._renderSectionTitle}
                                 renderHeader={this._renderHeader}
@@ -206,7 +227,7 @@ export default class HomeScreen extends React.Component {
                             <View style={{ marginBottom: heightToDp("10%") }}></View>
                         </ScrollView>:
                         <FlatList
-                            data={this.state.userList}
+                            data={userList}
                             numColumns={3}
                             contentContainerStyle={{
                                 padding: widthToDp("2%")
@@ -248,6 +269,32 @@ export default class HomeScreen extends React.Component {
                                     >
                                         <Text style={{ color: "#fff" }}>FOLLOW</Text>
                                     </TouchableOpacity>
+                                    <RBSheet
+                                        ref={ref => {
+                                            this.RBSheet = ref;
+                                        }}
+                                        height={heightToDp("6%")}
+                                        closeOnPressMask={false}
+                                        closeOnPressBack={false}
+                                        // openDuration={250}
+                                        customStyles={{
+                                            container: {
+                                                width: widthToDp("15%"),
+                                                position: 'absolute',
+                                                top: heightToDp("45%"),
+                                                left: widthToDp("40%"),
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                backgroundColor: '#fff',
+                                                borderRadius: 10
+                                            },
+                                        }}
+                                    >
+                                        <ActivityIndicator
+                                            size="large"
+                                            color="#69abff"
+                                        />
+                                    </RBSheet> 
                                 </View>
                             )}
                         />

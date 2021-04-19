@@ -25,9 +25,13 @@ export default class ProfileScreen extends React.Component {
     )
 
     componentDidMount = async() => {
+        this.getAsyncValues()
+    } 
+
+    getAsyncValues = async () => {
         let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
         this.setState({numberOfFollowings});
-    } 
+    }
 
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>
