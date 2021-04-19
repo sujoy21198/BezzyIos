@@ -145,7 +145,6 @@
 				D1046DC9A257BB216B464AA0 /* Pods-Bezzy-BezzyTests.debug.xcconfig */,
 				4BC53259A537E1590F72386F /* Pods-Bezzy-BezzyTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -485,6 +484,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYKVDHCGXC;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Bezzy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,6 +511,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = KYKVDHCGXC;
 				INFOPLIST_FILE = Bezzy/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
