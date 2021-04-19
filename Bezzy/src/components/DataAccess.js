@@ -4,7 +4,9 @@ const DataAccess = {
     Registration: 'registration',
     ForgotPass:'forgotpassotpsend',
     Search:'searchregisteruser', 
-    SendOtp: 'verifyotp'
+    SendOtp: 'verifyotp',
+    ResetPassword: 'setforgotpassword',
+    resendOtp: "resendotp"
 }
 
 export default DataAccess

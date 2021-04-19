@@ -3,13 +3,18 @@ import { BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Tou
 import { heightToDp, widthToDp } from './Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import RBSheet1 from 'react-native-raw-bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Header extends React.Component {
     state = {
         openUserModal: false
     }
-    navigateToOtherScreen = (type) => {
+    navigateToOtherScreen = async (type) => {
+        await AsyncStorage.removeItem("userDetails");
+        await AsyncStorage.removeItem("userId");
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("otpStatus");
+        //async storage will be null
         this.RBSheet.close();
         if(type === "block") {
             this.props.navigation.navigate("BlockList");

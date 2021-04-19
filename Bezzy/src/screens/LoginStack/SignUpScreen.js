@@ -11,6 +11,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } from 'react-native-permissions'
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import NetInfo from '@react-native-community/netinfo'
 
 export default class SignUpScreen extends React.Component {
     state = {
@@ -23,7 +25,6 @@ export default class SignUpScreen extends React.Component {
         checkTerms: false,
         imagePath: '',
         isImagePathPresent: false,
-        isLoading: false
     };
 
     //SET EMAIL FUNCTION
@@ -142,7 +143,16 @@ export default class SignUpScreen extends React.Component {
     }
 
     // SIGNUP FUNCTION
-    signUp = async () => {
+    signUp = async () => {        
+        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
+        if(!isOnline) {
+            return Toast.show({
+                text: "Please be online to login to the app.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if(this.state.imagePath==="") {
             return Toast.show({
@@ -216,7 +226,7 @@ export default class SignUpScreen extends React.Component {
                 }
             })
         }
-        this.setState({isLoading: true});
+        this.RBSheet.open();
         var formData = new FormData()
         formData.append('username', null)
         formData.append('fullname', this.state.name.trim())
@@ -232,7 +242,6 @@ export default class SignUpScreen extends React.Component {
         console.log(formData._parts,"formdata")
 
         let response = await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData);
-        this.setState({isLoading: false});
         if(response.data.resp === "true") {
             Toast.show({
                 text: response.data.reg_msg,
@@ -241,15 +250,17 @@ export default class SignUpScreen extends React.Component {
                 },
                 duration: 6000
             });
-            this.props.navigation.navigate("OtpVerify")
+            this.RBSheet.close()
+            this.props.navigation.navigate("OtpVerify", {userId: response.data.log_userID, type: "verify"})
         } else if(response.data.resp === "false") {
             Toast.show({
-                text: response.data.message,
+                text: response.data.reg_msg,
                 style: {
                     backgroundColor: '#777'
                 },
                 duration: 6000
             });
+            this.RBSheet.close()
         } else {
             if(response.data.resp == true) {
                 Toast.show({
@@ -260,6 +271,7 @@ export default class SignUpScreen extends React.Component {
                     duration: 6000
                 });
             }
+            this.RBSheet.close()
         }
     }
 
@@ -340,7 +352,7 @@ export default class SignUpScreen extends React.Component {
                             }}
                             placeholder="Name"
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ name: text })}
+                            onChangeText={text => this.setState({ name: text.trim() })}
                         />
                     </View>
                     <View
@@ -391,7 +403,7 @@ export default class SignUpScreen extends React.Component {
                             placeholder="Password"
                             secureTextEntry={!this.state.showPassword}
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ password: text })}
+                            onChangeText={text => this.setState({ password: text.trim() })}
                         />
                         <Icon
                             name={this.state.showPassword ? "eye-off" : "eye"}
@@ -420,7 +432,7 @@ export default class SignUpScreen extends React.Component {
                             placeholder="Confirm Password"
                             secureTextEntry={!this.state.showConfirmPassword}
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ confirmPassword: text })}
+                            onChangeText={text => this.setState({ confirmPassword: text.trim() })}
                         />
                         <Icon
                             name={this.state.showConfirmPassword ? "eye-off" : "eye"}
@@ -529,21 +541,32 @@ export default class SignUpScreen extends React.Component {
                             >
                                 Register
                             </Text>
-                            {
-                                this.state.isLoading && 
-                                <View
-                                    style={{
+                            <RBSheet
+                                ref={ref => {
+                                    this.RBSheet = ref;
+                                }}
+                                height={heightToDp("6%")}
+                                closeOnPressMask={false}
+                                closeOnPressBack={false}
+                                // openDuration={250}
+                                customStyles={{
+                                    container: {
+                                        width: widthToDp("15%"),
                                         position: 'absolute',
-                                        right: widthToDp("4%"),
-                                        top: heightToDp('1.5%')
-                                    }}
-                                >
-                                    <ActivityIndicator
-                                        size="small"
-                                        color="#fff"
-                                    />
-                                </View>
-                            }
+                                        top: heightToDp("45%"),
+                                        left: widthToDp("40%"),
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#fff',
+                                        borderRadius: 10
+                                    },
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size="large"
+                                    color="#69abff"
+                                />
+                            </RBSheet> 
                         </TouchableOpacity>
                     }
                 </View>

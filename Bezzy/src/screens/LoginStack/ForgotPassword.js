@@ -3,17 +3,17 @@ import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, Vie
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
 import { Toast } from 'native-base';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import NetInfo from '@react-native-community/netinfo';
 
 export default class ForgotPassword extends React.Component {
     constructor(props){
         super(props)
         this.state={
             email:'',
-            isLoading: false,
             isEmailValid: false
         }
     }
@@ -28,7 +28,16 @@ export default class ForgotPassword extends React.Component {
         }
     }
 
-    forgotPassword = async() => {
+    forgotPassword = async() => {        
+        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
+        if(!isOnline) {
+            return Toast.show({
+                text: "Please be online to login to the app.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if(this.state.email.trim() === "") {
             return Toast.show({
@@ -46,11 +55,10 @@ export default class ForgotPassword extends React.Component {
                 }
             })
         }
-        this.setState({isLoading: true});
+        this.RBSheet.open();
         let response = await axios.post(DataAccess.BaseUrl+DataAccess.ForgotPass,{
             email: this.state.email
         });
-        this.setState({isLoading: false});
         if(response.data.resp === "true"){
             Toast.show({
                 text: response.data.reg_msg,
@@ -59,6 +67,7 @@ export default class ForgotPassword extends React.Component {
                 },
                 duration: 6000
             });
+            this.RBSheet.close()
             this.props.navigation.navigate("OtpVerify", {userId : response.data.userID});
         } else if(response.data.resp === "false"){
             Toast.show({
@@ -68,6 +77,7 @@ export default class ForgotPassword extends React.Component {
                 },
                 duration: 6000
             });
+            this.RBSheet.close()
         } else {
             Toast.show({
                 text: "Some error happened. Please retry.",
@@ -76,6 +86,7 @@ export default class ForgotPassword extends React.Component {
                 },
                 duration: 6000
             });
+            this.RBSheet.close()
         }
     }
 
@@ -146,7 +157,6 @@ export default class ForgotPassword extends React.Component {
                             borderRadius: 10
                         }}
                         activeOpacity={0.7}
-                        disabled={this.state.isLoading}
                         onPress={() => this.forgotPassword()}
                     >
                         <Text
@@ -158,22 +168,33 @@ export default class ForgotPassword extends React.Component {
                         >
                             Next
                         </Text>
-                        {
-                            this.state.isLoading && 
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    right: widthToDp("4%"),
-                                    top: heightToDp('1.5%')
-                                }}
-                            >
-                                <ActivityIndicator
-                                    size="small"
-                                    color="#fff"
-                                />
-                            </View>
-                        }
-                    </TouchableOpacity>             
+                    </TouchableOpacity>     
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={heightToDp("6%")}
+                        closeOnPressMask={false}
+                        closeOnPressBack={false}
+                        // openDuration={250}
+                        customStyles={{
+                            container: {
+                                width: widthToDp("15%"),
+                                position: 'absolute',
+                                top: heightToDp("45%"),
+                                left: widthToDp("40%"),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#fff',
+                                borderRadius: 10
+                            },
+                        }}
+                    >
+                        <ActivityIndicator
+                            size="large"
+                            color="#69abff"
+                        />
+                    </RBSheet>        
                 </View>
             </View>
         </KeyboardAwareScrollView>
