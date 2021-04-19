@@ -6,7 +6,13 @@ const DataAccess = {
     Search:'searchregisteruser', 
     SendOtp: 'verifyotp',
     ResetPassword: 'setforgotpassword',
-    resendOtp: "resendotp"
+    resendOtp: "resendotp",
+    friendBlockList: "friendblocklist",
+    userList: "RegisterUserList",
+    followUser: "followingreqsend",
+    friendList: "getuserfollowinglist",
+    followingList: "getuserfollowinglist",
+    unfollow: "unfollowuser"
 }
 
 export default DataAccess

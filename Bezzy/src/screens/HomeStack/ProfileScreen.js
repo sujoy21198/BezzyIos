@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { FlatList, Image, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { FlatGrid } from 'react-native-super-grid';
@@ -22,6 +23,11 @@ export default class ProfileScreen extends React.Component {
     onShareTabPress = () => (
         this.setState({isShareFocused: true, isPostsFocused: false})
     )
+
+    componentDidMount = async() => {
+        let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
+        this.setState({numberOfFollowings});
+    } 
 
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>

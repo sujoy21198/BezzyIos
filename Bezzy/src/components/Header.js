@@ -14,6 +14,7 @@ export default class Header extends React.Component {
         await AsyncStorage.removeItem("userId");
         await AsyncStorage.removeItem("token");
         await AsyncStorage.removeItem("otpStatus");
+        await AsyncStorage.removeItem('numberOfFollowings');
         //async storage will be null
         this.RBSheet.close();
         if(type === "block") {

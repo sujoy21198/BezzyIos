@@ -1,9 +1,57 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import React from 'react';
-import { FlatList, Image, Platform, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import DataAccess from '../../components/DataAccess';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import { Toast } from 'native-base';
 
 export default class FollowingScreen extends React.Component {
+    state = {
+        followingList: [],
+    }
+
+    componentDidMount = async () => {
+        let userId = await AsyncStorage.getItem("userId");
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
+        if(response.data.status === "success") {
+            this.setState({followingList: response.data.total_feed_response.friend_list});
+        } else {
+            this.setState({followingList: []});
+        }
+    }
+
+    unfollow = async (item, index) => {
+        this.RBSheet.open();
+        let userId = await AsyncStorage.getItem("userId");
+        let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.unfollow, {
+            "loginUserID" : userId,
+            "unfriendID" : item.friend_id
+        });
+        if(response.data.status === "success") {
+            let followingList = this.state.followingList;
+            followingList.splice(index, 1);
+            this.setState({followingList});
+            await AsyncStorage.setItem("numberOfFollowings", String(Number(numberOfFollowings) - 1));
+            return Toast.show({
+                type: "success",
+                text: response.data.alert_msg,
+                duration: 3000
+            })
+        } else {
+            return Toast.show({
+                type: "success",
+                text: response.data.alert_msg,
+                duration: 3000
+            })
+            // this.setState({followingList: []});
+        }
+        this.RBSheet.close()
+    }
+
     render = () => (
         <SafeAreaView style={{flex: 1}}>
             <Header isHomeStackInnerPage isBackButton headerText={this.props.route.params.user} navigation={this.props.navigation}/>
@@ -11,10 +59,7 @@ export default class FollowingScreen extends React.Component {
             contentContainerStyle={{
                 padding: widthToDp("2%")
             }}
-            data={[
-                "Demo User",
-                "Demo User"
-            ]}
+            data={this.state.followingList}
             ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
             renderItem={({item, index}) => (
                 <View
@@ -34,20 +79,51 @@ export default class FollowingScreen extends React.Component {
                         }}
                     >
                         <Image
-                            source={require("../../../assets/default_person.png")}
+                            source={{uri: item.friend_photo}}
                             style={{height: heightToDp("5%"), width: widthToDp("12%")}}
                         />
                         <Text
                             style={{
                                 marginLeft: widthToDp("2%")
                             }}
-                        >Abc User</Text>
+                        >{item.friend_name}</Text>
                     </View>
-                    <Image
-                        source={require("../../../assets/unfriend.png")}
-                        resizeMode="contain"
-                        style={{height: heightToDp("7%"), width: widthToDp('7%')}}
-                    />
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => this.unfollow(item, index)}
+                    >
+                        <Image
+                            source={require("../../../assets/unfriend.png")}
+                            resizeMode="contain"
+                            style={{height: heightToDp("7%"), width: widthToDp('7%')}}
+                        />
+                    </TouchableOpacity>
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={heightToDp("6%")}
+                        closeOnPressMask={false}
+                        closeOnPressBack={false}
+                        // openDuration={250}
+                        customStyles={{
+                            container: {
+                                width: widthToDp("15%"),
+                                position: 'absolute',
+                                top: heightToDp("45%"),
+                                left: widthToDp("40%"),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#fff',
+                                borderRadius: 10
+                            },
+                        }}
+                    >
+                        <ActivityIndicator
+                            size="large"
+                            color="#69abff"
+                        />
+                    </RBSheet> 
                 </View>
             )}
             />
