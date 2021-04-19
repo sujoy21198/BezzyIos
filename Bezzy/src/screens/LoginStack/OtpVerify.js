@@ -1,13 +1,67 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
 import OTPTextView from 'react-native-otp-textinput';
+import { Toast } from 'native-base';
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess';
 
 export default class OtpVerify extends React.Component {
-    state = {};
+    state = {
+        otp: "",
+        isLoading: false
+    };
+    
+
+    otpVerify = async() => {
+        if((this.props.route && this.props.route.params && this.props.route.params.userId)) {
+            if(this.state.otp === "") {
+                return Toast.show({
+                    text: "Please enter OTP",
+                    style: {
+                        backgroundColor: '#777',
+                    }
+                })
+            }
+            this.setState({isLoading: true});
+            let response = await axios.post(DataAccess.BaseUrl + DataAccess.SendOtp, {
+                "otp_code": this.state.otp,
+                "userID": this.props.route.params.userId,
+                "device_token": null
+            });
+            this.setState({isLoading: false});
+            if(response.data.resp === "true"){
+                Toast.show({
+                    text: response.data.message,
+                    style: {
+                        backgroundColor: '#777'
+                    },
+                    duration: 6000
+                });
+                this.props.navigation.navigate("ResetPassword");
+            } else if(response.data.resp === "false"){
+                Toast.show({
+                    text: response.data.message,
+                    style: {
+                        backgroundColor: '#777'
+                    },
+                    duration: 6000
+                });
+            } else {
+                Toast.show({
+                    text: "Some error happened. Please retry.",
+                    style: {
+                        backgroundColor: '#777'
+                    },
+                    duration: 6000
+                });
+            }
+        }
+    }
+
     render = () => (
         <KeyboardAwareScrollView 
         keyboardShouldPersistTaps='handled'
@@ -63,7 +117,7 @@ export default class OtpVerify extends React.Component {
                             }}
                             offTintColor="#ececec"
                             tintColor="#ececec"
-                            handleTextChange={(text) => console.log(text)}
+                            handleTextChange={(text) => this.setState({otp: text})}
                             inputCount={4}
                             inputCellLength={1}
                             keyboardType="numeric"
@@ -78,6 +132,7 @@ export default class OtpVerify extends React.Component {
                             borderRadius: 10
                         }}
                         activeOpacity={0.7}
+                        onPress={this.otpVerify}
                     >
                         <Text
                             style={{
@@ -88,6 +143,21 @@ export default class OtpVerify extends React.Component {
                         >
                             Verify OTP                        
                         </Text>
+                        {
+                            this.state.isLoading && 
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    right: widthToDp("4%"),
+                                    top: heightToDp('1.5%')
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size="small"
+                                    color="#fff"
+                                />
+                            </View>
+                        }
                     </TouchableOpacity>
                     <Text
                         style={{

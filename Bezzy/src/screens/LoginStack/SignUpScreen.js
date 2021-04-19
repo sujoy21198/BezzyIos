@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -22,7 +22,8 @@ export default class SignUpScreen extends React.Component {
         dob: "",
         checkTerms: false,
         imagePath: '',
-        isImagePathPresent: false
+        isImagePathPresent: false,
+        isLoading: false
     };
 
     //SET EMAIL FUNCTION
@@ -32,7 +33,6 @@ export default class SignUpScreen extends React.Component {
             this.setState({ isEmailValid: false, email: text.trim() })
         } else {
             this.setState({ email: text.trim(), isEmailValid: true });
-            alert(this.state.email)
         }
     }
 
@@ -143,37 +143,124 @@ export default class SignUpScreen extends React.Component {
 
     // SIGNUP FUNCTION
     signUp = async () => {
-        //create object with uri, type, image name
-        // var photo = {
-        //     uri: this.state.imagePath,
-        //     type: 'image/jpg',
-        //     name: '9612e891-be43-4945-885f-30c01c5798a6.jpg',
-        // };
-        var formData = new FormData()
-        formData.append('username','hi')
-        formData.append('fullname','sujoy')
-        formData.append('email','sujoysaha2198@gmail.com')
-        formData.append('password','1234567890')
-        formData.append('dob','09-09-1998')
-        formData.append('gender','MALE')
-        formData.append('user_profile_iamge',{
-            uri:this.state.imagePath,
-            name:'userProfile.jpg',
-            type:'image/jpg'
-        })
-        console.log(formData._parts,"formdata")
-        if (!this.state.checkTerms) {
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(this.state.imagePath==="") {
             return Toast.show({
-                text: "Please Agree To Our Terms & Conditions",
-                duration: 6000
+                text: "Please choose a profile picture",
+                style: {
+                    backgroundColor: '#777',
+                }
             })
         }
-
-        await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData).then(function (response) {
-            console.log(response.data)
-        }).catch(function (error) {
-            console.log(error)
+        if(this.state.name.trim()==="") {
+            return Toast.show({
+                text: "Please enter name",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.email.trim()==="") {
+            return Toast.show({
+                text: "Please enter email",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(!emailRegex.test(this.state.email.trim())) {
+            return Toast.show({
+                text: "Please enter a valid email",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.password.trim()==="") {
+            return Toast.show({
+                text: "Please enter a password",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.confirmPassword.trim()==="") {
+            return Toast.show({
+                text: "Please confirm the entered password",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.password.trim()!==this.state.confirmPassword.trim()) {
+            return Toast.show({
+                text: "Passwords do not match",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.gender === "") {
+            return Toast.show({
+                text: "Please select your gender",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if(this.state.dob === "") {
+            return Toast.show({
+                text: "Please select your date of birth",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        this.setState({isLoading: true});
+        var formData = new FormData()
+        formData.append('username', null)
+        formData.append('fullname', this.state.name.trim())
+        formData.append('email', this.state.email.trim())
+        formData.append('password', this.state.password.trim())
+        formData.append('dob', this.state.dob)
+        formData.append('gender', this.state.gender)
+        formData.append('user_profile_iamge',{
+            uri: this.state.imagePath,
+            name: 'userProfile.jpg',
+            type: 'image/jpg'
         })
+        console.log(formData._parts,"formdata")
+
+        let response = await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData);
+        this.setState({isLoading: false});
+        if(response.data.resp === "true") {
+            Toast.show({
+                text: response.data.reg_msg,
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
+            this.props.navigation.navigate("OtpVerify")
+        } else if(response.data.resp === "false") {
+            Toast.show({
+                text: response.data.message,
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
+        } else {
+            if(response.data.resp == true) {
+                Toast.show({
+                    text: "Some error happened. Please retry.",
+                    style: {
+                        backgroundColor: '#777'
+                    },
+                    duration: 6000
+                });
+            }
+        }
     }
 
     render = () => (
@@ -419,30 +506,46 @@ export default class SignUpScreen extends React.Component {
                             I accept the <Text style={{ color: "#69abff" }}>Terms & Conditions</Text>
                         </Text>
                     </View>
-
-
-                    <TouchableOpacity
-                        style={{
-                            marginTop: heightToDp("4%"),
-                            width: "100%",
-                            backgroundColor: "#69abff",
-                            padding: widthToDp("3%"),
-                            borderRadius: 10
-                        }}
-                        activeOpacity={0.7}
-                        onPress={() => this.signUp()}
-                    >
-                        <Text
+                    {
+                        this.state.checkTerms &&
+                        <TouchableOpacity
                             style={{
-                                color: "#fff",
-                                textAlign: "center",
-                                fontWeight: 'bold'
+                                marginTop: heightToDp("4%"),
+                                width: "100%",
+                                backgroundColor: "#69abff",
+                                padding: widthToDp("3%"),
+                                borderRadius: 10
                             }}
+                            activeOpacity={0.7}
+                            disabled={this.state.isLoading}
+                            onPress={this.signUp}
                         >
-                            Register
+                            <Text
+                                style={{
+                                    color: "#fff",
+                                    textAlign: "center",
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                Register
                             </Text>
-                    </TouchableOpacity>
-
+                            {
+                                this.state.isLoading && 
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        right: widthToDp("4%"),
+                                        top: heightToDp('1.5%')
+                                    }}
+                                >
+                                    <ActivityIndicator
+                                        size="small"
+                                        color="#fff"
+                                    />
+                                </View>
+                            }
+                        </TouchableOpacity>
+                    }
                 </View>
             </View>
         </KeyboardAwareScrollView>
