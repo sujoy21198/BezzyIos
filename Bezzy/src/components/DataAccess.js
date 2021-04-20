@@ -18,7 +18,6 @@ const DataAccess = {
     uploadProfileImage: 'UpdateProfilePicture',
     friendblockdetails : 'friendblockdetails/',
     updateProfile: 'UpdateProfileData',
-    uploadProfileImage: 'UpdateProfilePicture',
     deletePost: 'deletepostimagevideo'
 }
 
