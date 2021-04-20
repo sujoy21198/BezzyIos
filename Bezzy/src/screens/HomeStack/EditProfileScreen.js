@@ -4,6 +4,9 @@ import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DataAccess from '../../components/DataAccess';
+import axios from 'axios';
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -11,7 +14,12 @@ export default class EditProfileScreen extends React.Component {
         email: "",
         isEmailValid: false,
         showDatePicker: false,
-        dob: ""
+        image: "",
+        name: "",
+        email: "",
+        dob: "",
+        gender: "",
+        bio: ""
     }
 
     //SET EMAIL FUNCTION
@@ -36,6 +44,31 @@ export default class EditProfileScreen extends React.Component {
         } else {
             this.setState({ dob: this.state.dob, showDatePicker: false })
         }
+    }
+
+    componentDidMount() {
+        this.getProfileData()
+    }
+
+    getProfileData = async () => {
+        var image, name, email, dob, gender, bio;
+        let userId = await AsyncStorage.getItem("userId");
+        await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
+            "profile_id" : userId
+        }).then(res => {
+            console.warn(res.data.usedetails);
+            image = res.data.usedetails.profile_pic;
+            name = res.data.usedetails.get_name;
+            email = res.data.usedetails.get_email;
+            gender = res.data.usedetails.get_gender;
+            dob = res.data.usedetails.get_dateofbirth;
+            bio = res.data.usedetails.bio || "";
+            console.warn(res.data);
+        }).catch(err => console.log(err))
+
+        this.setState({image, name, email, gender, dob, bio})
+        this.setState({isLoading: false})
+        this.RBSheet.close();
     }
 
     render = () => (
