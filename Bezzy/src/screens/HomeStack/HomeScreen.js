@@ -1,12 +1,15 @@
 import React from 'react';
-import { FlatList, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
-import { Card } from 'native-base'
-import { FlatGrid } from 'react-native-super-grid';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import Accordion from 'react-native-collapsible/Accordion';
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 
 const SECTIONS = [
@@ -32,8 +35,48 @@ export default class HomeScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            activeSections: []
+            activeSections: [],
+            isLoading: false,
+            userList: [],
+            followingList: []
         }
+    }
+
+    componentDidMount() {
+        this.fetchHomeListing();
+    }
+
+    fetchHomeListing = async () => {
+        var userList = [], followingList = [];
+        let userId = await AsyncStorage.getItem("userId");
+        await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId)
+            .then(async function(response) {
+                if(response.data.status === "error") {
+                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                        "log_userID": userId
+                    })
+                    .then(function(responseUserList) {
+                        if(responseUserList.data.resp === "success") {
+                            userList = responseUserList.data.all_user_list;
+                            followingList = [];
+                        } else {
+                            userList = [];
+                            followingList = [];
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    })
+                } else {
+                    userList = [];
+                    followingList = response.data.total_feed_response.friend_list;
+                    // await AsyncStorage.setItem("numberOfFollowings", String(response.data.total_feed_response.friend_list.length));
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+        this.setState({userList, followingList})
     }
 
     _renderSectionTitle = section => {
@@ -44,33 +87,56 @@ export default class HomeScreen extends React.Component {
         );
     };
 
+    followUser = async (item, index) => {
+        this.RBSheet.open();
+        let userId = await AsyncStorage.getItem("userId");
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
+            "user_one_id" : userId,
+            "user_two_id" : item.user_id
+        });
+        if(response.data.status === "success") {
+            this.fetchHomeListing();
+            return Toast.show({
+                text: "Follow successful",
+                type: "success",
+                duration: 2000
+            })
+        } else {
+            //
+        }
+        this.RBSheet.close();
+    } 
+
     _renderHeader = section => {
         return (
             <View >
-                <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
+                <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
-                            source={require("../../../assets/default_person.png")}
+                            source={{uri: section.friend_photo}}
                             style={{ height: heightToDp("13%"), width: widthToDp("22%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
                         />
                         <View>
-                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
-                                <Icon
-                                    name="bell"
-                                    size={20}
-                                    color={"#008000"}
+                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-1%") }}>
+                                <Image
+                                source={require("../../../assets/ago.png")}
+                                resizeMode="contain"
+                                style={{height: heightToDp("6%"), width: widthToDp("6%")}}
                                 />
                             </View>
-                            <View style={{ marginLeft: widthToDp("6%"), }}>
-                                <Text>{section.title}</Text>
+                            <View style={{ marginLeft: widthToDp("6%"),marginTop: heightToDp("-1.5%") }}>
+                                <Text>{section.friend_name}</Text>
                             </View>
-                            <View style={{ marginLeft: widthToDp("6%"), }}>
-                                <Text style={{ color: '#ff0000' }}>{section.lastSeen}</Text>
-                            </View>
+                            {
+                                section.past_post_days!=="" &&
+                                <View style={{ marginLeft: widthToDp("6%"), }}>
+                                    <Text style={{ color: '#ff0000' }}>{section.past_post_days} days ago</Text>
+                                </View>
+                            }                            
                             <TouchableOpacity 
                             activeOpacity={0.7}
                             onPress={() => this.props.navigation.navigate("MessageScreen")}
-                            style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("2%") }}>
+                            style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 2 : 4}%`) }}>
                                 <Icon
                                     name="comments"
                                     size={20}
@@ -120,24 +186,120 @@ export default class HomeScreen extends React.Component {
     };
 
     _updateSections = activeSections => {
+        // if(item.have_post === "No") {
+        //     this.setState({ activeSections : [] });
+        //     return;
+        // }
         this.setState({ activeSections });
     };
 
     render() {
+        var userList = [], followingList = [];
+        userList = this.state.userList;
+        followingList = this.state.followingList;
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
                 <Header isHomeScreen />
-                <ScrollView>
-                    <Accordion
-                        sections={SECTIONS}
-                        activeSections={this.state.activeSections}
-                        //renderSectionTitle={this._renderSectionTitle}
-                        renderHeader={this._renderHeader}
-                        renderContent={this._renderContent}
-                        onChange={this._updateSections}
-                    />
-                    <View style={{ marginBottom: heightToDp("10%") }}></View>
-                </ScrollView>
+                {
+                    this.state.isLoading ?
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <ActivityIndicator
+                            size="large"
+                            color="#69abff"
+                        />
+                    </View>: (
+                        this.state.followingList.length > 0 ?
+                        <ScrollView>
+                            <Accordion
+                                sections={followingList}
+                                activeSections={this.state.activeSections}
+                                //renderSectionTitle={this._renderSectionTitle}
+                                renderHeader={this._renderHeader}
+                                renderContent={this._renderContent}
+                                onChange={this._updateSections}
+                            />
+                            <View style={{ marginBottom: heightToDp("10%") }}></View>
+                        </ScrollView>:
+                        <FlatList
+                            data={userList}
+                            numColumns={3}
+                            contentContainerStyle={{
+                                padding: widthToDp("2%")
+                            }}
+                            ListFooterComponent={<View style={{ height: heightToDp("10%") }} />}
+                            renderItem={({ item, index }) => (
+                                <View
+                                    style={{
+                                        paddingVertical: heightToDp("1%"),
+                                        width: widthToDp("30%"),
+                                        backgroundColor: "#fff",
+                                        borderRadius: 10,
+                                        marginRight: widthToDp("2%"),
+                                        marginBottom: heightToDp("1%")
+                                    }}
+                                    key={index}
+                                >
+                                    <Image
+                                        source={{uri: item.image}}
+                                        style={{ height: heightToDp("13%"), width: widthToDp("30%") }}
+                                        resizeMode="contain"
+                                    />
+                                    <Text
+                                        style={{
+                                            textAlign: "center",
+                                            paddingVertical: heightToDp("0.8%"),
+                                        }}
+                                    >{item.name}</Text>
+                                    <TouchableOpacity
+                                        activeOpacity={0.7}
+                                        style={{
+                                            backgroundColor: "#69abff",
+                                            borderRadius: 10,
+                                            alignItems: "center",
+                                            padding: 5,
+                                            marginHorizontal: 5
+                                        }}
+                                        onPress={() => this.followUser(item, index)}
+                                    >
+                                        <Text style={{ color: "#fff" }}>FOLLOW</Text>
+                                    </TouchableOpacity>
+                                    <RBSheet
+                                        ref={ref => {
+                                            this.RBSheet = ref;
+                                        }}
+                                        height={heightToDp("6%")}
+                                        closeOnPressMask={false}
+                                        closeOnPressBack={false}
+                                        // openDuration={250}
+                                        customStyles={{
+                                            container: {
+                                                width: widthToDp("15%"),
+                                                position: 'absolute',
+                                                top: heightToDp("45%"),
+                                                left: widthToDp("40%"),
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                backgroundColor: '#fff',
+                                                borderRadius: 10
+                                            },
+                                        }}
+                                    >
+                                        <ActivityIndicator
+                                            size="large"
+                                            color="#69abff"
+                                        />
+                                    </RBSheet> 
+                                </View>
+                            )}
+                        />
+                    )                    
+                }
                 <BottomTab isHomeFocused navigation={this.props.navigation} />
             </SafeAreaView>
         )

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -7,6 +7,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios'
 import DataAccess from '../../components/DataAccess'
 import { Toast } from 'native-base';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
@@ -31,33 +34,79 @@ export default class SignInScreen extends React.Component {
     }
 
     logIn = async () => {
-        // let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        // if (this.state.email === "") {
-        //     return;
-        // }
-        // if (this.state.password === "") {
-        //     return;
-        // }
-        // if (!emailRegex.test(this.state.email.trim())) {
-        //     return;
-        // }
-        // console.log("Call Sign In Api");
-        // await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
-        //     username: this.state.email,
-        //     password: this.state.password
-        // }).then(function (response) {
-        //     console.log(response.data.resp)
-        //     if (response.data.resp === 'false') {
-        //         return Toast.show({
-        //             text:response.data.message,
-        //             duration:6000
-        //         })
-        //     }
-
-        // }).catch(function (error) {
-        //     alert(error)
-        // })
-        this.props.navigation.navigate("HomeScreen")
+        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
+        if(!isOnline) {
+            return Toast.show({
+                text: "Please be online to login to the app.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (this.state.email === "") {
+            return Toast.show({
+                text: "Email field can't be empty",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if (this.state.password === "") {
+            return Toast.show({
+                text: "Password field can't be empty",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        if (!emailRegex.test(this.state.email.trim())) {
+            return Toast.show({
+                text: "Please enter a valid email address",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        this.RBSheet.open();
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
+            "username": this.state.email.trim(),
+            "password": this.state.password.trim(),
+            "device_token": null
+        });
+        if(response.data.resp === "true"){ 
+            this.RBSheet.close()
+            AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails)); 
+            AsyncStorage.setItem("userId", String(response.data.id));       
+            AsyncStorage.setItem("token", String(response.data.remember_token));       
+            AsyncStorage.setItem("otpStatus", String(response.data.otp_status));       
+            Toast.show({
+                text: response.data.message,
+                type: "success",
+                duration: 2000
+            });         
+            this.props.navigation.navigate("HomeScreen");               
+        } else if(response.data.resp === "false"){            
+            this.RBSheet.close()
+            Toast.show({
+                text: response.data.message,
+                style: {backgroundColor: '#777'},
+                duration: 6000
+            });
+            this.RBSheet.close();
+            if(response.data.otp_status === "false") {
+                this.props.navigation.navigate("OtpVerify", {userId: response.data.id, type: "loginVerify"})
+            }            
+        } else {
+            Toast.show({
+                text: "Some error happened. Please retry.",
+                style: {
+                    backgroundColor: '#777'
+                },
+                duration: 6000
+            });
+            this.RBSheet.close()
+        }
     }
 
     render = () => (
@@ -145,7 +194,7 @@ export default class SignInScreen extends React.Component {
                             placeholder="Password"
                             secureTextEntry={!this.state.showPassword}
                             placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ password: text })}
+                            onChangeText={text => this.setState({ password: text.trim() })}
                         />
                         <Icon
                             name={this.state.showPassword ? "eye-off" : "eye"}
@@ -176,6 +225,32 @@ export default class SignInScreen extends React.Component {
                             Login
                         </Text>
                     </TouchableOpacity>
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={heightToDp("6%")}
+                        closeOnPressMask={false}
+                        closeOnPressBack={false}
+                        // openDuration={250}
+                        customStyles={{
+                            container: {
+                                width: widthToDp("15%"),
+                                position: 'absolute',
+                                top: heightToDp("45%"),
+                                left: widthToDp("40%"),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#fff',
+                                borderRadius: 10
+                            },
+                        }}
+                    >
+                        <ActivityIndicator
+                            size="large"
+                            color="#69abff"
+                        />
+                    </RBSheet> 
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("2%")

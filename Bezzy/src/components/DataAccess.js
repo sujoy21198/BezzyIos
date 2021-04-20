@@ -4,7 +4,15 @@ const DataAccess = {
     Registration: 'registration',
     ForgotPass:'forgotpassotpsend',
     Search:'searchregisteruser', 
-    SendOtp: 'verifyotp'
+    SendOtp: 'verifyotp',
+    ResetPassword: 'setforgotpassword',
+    resendOtp: "resendotp",
+    friendBlockList: "friendblocklist",
+    userList: "RegisterUserList",
+    followUser: "followingreqsend",
+    friendList: "getuserfollowinglist",
+    followingList: "getuserfollowinglist",
+    unfollow: "unfollowuser"
 }
 
 export default DataAccess

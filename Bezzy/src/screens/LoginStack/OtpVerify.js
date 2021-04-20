@@ -8,15 +8,25 @@ import OTPTextView from 'react-native-otp-textinput';
 import { Toast } from 'native-base';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 export default class OtpVerify extends React.Component {
     state = {
         otp: "",
-        isLoading: false
-    };
-    
+    };    
 
-    otpVerify = async() => {
+    otpVerify = async() => {        
+        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
+        if(!isOnline) {
+            return Toast.show({
+                text: "Please be online to login to the app.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         if((this.props.route && this.props.route.params && this.props.route.params.userId)) {
             if(this.state.otp === "") {
                 return Toast.show({
@@ -26,22 +36,40 @@ export default class OtpVerify extends React.Component {
                     }
                 })
             }
-            this.setState({isLoading: true});
+            this.RBSheet.open();
             let response = await axios.post(DataAccess.BaseUrl + DataAccess.SendOtp, {
                 "otp_code": this.state.otp,
                 "userID": this.props.route.params.userId,
                 "device_token": null
             });
-            this.setState({isLoading: false});
-            if(response.data.resp === "true"){
-                Toast.show({
-                    text: response.data.message,
-                    style: {
-                        backgroundColor: '#777'
-                    },
-                    duration: 6000
-                });
-                this.props.navigation.navigate("ResetPassword");
+            if(response.data.resp === "true"){                
+                this.RBSheet.close()
+                if(this.props.route.params.type === "verify" || this.props.route.params.type === "loginVerify") {
+                    Toast.show({
+                        text: this.props.route.params.type === "verify" ? "Your account is registered & activated successfully. Now you can login to the app." : "Account is activated successfully.",
+                        type: "success",
+                        duration: 6000
+                    });
+                    if(this.props.route.params.type === "verify") {
+                        this.props.navigation.navigate("SignInScreen", {userId: this.props.route.params.userId})
+                    }
+                    if(this.props.route.params.type === "loginVerify") {
+                        AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails)); 
+                        AsyncStorage.setItem("userId", String(response.data.id));       
+                        AsyncStorage.setItem("token", String(response.data.remember_token));       
+                        AsyncStorage.setItem("otpStatus", "true");   
+                        this.props.navigation.navigate("HomeScreen")
+                    }
+                } else {
+                    Toast.show({
+                        text: response.data.message,
+                        style: {
+                            backgroundColor: '#777'
+                        },
+                        duration: 6000
+                    });
+                    this.props.navigation.navigate("ResetPassword", {userId: this.props.route.params.userId});
+                }                
             } else if(response.data.resp === "false"){
                 Toast.show({
                     text: response.data.message,
@@ -50,6 +78,7 @@ export default class OtpVerify extends React.Component {
                     },
                     duration: 6000
                 });
+                this.RBSheet.close()
             } else {
                 Toast.show({
                     text: "Some error happened. Please retry.",
@@ -58,7 +87,38 @@ export default class OtpVerify extends React.Component {
                     },
                     duration: 6000
                 });
+                this.RBSheet.close()
             }
+        }
+    }
+
+    resendOtp = async () => {              
+        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
+        if(!isOnline) {
+            return Toast.show({
+                text: "Please be online to login to the app.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        this.RBSheet.open();
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.resendOtp, {
+            "userID": this.props.route.params.userId
+        });
+        this.RBSheet.close();
+        if(response.data.resp === "true") {
+            return Toast.show({
+                text: response.data.reg_msg,
+                style: {backgroundColor: '#777'},
+                duration: 3000
+            })
+        } else {
+            return Toast.show({
+                text: response.data.reg_msg,
+                style: {backgroundColor: '#777'},
+                duration: 3000
+            })
         }
     }
 
@@ -143,33 +203,49 @@ export default class OtpVerify extends React.Component {
                         >
                             Verify OTP                        
                         </Text>
-                        {
-                            this.state.isLoading && 
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    right: widthToDp("4%"),
-                                    top: heightToDp('1.5%')
-                                }}
-                            >
-                                <ActivityIndicator
-                                    size="small"
-                                    color="#fff"
-                                />
-                            </View>
-                        }
                     </TouchableOpacity>
-                    <Text
-                        style={{
-                            marginTop: heightToDp('2%'),
-                            fontSize: widthToDp("3.8%"),
-                            textAlign: "center",
-                            color: "#808080",
-                            fontWeight: "bold",
+                    <RBSheet
+                        ref={ref => {
+                            this.RBSheet = ref;
+                        }}
+                        height={heightToDp("6%")}
+                        closeOnPressMask={false}
+                        closeOnPressBack={false}
+                        // openDuration={250}
+                        customStyles={{
+                            container: {
+                                width: widthToDp("15%"),
+                                position: 'absolute',
+                                top: heightToDp("45%"),
+                                left: widthToDp("40%"),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#fff',
+                                borderRadius: 10
+                            },
                         }}
                     >
-                        Resend OTP?
-                    </Text>             
+                        <ActivityIndicator
+                            size="large"
+                            color="#69abff"
+                        />
+                    </RBSheet> 
+                    <TouchableOpacity                    
+                    activeOpacity={0.7}
+                    onPress={this.resendOtp}
+                    >
+                        <Text
+                            style={{
+                                marginTop: heightToDp('2%'),
+                                fontSize: widthToDp("3.8%"),
+                                textAlign: "center",
+                                color: "#808080",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Resend OTP?
+                        </Text>  
+                    </TouchableOpacity>           
                 </View>
             </View>
         </KeyboardAwareScrollView>
