@@ -14,7 +14,7 @@ const DataAccess = {
     followingList: "getuserfollowinglist",
     unfollow: "unfollowuser",
     getProfileDetails: 'geteditprofiledata',
-    editProfile: 'UpdateProfileData',
+    updateProfile: 'UpdateProfileData',
     uploadProfileImage: 'UpdateProfilePicture'
 }
 

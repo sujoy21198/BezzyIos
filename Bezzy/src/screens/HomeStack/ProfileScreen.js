@@ -17,7 +17,8 @@ export default class ProfileScreen extends React.Component {
         numberOfFollowers: 0,
         numberOfFollowings: 1,
         numberOfPosts: 6,
-        isLoading: true
+        isLoading: true,
+        userPosts: []
     }
 
     onPostTabPress = () => {
@@ -36,16 +37,21 @@ export default class ProfileScreen extends React.Component {
     } 
 
     getProfileData = async () => {
-        var userDetails = {};
+        var userDetails = {}, userPosts = [];
         let userId = await AsyncStorage.getItem("userId");
         await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
             "profile_id" : userId
         }).then(res => {
             userDetails = res.data.usedetails;
-            // console.warn(res.data);
+            res.data.user_all_posts.map((item, key) => {
+                userPosts.length == 0 ? userPosts = item : userPosts = userPosts.concat(item);
+            })
+            // for(let i=0; i<userPosts.length; i++) {
+            //     console.warn(userPosts[0] === userPosts[1]);
+            // }
+            // console.warn(userPosts[0].id, userPosts[1].id, userPosts[0] === userPosts[1]);
         }).catch(err => console.log(err))
-
-        this.setState({userDetails})
+        this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
         this.RBSheet.close();
     }
@@ -221,16 +227,9 @@ export default class ProfileScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                     {
-                        this.state.isPostsFocused &&
+                        this.state.isPostsFocused && this.state.userPosts && this.state.userPosts.length > 0 && 
                         <FlatList
-                            data={[
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png")
-                            ]}
+                            data={this.state.userPosts}
                             contentContainerStyle={{
                                 paddingHorizontal: widthToDp("2%")
                             }}
@@ -243,7 +242,7 @@ export default class ProfileScreen extends React.Component {
                                         onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item})}
                                     >
                                         <Image
-                                            source={item}
+                                            source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
                                             // resizeMode="contain"
                                             style={{
                                                 height: heightToDp("20%"), 
@@ -266,7 +265,7 @@ export default class ProfileScreen extends React.Component {
                                                 color: "#db472b",
                                                 fontSize: widthToDp("3%")
                                             }}
-                                        >{"15/04/2021 3:40 pm"}</Text>
+                                        >{item.post_date + " " + item.post_time}</Text>
                                     </View>
                                     {
                                         index % 2 === 0 &&
