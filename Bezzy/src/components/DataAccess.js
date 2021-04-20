@@ -12,7 +12,10 @@ const DataAccess = {
     followUser: "followingreqsend",
     friendList: "getuserfollowinglist",
     followingList: "getuserfollowinglist",
-    unfollow: "unfollowuser"
+    unfollow: "unfollowuser",
+    getProfileDetails: 'geteditprofiledata',
+    editProfile: 'UpdateProfileData',
+    uploadProfileImage: 'UpdateProfilePicture'
 }
 
 export default DataAccess
