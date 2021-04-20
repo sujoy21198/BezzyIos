@@ -11,26 +11,6 @@ import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-
-const SECTIONS = [
-    {
-        title: 'First',
-        content: 'Lorem ipsum...',
-        lastSeen: '1 Day Ago',
-        image: 'https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg',
-        postedTime: '2 minutues ago',
-        caption: 'Hi there'
-    },
-    {
-        title: 'Second',
-        content: 'Lorem ipsum...',
-        lastSeen: '2 Days Ago',
-        image: 'https://media.wired.com/photos/598e35fb99d76447c4eb1f28/master/pass/phonepicutres-TA.jpg',
-        postedTime: '2 minutues ago',
-        caption: 'Hi there'
-    },
-];
-
 export default class HomeScreen extends React.Component {
     constructor(props) {
         super(props)
@@ -46,6 +26,7 @@ export default class HomeScreen extends React.Component {
 
     componentDidMount() {
         this.fetchHomeListing();
+        this.friendsBlockDetails()
         // this.userId()
     }
 
@@ -177,16 +158,16 @@ export default class HomeScreen extends React.Component {
                                         style={{ height: heightToDp("5%"), width: widthToDp("10%"), marginLeft: widthToDp("4%"), borderRadius: 300, marginTop: heightToDp("2%") }}
                                     />
                                     <View>
-                                        <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("4%") }}>
+                                        <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
                                             <Text>{section.friend_name}</Text>
                                         </View>
                                         <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                            <Text style={{ color: 'blue' }}>{i.post_time}</Text>
+                                            <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
                                         </View>
                                     </View>
                                 </View>
                                 <View>
-                                    <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
+                                    <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
                                         <Text style={{ color: 'black' }}>{i.post_content}</Text>
                                     </View>
                                 </View>
@@ -201,6 +182,47 @@ export default class HomeScreen extends React.Component {
                                             )
                                         })
                                     } */}
+                                </View>
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: heightToDp("1.5%"),
+                                        left: widthToDp("3%"),
+                                        flexDirection: 'row',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <Icon
+                                        name="heart"
+                                        color="#69abff"
+                                        size={23}
+                                    />
+                                    <Text
+                                        style={{
+                                            color: "#cdcdcd",
+                                            fontSize: widthToDp("3.5%"),
+                                            paddingLeft: widthToDp("1%")
+                                        }}
+                                    >0</Text>
+                                    <Icon
+                                        name="comment"
+                                        color="#69abff"
+                                        size={23}
+                                        style={{paddingLeft: widthToDp("4%")}}
+                                    />
+                                    <Text
+                                        style={{
+                                            color: "#cdcdcd",
+                                            fontSize: widthToDp("3.5%"),
+                                            paddingLeft: widthToDp("1%")
+                                        }}
+                                    >0</Text>
+                                    <Icon
+                                        name="share"
+                                        color="#69abff"
+                                        size={23}
+                                        style={{paddingLeft: widthToDp("4%")}}
+                                    />
                                 </View>
                             </Card>
                         )
@@ -220,8 +242,7 @@ export default class HomeScreen extends React.Component {
         this.setState({ activeSections });
 
         console.log(activeSections)
-
-        //console.log(this.state.followingList[activeSections].friend_id)
+        
         if (activeSections.length <= 0) {
             console.log("empty press")
         } else {
@@ -231,8 +252,7 @@ export default class HomeScreen extends React.Component {
 
     };
 
-    friendsBlockDetails = async (friend_id) => {
-        var followingList = this.state.followingList
+    friendsBlockDetails = async () => {
         let userID = await AsyncStorage.getItem('userId')
         var status
         var postDetails

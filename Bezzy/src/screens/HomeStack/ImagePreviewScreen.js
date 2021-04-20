@@ -3,8 +3,17 @@ import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess';
 
 export default class ImagePreviewScreen extends React.Component {
+
+    deleteImage = async () => {
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
+            "imgvideoID" : this.props.route.params.image.post_id,
+            "post_type" : "photo"
+        });
+    }
     render = () => (
         <SafeAreaView style={{flex:1}}>
             <LinearGradient
@@ -72,25 +81,31 @@ export default class ImagePreviewScreen extends React.Component {
                         paddingLeft: widthToDp("2%")
                     }}
                 >0</Text>
-                <Icon
-                    name="trash-alt"
-                    color="#fff"
-                    size={25}
+                <TouchableOpacity
                     style={{paddingLeft: widthToDp("4%")}}
-                />
+                    onPress={this.deleteImage}
+                >
+                    <Icon
+                        name="trash-alt"
+                        color="#fff"
+                        size={25}
+                    />
+                </TouchableOpacity>
             </View> 
-            <Icon
-                name="pen"
-                color="#fff"
-                size={20}
+            <TouchableOpacity
                 style={{
                     position: 'absolute',
                     bottom: heightToDp("12%"),
                     right: widthToDp("3.5%"),
-                    flexDirection: 'row',
-                    alignItems: 'center'
                 }}
-            />         
+                activeOpacity={0.7}
+            >
+                <Icon
+                    name="pen"
+                    color="#fff"
+                    size={20}                    
+                />  
+            </TouchableOpacity>       
         </SafeAreaView>
     )
 }
