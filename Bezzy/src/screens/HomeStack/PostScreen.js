@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image} from 'react-native';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image } from 'react-native';
 import { ActionSheet } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -9,6 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } from 'react-native-permissions'
 import { FlatGrid } from 'react-native-super-grid'
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -130,6 +131,7 @@ export default class PostScreen extends React.Component {
 
     //Upload photo and video function
     postImage = async () => {
+        let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
             if (this.state.imagesArray.length <= 0 || this.state.caption === '') {
                 alert('please enter image and caption')
@@ -142,7 +144,7 @@ export default class PostScreen extends React.Component {
                         name: 'userProfile.jpg',
                         type: 'image/jpg'
                     })
-                    formData.append('userID', '232')
+                    formData.append('userID', userID)
                     formData.append('post_content', this.state.caption)
                 })
 
@@ -160,6 +162,14 @@ export default class PostScreen extends React.Component {
                     }).catch(function (error) {
                         console.log(error)
                     })
+
+
+                this.props.navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: "HomeScreen" }
+                    ]
+                });
             }
         } else {
 

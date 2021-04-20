@@ -35,7 +35,7 @@ export default class SignInScreen extends React.Component {
 
     logIn = async () => {
         let isOnline = await NetInfo.fetch().then(state => state.isConnected);
-        if(!isOnline) {
+        if (!isOnline) {
             return Toast.show({
                 text: "Please be online to login to the app.",
                 style: {
@@ -74,29 +74,35 @@ export default class SignInScreen extends React.Component {
             "password": this.state.password.trim(),
             "device_token": null
         });
-        if(response.data.resp === "true"){ 
+        if (response.data.resp === "true") {
             this.RBSheet.close()
-            AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails)); 
-            AsyncStorage.setItem("userId", String(response.data.id));       
-            AsyncStorage.setItem("token", String(response.data.remember_token));       
-            AsyncStorage.setItem("otpStatus", String(response.data.otp_status));       
+            AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails));
+            AsyncStorage.setItem("userId", String(response.data.id));
+            AsyncStorage.setItem("token", String(response.data.remember_token));
+            AsyncStorage.setItem("otpStatus", String(response.data.otp_status));
             Toast.show({
                 text: response.data.message,
                 type: "success",
                 duration: 2000
-            });         
-            this.props.navigation.navigate("HomeScreen");               
-        } else if(response.data.resp === "false"){            
+            });
+            // this.props.navigation.navigate("HomeScreen");
+            this.props.navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "HomeScreen" }
+                ]
+            });
+        } else if (response.data.resp === "false") {
             this.RBSheet.close()
             Toast.show({
                 text: response.data.message,
-                style: {backgroundColor: '#777'},
+                style: { backgroundColor: '#777' },
                 duration: 6000
             });
             this.RBSheet.close();
-            if(response.data.otp_status === "false") {
-                this.props.navigation.navigate("OtpVerify", {userId: response.data.id, type: "loginVerify"})
-            }            
+            if (response.data.otp_status === "false") {
+                this.props.navigation.navigate("OtpVerify", { userId: response.data.id, type: "loginVerify" })
+            }
         } else {
             Toast.show({
                 text: "Some error happened. Please retry.",
@@ -250,7 +256,7 @@ export default class SignInScreen extends React.Component {
                             size="large"
                             color="#69abff"
                         />
-                    </RBSheet> 
+                    </RBSheet>
                     <TouchableOpacity
                         style={{
                             marginTop: heightToDp("2%")
