@@ -16,7 +16,9 @@ const DataAccess = {
     getProfileDetails: 'geteditprofiledata',
     editProfile: 'UpdateProfileData',
     uploadProfileImage: 'UpdateProfilePicture',
-    friendblockdetails : 'friendblockdetails/'
+    friendblockdetails : 'friendblockdetails/',
+    updateProfile: 'UpdateProfileData',
+    uploadProfileImage: 'UpdateProfilePicture'
 }
 
 export default DataAccess

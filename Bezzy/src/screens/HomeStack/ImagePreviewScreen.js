@@ -11,7 +11,8 @@ export default class ImagePreviewScreen extends React.Component {
                 colors={['#fff', '#1b1b1b']}
             >
                 <Image
-                source={this.props.route.params.image}
+                resizeMode="contain"
+                source={{ uri : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
                 style={{height: heightToDp("100%"), width: widthToDp("100%"), resizeMode: "contain"}}
                 />
             </LinearGradient> 
