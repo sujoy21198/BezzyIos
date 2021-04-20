@@ -15,7 +15,8 @@ const DataAccess = {
     unfollow: "unfollowuser",
     getProfileDetails: 'geteditprofiledata',
     editProfile: 'UpdateProfileData',
-    uploadProfileImage: 'UpdateProfilePicture'
+    uploadProfileImage: 'UpdateProfilePicture',
+    friendblockdetails : 'friendblockdetails/'
 }
 
 export default DataAccess

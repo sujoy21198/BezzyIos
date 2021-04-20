@@ -170,6 +170,7 @@ export default class SignInScreen extends React.Component {
                             placeholder="Email id"
                             keyboardType="email-address"
                             placeholderTextColor="#808080"
+                            autoCapitalize = 'none'
                             onChangeText={this.setEmail}
                         />
                     </View>
