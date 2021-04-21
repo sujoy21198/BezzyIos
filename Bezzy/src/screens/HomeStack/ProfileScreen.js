@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -32,7 +32,6 @@ export default class ProfileScreen extends React.Component {
     componentDidMount() {
         this.RBSheet.open();
         this.setState({isLoading: true})
-        this.getAsyncValues()
         this.getProfileData();
     } 
 
@@ -50,15 +49,12 @@ export default class ProfileScreen extends React.Component {
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
         this.RBSheet.close();
-    }
-
-    getAsyncValues = async () => {
-        let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
-        this.setState({numberOfFollowings});
+        console.warn(this.state.userPosts);
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>            
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isProfileFocused headerText="Profile" navigation={this.props.navigation}/>
 
             {
