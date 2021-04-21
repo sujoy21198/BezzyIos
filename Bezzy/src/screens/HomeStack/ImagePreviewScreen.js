@@ -17,7 +17,8 @@ export default class ImagePreviewScreen extends React.Component {
         isLiked: false,
         isLoading: false,
         postCaption: "",
-        captionEditable: false
+        captionEditable: false,
+        isUpdatingCaption: false
     }
 
     componentDidMount() {
@@ -112,11 +113,13 @@ export default class ImagePreviewScreen extends React.Component {
         if(!this.state.captionEditable) {
             this.setState({captionEditable: true});
         } else if(this.state.captionEditable && this.state.postCaption !== ""){
+            this.setState({isUpdatingCaption: true})
             let response = await axios.post(DataAccess.BaseUrl + DataAccess.updatePostCaption, {
                 "post_id" : this.props.route.params.image.post_id,
                 "post_type" : this.props.route.params.image.post_type,
                 "post_caption_text" : this.state.postCaption
             });
+            this.setState({isUpdatingCaption: false})
             if(response.data.resp === "success") {
                 this.setState({captionEditable: false})
             } else {
@@ -249,13 +252,18 @@ export default class ImagePreviewScreen extends React.Component {
                     style={{
                         marginLeft: widthToDp("5%")
                     }}
+                    disabled={this.state.isUpdatingCaption}
                     onPress={this.updateCaption}
                 >
-                    <Icon
-                        name={this.state.captionEditable ? "paper-plane" : "pen"}
-                        color="#fff"
-                        size={20}                    
-                    />  
+                    {
+                        this.state.isUpdatingCaption ? 
+                        <ActivityIndicator size="small" color="#fff"/>
+                        : <Icon
+                            name={this.state.captionEditable ? "paper-plane" : "pen"}
+                            color="#fff"
+                            size={20}                    
+                        /> 
+                    } 
                 </TouchableOpacity>                
             </View>   
             <RBSheet
