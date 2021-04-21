@@ -8,6 +8,7 @@ import DataAccess from '../../components/DataAccess'
 import { Toast } from 'native-base';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import NetInfo from '@react-native-community/netinfo';
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class ForgotPassword extends React.Component {
     constructor(props){
@@ -148,27 +149,10 @@ export default class ForgotPassword extends React.Component {
                             }}
                         >Entered email address is not valid</Text>
                     }
-                    <TouchableOpacity
-                        style={{
-                            marginTop: heightToDp("3%"),
-                            width: "100%",
-                            backgroundColor: "#69abff",
-                            padding: widthToDp("3%"),
-                            borderRadius: 10
-                        }}
-                        activeOpacity={0.7}
-                        onPress={() => this.forgotPassword()}
-                    >
-                        <Text
-                            style={{
-                                color: "#fff",
-                                textAlign: "center",
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            Next
-                        </Text>
-                    </TouchableOpacity>     
+                    <ButtonComponent
+                        onPressButton={this.forgotPassword}
+                        buttonText={"Next"}
+                    />    
                     <RBSheet
                         ref={ref => {
                             this.RBSheet = ref;

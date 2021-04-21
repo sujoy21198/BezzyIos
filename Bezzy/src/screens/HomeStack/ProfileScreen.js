@@ -6,6 +6,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
+import ButtonComponent from '../../components/ButtonComponent';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -49,7 +50,6 @@ export default class ProfileScreen extends React.Component {
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
         this.RBSheet.close();
-        console.warn(this.state.userPosts);
     }
 
     render = () => (
@@ -154,23 +154,11 @@ export default class ProfileScreen extends React.Component {
                             paddingVertical: heightToDp("1%")
                         }}
                     >
-                        <TouchableOpacity
-                            style={{
-                                paddingVertical: heightToDp("1%"),
-                                backgroundColor: '#69abff',
-                                width: widthToDp("40%"),
-                                borderRadius: 8,
-                            }}
-                            activeOpacity={0.7}
-                            onPress={() => this.props.navigation.navigate("EditProfileScreen")}
-                        >
-                            <Text
-                                style={{
-                                    color: '#fff',
-                                    textAlign: 'center'
-                                }}
-                            >Edit Profile</Text>
-                        </TouchableOpacity>
+                        <ButtonComponent
+                            onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
+                            buttonText={"Edit Profile"}
+                            editProfile={true}
+                        />
                     </View>
                     <View
                         style={{

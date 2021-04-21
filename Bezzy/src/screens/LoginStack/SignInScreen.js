@@ -10,6 +10,7 @@ import { Toast } from 'native-base';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
@@ -211,27 +212,11 @@ export default class SignInScreen extends React.Component {
                             style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
                         />
                     </View>
-                    <TouchableOpacity
-                        style={{
-                            marginTop: heightToDp("3%"),
-                            width: "100%",
-                            backgroundColor: "#69abff",
-                            padding: widthToDp("3%"),
-                            borderRadius: 10
-                        }}
-                        activeOpacity={0.7}
-                        onPress={this.logIn}
-                    >
-                        <Text
-                            style={{
-                                color: "#fff",
-                                textAlign: "center",
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            Login
-                        </Text>
-                    </TouchableOpacity>
+                    <ButtonComponent
+                        onPressButton={this.logIn}
+                        buttonText={"Login"}
+                    />
+                    
                     <RBSheet
                         ref={ref => {
                             this.RBSheet = ref;

@@ -13,6 +13,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { checkMultiple, PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -398,29 +399,12 @@ export default class EditProfileScreen extends React.Component {
                         onChangeText={text => this.setState({ bio: text })}
                     />
                 </View>
-
-                <TouchableOpacity
-                    style={{
-                        marginTop: heightToDp("4%"),
-                        width: widthToDp("94.5%"),
-                        backgroundColor: "#69abff",
-                        padding: widthToDp("3%"),
-                        marginHorizontal: widthToDp("3%"),
-                        borderRadius: 10
-                    }}
-                    activeOpacity={0.7}
-                    onPress={this.updateProfile}
-                >
-                    <Text
-                        style={{
-                            color: "#fff",
-                            textAlign: "center",
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        Update
-                    </Text>
-                </TouchableOpacity>
+                
+                <ButtonComponent
+                    onPressButton={this.updateProfile}
+                    buttonText={"Update"}
+                    updateProfile={true}
+                />
                 <RBSheet
                     ref={ref => {
                         this.RBSheet = ref;

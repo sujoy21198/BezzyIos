@@ -13,6 +13,7 @@ import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import NetInfo from '@react-native-community/netinfo'
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class SignUpScreen extends React.Component {
     state = {
@@ -520,27 +521,11 @@ export default class SignUpScreen extends React.Component {
                     </View>
                     {
                         this.state.checkTerms &&
-                        <TouchableOpacity
-                            style={{
-                                marginTop: heightToDp("4%"),
-                                width: "100%",
-                                backgroundColor: "#69abff",
-                                padding: widthToDp("3%"),
-                                borderRadius: 10
-                            }}
-                            activeOpacity={0.7}
-                            disabled={this.state.isLoading}
-                            onPress={this.signUp}
-                        >
-                            <Text
-                                style={{
-                                    color: "#fff",
-                                    textAlign: "center",
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                Register
-                            </Text>
+                        <>
+                            <ButtonComponent
+                                onPressButton={this.signUp}
+                                buttonText={"Register"}
+                            />
                             <RBSheet
                                 ref={ref => {
                                     this.RBSheet = ref;
@@ -566,8 +551,8 @@ export default class SignUpScreen extends React.Component {
                                     size="large"
                                     color="#69abff"
                                 />
-                            </RBSheet> 
-                        </TouchableOpacity>
+                            </RBSheet>
+                        </> 
                     }
                 </View>
             </View>
