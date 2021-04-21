@@ -43,14 +43,9 @@ export default class ProfileScreen extends React.Component {
             "profile_id" : userId
         }).then(res => {
             userDetails = res.data.usedetails;
-            console.warn(res.data.user_all_posts);
             res.data.user_all_posts.map((item, key) => {
-                userPosts.length == 0 ? userPosts = item : userPosts = userPosts.concat(item);
+                userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             })
-            // for(let i=0; i<userPosts.length; i++) {
-            //     console.warn(userPosts[0] === userPosts[1]);
-            // }
-            // console.warn(userPosts[0].id, userPosts[1].id, userPosts[0] === userPosts[1]);
         }).catch(err => console.log(err))
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
