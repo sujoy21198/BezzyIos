@@ -205,7 +205,7 @@ export default class EditProfileScreen extends React.Component {
             cropping: true,
         })
         .then(async image => {
-            this.RBSheet.open()
+            //this.RBSheet.open()
             let oldImage = this.state.image;
             this.setState({image: image.path});
         })
@@ -222,7 +222,6 @@ export default class EditProfileScreen extends React.Component {
             cropping: true,
         })
             .then(async images => {
-                this.RBSheet.open()
                 let oldImage = this.state.image;
                 this.setState({image: images.path});
             })
@@ -252,7 +251,7 @@ export default class EditProfileScreen extends React.Component {
                         marginTop: heightToDp("5%")
                     }}
                     activeOpacity={0.7}
-                    onPress={this.uploadPicture}
+                    onPress={() => this.uploadPicture()}
                 >
                     <Image
                         source={this.state.image!=="" ? {uri: this.state.image} : require("../../../assets/sign_up.png")}
