@@ -202,7 +202,15 @@ export default class Header extends React.Component {
                             alignItems: 'center'
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.props.navigation.goBack()}
+                        onPress={                            
+                            () => 
+                                typeof this.props.commentCount === 'number' ? 
+                                this.props.navigation.navigate(
+                                    "ImagePreviewScreen",
+                                    {commentCount: this.props.commentCount}
+                                ) :
+                                this.props.navigation.goBack()
+                        }
                     >
                         {
                             this.props.isBackButton &&
