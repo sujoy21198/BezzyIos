@@ -67,6 +67,7 @@ export default class HomeScreen extends React.Component {
                 console.log(error);
             })
         this.setState({ userList, followingList })
+        console.warn(this.state.followingList, "Abc");
     }
 
     _renderSectionTitle = section => {

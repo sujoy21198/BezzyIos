@@ -38,7 +38,17 @@ export default class BottomTab extends React.Component {
                             elevation: 10
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.props.isHomeFocused ? undefined : this.props.navigation.navigate("HomeScreen")}
+                        onPress={
+                            () => 
+                                this.props.isHomeFocused ? 
+                                undefined : 
+                                this.props.navigation.reset({
+                                    index: 0,
+                                    routes: [
+                                        { name: "HomeScreen" }
+                                    ]
+                                })
+                            }
                     >
                         <Icon
                             name={Platform.OS==='android' ? 'md-home-outline' : 'ios-home-outline'}
@@ -142,7 +152,17 @@ export default class BottomTab extends React.Component {
                             borderTopLeftRadius: 8,
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.props.isSearchFocused ? undefined : this.props.navigation.navigate("SearchScreen")}
+                        onPress={
+                            () => 
+                                this.props.isSearchFocused ? 
+                                undefined : 
+                                this.props.navigation.reset({
+                                    index: 2,
+                                    routes: [
+                                        { name: "SearchScreen" }
+                                    ]
+                                })
+                            }
                     >
                         <Icon
                             name={Platform.OS==='android' ? 'md-search-outline' : 'ios-search-outline'}
@@ -169,7 +189,17 @@ export default class BottomTab extends React.Component {
                             elevation: 10
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.props.isProfileFocused ? undefined : this.props.navigation.navigate("ProfileScreen")}
+                        onPress={
+                            () => 
+                                this.props.isProfileFocused ? 
+                                undefined : 
+                                this.props.navigation.reset({
+                                    index: 3,
+                                    routes: [
+                                        { name: "ProfileScreen" }
+                                    ]
+                                })
+                            }
                     >
                         <Icon
                             name={Platform.OS==='android' ? 'md-person-outline' : 'ios-person-outline'}

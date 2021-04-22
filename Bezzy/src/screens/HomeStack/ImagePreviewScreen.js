@@ -76,7 +76,12 @@ export default class ImagePreviewScreen extends React.Component {
                 type: "success",
                 duration: 2000
             })
-            this.props.navigation.navigate("HomeScreen");
+            this.props.navigation.reset({
+                index: 3,
+                routes: [
+                    { name: "ProfileScreen" }
+                ]
+            })
         } else {
             this.RBSheet.close();
             Toast.show({

@@ -160,23 +160,17 @@ export default class EditProfileScreen extends React.Component {
             "gender" : this.state.gender, 
             "user_bio" : this.state.bio.trim()
         });
-        if(response.data.resp === "success") {
-            Toast.show({
-                text: response.data.message,
-                type: "success",
-                duration: 3000
-            });
-            this.RBSheet.close()
+        if(response.data.resp === "success") {           
+
+            this.convertImage()
         } else {
             Toast.show({
                 text: response.data.message,
                 type: "danger",
                 duration: 3000
             });
-            this.RBSheet.close()
         } 
-
-        this.convertImage()
+        this.RBSheet.close()
     }
 
     uploadPicture = async () => {
@@ -257,9 +251,18 @@ export default class EditProfileScreen extends React.Component {
             'userID' : userID,
             'profile_picture' : base64ImageName
         }).then(function(response){
-            console.log(response.data)
+            return Toast.show({
+                text: "Profile has been updated successfully",
+                type: "success",
+                duration: 3000
+            });
+            
         }).catch(function(error){
-            console.log(error)
+            Toast.show({
+                text: response.data.reg_msg,
+                type: "danger",
+                duration: 3000
+            });
         })
     }
 
