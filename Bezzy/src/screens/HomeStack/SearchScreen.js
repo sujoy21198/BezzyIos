@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput, ActivityIndicator } from 'react-native';
+import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput, ActivityIndicator, StatusBar } from 'react-native';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -69,6 +69,7 @@ export default class SearchScreen extends React.Component {
         userList = this.state.userList
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
+                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
                         <Text style={{ fontSize: widthToDp("4.5%"),color:'#69abff',fontWeight: 'bold' }}>Search for friends</Text>
