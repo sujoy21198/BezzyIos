@@ -9,6 +9,7 @@ import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import NetInfo from '@react-native-community/netinfo';
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class ResetPassword extends React.Component {
     state = {
@@ -160,27 +161,10 @@ export default class ResetPassword extends React.Component {
                         style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
                     />
                 </View>
-
-                <TouchableOpacity
-                    style={{
-                        marginTop: heightToDp("4%"),
-                        backgroundColor: "#69abff",
-                        padding: widthToDp("3%"),
-                        borderRadius: 10
-                    }}
-                    activeOpacity={0.7}
-                    onPress={this.resetPassword}
-                >
-                    <Text
-                        style={{
-                            color: "#fff",
-                            textAlign: "center",
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        Update
-                    </Text>
-                </TouchableOpacity>                
+                <ButtonComponent
+                    onPressButton={this.resetPassword}
+                    buttonText={"Update"}
+                />               
                 <RBSheet
                     ref={ref => {
                         this.RBSheet = ref;

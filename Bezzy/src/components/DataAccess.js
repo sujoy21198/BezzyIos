@@ -19,7 +19,13 @@ const DataAccess = {
     friendblockdetails : 'friendblockdetails/',
     updateProfile: 'UpdateProfileData',
     deletePost: 'deletepostimagevideo',
-    UpdateProfilePicture:'UpdateProfilePicture'
+    UpdateProfilePicture:'UpdateProfilePicture',
+    likePost: 'postlikedislike',
+    postLikedUsers: 'postlikeuserslist',
+    postCommentedUsers: 'comment-list',
+    postComment: "comment-post",
+    likeDislikeComment: 'commentlikedislike',
+    updatePostCaption: 'updatepostcaption'
 }
 
 export default DataAccess

@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
+import ButtonComponent from '../../components/ButtonComponent';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -32,7 +33,6 @@ export default class ProfileScreen extends React.Component {
     componentDidMount() {
         this.RBSheet.open();
         this.setState({isLoading: true})
-        this.getAsyncValues()
         this.getProfileData();
     } 
 
@@ -43,27 +43,18 @@ export default class ProfileScreen extends React.Component {
             "profile_id" : userId
         }).then(res => {
             userDetails = res.data.usedetails;
-            console.warn(res.data.user_all_posts);
             res.data.user_all_posts.map((item, key) => {
-                userPosts.length == 0 ? userPosts = item : userPosts = userPosts.concat(item);
+                userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             })
-            // for(let i=0; i<userPosts.length; i++) {
-            //     console.warn(userPosts[0] === userPosts[1]);
-            // }
-            // console.warn(userPosts[0].id, userPosts[1].id, userPosts[0] === userPosts[1]);
         }).catch(err => console.log(err))
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
         this.RBSheet.close();
     }
 
-    getAsyncValues = async () => {
-        let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
-        this.setState({numberOfFollowings});
-    }
-
     render = () => (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>            
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isProfileFocused headerText="Profile" navigation={this.props.navigation}/>
 
             {
@@ -163,23 +154,11 @@ export default class ProfileScreen extends React.Component {
                             paddingVertical: heightToDp("1%")
                         }}
                     >
-                        <TouchableOpacity
-                            style={{
-                                paddingVertical: heightToDp("1%"),
-                                backgroundColor: '#69abff',
-                                width: widthToDp("40%"),
-                                borderRadius: 8,
-                            }}
-                            activeOpacity={0.7}
-                            onPress={() => this.props.navigation.navigate("EditProfileScreen")}
-                        >
-                            <Text
-                                style={{
-                                    color: '#fff',
-                                    textAlign: 'center'
-                                }}
-                            >Edit Profile</Text>
-                        </TouchableOpacity>
+                        <ButtonComponent
+                            onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
+                            buttonText={"Edit Profile"}
+                            editProfile={true}
+                        />
                     </View>
                     <View
                         style={{

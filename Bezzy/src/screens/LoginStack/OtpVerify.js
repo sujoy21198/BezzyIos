@@ -11,6 +11,7 @@ import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import ButtonComponent from '../../components/ButtonComponent';
 
 export default class OtpVerify extends React.Component {
     state = {
@@ -183,27 +184,10 @@ export default class OtpVerify extends React.Component {
                             keyboardType="numeric"
                         />
                     </View> 
-                    <TouchableOpacity
-                        style={{
-                            marginTop: heightToDp("1%"),
-                            width: "100%",
-                            backgroundColor: "#69abff",
-                            padding: widthToDp("3%"),
-                            borderRadius: 10
-                        }}
-                        activeOpacity={0.7}
-                        onPress={this.otpVerify}
-                    >
-                        <Text
-                            style={{
-                                color: "#fff",
-                                textAlign: "center",
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            Verify OTP                        
-                        </Text>
-                    </TouchableOpacity>
+                    <ButtonComponent
+                        onPressButton={this.otpVerify}
+                        buttonText={" Verify OTP"}
+                    />
                     <RBSheet
                         ref={ref => {
                             this.RBSheet = ref;

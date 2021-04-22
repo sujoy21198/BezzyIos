@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BottomTab from '../../components/BottomTab';
@@ -278,7 +278,8 @@ export default class HomeScreen extends React.Component {
         userList = this.state.userList;
         followingList = this.state.followingList;
         return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>                
+                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <Header isHomeScreen />
                 {
                     this.state.isLoading ?
