@@ -13,6 +13,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { checkMultiple, PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
+import ImgToBase64 from 'react-native-image-base64';
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -25,7 +26,8 @@ export default class EditProfileScreen extends React.Component {
         email: "",
         dob: "",
         gender: "",
-        bio: ""
+        bio: "",
+        base64:''
     }
 
     //SET EMAIL FUNCTION
@@ -172,6 +174,8 @@ export default class EditProfileScreen extends React.Component {
             });
             this.RBSheet.close()
         } 
+
+        this.convertImage()
     }
 
     uploadPicture = async () => {
@@ -216,6 +220,7 @@ export default class EditProfileScreen extends React.Component {
 
     //OPEN GALLERY TO SELECT IMAGE
     choosePhotosFromGallery = async () => {
+        var filepath
         ImagePicker.openPicker({
             width: 300,
             height: 200,
@@ -223,11 +228,38 @@ export default class EditProfileScreen extends React.Component {
         })
             .then(async images => {
                 let oldImage = this.state.image;
+                filepath = images.path
                 this.setState({image: images.path});
             })
             .catch(err => {
                 console.log(' Error fetching images from gallery ', err);
             });
+    }
+
+    //convert image to base64
+    convertImage = async() => {
+        var filepath = this.state.image
+        ImgToBase64.getBase64String(filepath)
+        .then(base64String => {
+            this.updateProfilePicture(base64String)
+            // console.log(base64String)
+            //this.setState({base64 : base64String})
+        })
+        .catch(err => console.log(err))
+        //console.log(this.state.base64,"poppopopopopopop")
+    }
+
+    //upload converted image function
+    updateProfilePicture = async(base64ImageName) => {
+        let userID = await AsyncStorage.getItem('userId')
+        axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
+            'userID' : userID,
+            'profile_picture' : base64ImageName
+        }).then(function(response){
+            console.log(response.data)
+        }).catch(function(error){
+            console.log(error)
+        })
     }
 
     //GRANT PERMISSION FUNCTION
@@ -408,7 +440,7 @@ export default class EditProfileScreen extends React.Component {
                         borderRadius: 10
                     }}
                     activeOpacity={0.7}
-                    onPress={this.updateProfile}
+                    onPress={() => this.updateProfile()}
                 >
                     <Text
                         style={{

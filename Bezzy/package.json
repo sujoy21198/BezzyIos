@@ -23,6 +23,7 @@
     "react-native": "0.64.0",
     "react-native-collapsible": "^1.5.3",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-base64": "^0.1.4",
     "react-native-image-crop-picker": "^0.36.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-linear-gradient": "^2.5.6",
