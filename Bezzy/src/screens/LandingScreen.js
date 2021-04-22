@@ -15,11 +15,11 @@ export default class LandingScreen extends React.Component {
         this.splash()
     }
 
-    splash = () => {
+    splash = async () => {
+        let value = await AsyncStorage.getItem('token')
+        if(value) this.setState({valuePresent: true});
         setTimeout(async () => {
-            let value = await AsyncStorage.getItem('token')
-            if (value) {
-                this.state.valuePresent = true
+            if (value) {                
                 this.props.navigation.reset({
                     index: 0,
                     routes: [{ name: "HomeScreen" }]
@@ -49,7 +49,7 @@ export default class LandingScreen extends React.Component {
                     />
                 </View>
                 {
-                    this.state.valuePresent ? <View></View> : <TouchableOpacity
+                    !this.state.valuePresent && <TouchableOpacity
                         style={{
                             position: 'absolute',
                             bottom: heightToDp("6%"),
