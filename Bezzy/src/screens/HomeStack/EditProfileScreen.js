@@ -463,6 +463,7 @@ export default class EditProfileScreen extends React.Component {
                     />
                 </RBSheet> 
             </KeyboardAwareScrollView>
+            
         </SafeAreaView>
     )
 }
