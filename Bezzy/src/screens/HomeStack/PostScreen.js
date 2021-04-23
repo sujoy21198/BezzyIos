@@ -10,6 +10,7 @@ import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } 
 import { FlatGrid } from 'react-native-super-grid'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createThumbnail } from "react-native-create-thumbnail";
 
 export default class PostScreen extends React.Component {
     state = {
@@ -18,7 +19,8 @@ export default class PostScreen extends React.Component {
         imagePath: '',
         isImagePathPresent: false,
         imagesArray: [],
-        caption: ''
+        caption: '',
+        thumbnail: ''
     }
 
     uploadButtonFunction = async () => {
@@ -49,12 +51,34 @@ export default class PostScreen extends React.Component {
                 mediaType: 'video'
             })
                 .then(images => {
-                    console.log(images)
+                    this.createThumbnailVIdeo(images.path)
+                    //console.log(videoPath)
                 })
                 .catch(err => {
                     console.log(' Error fetching images from gallery ', err);
                 });
+
+            //console.log(this.state.videoPath)
+            // createThumbnail({
+            //     url: videoPath,
+            //     timeStamp : 10000
+            // })
+            // .then(response => console.log({response}))
+            // .catch(err => console.log({err}))
         }
+    }
+
+    //setThumbnail for video 
+    createThumbnailVIdeo = (filepath) => {
+        var imageForVideo
+        createThumbnail({
+            url: filepath,
+            timeStamp: 10000
+        })
+            .then(response => {imageForVideo = response.path})
+            .catch(err => console.log({ err }))
+
+            console.log(imageForVideo)
     }
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
@@ -268,7 +292,12 @@ export default class PostScreen extends React.Component {
                                 </View>
                             )}
                         />
-                    </View> : <Text>kiggddrd</Text>
+                    </View> : <View>
+                        <Image
+                            source={{ uri: this.state.thumbnail}}
+                            style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center', margin: widthToDp("1%") }}
+                        />
+                    </View>
                 }
                 <View
                     style={{
