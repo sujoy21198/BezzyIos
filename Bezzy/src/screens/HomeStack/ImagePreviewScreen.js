@@ -23,6 +23,9 @@ export default class ImagePreviewScreen extends React.Component {
 
     componentDidMount() {
         this.RBSheet.open();
+        if(this.props.route.params.type === "otherUserPost") {
+            this.setState({postCaption: this.props.route.params.image.post_content});
+        }
         this.getPostLikedUsers();
         this.getPostCommentedUsers();
         this.RBSheet.close();        
@@ -48,14 +51,19 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     getPostLikedUsers = async () => {
+        let userId = await AsyncStorage.getItem("userId");
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.postLikedUsers + "/" + this.props.route.params.image.post_id);
         if(response.data.status === 'success') {
             if(response.data.message === "No user found") {
                 this.setState({numberOfLikes: 0, isLiked: false});
             } else {
+                response.data.userlist.map(element => {
+                    if(element.id == userId) {
+                        this.setState({isLiked: true});
+                    }
+                })
                 this.setState({
-                    numberOfLikes: response.data.userlist.length, 
-                    isLiked: true
+                    numberOfLikes: response.data.userlist.length
                 })
             }
         } else {
@@ -76,7 +84,12 @@ export default class ImagePreviewScreen extends React.Component {
                 type: "success",
                 duration: 2000
             })
-            this.props.navigation.navigate("HomeScreen");
+            this.props.navigation.reset({
+                index: 3,
+                routes: [
+                    { name: "ProfileScreen" }
+                ]
+            })
         } else {
             this.RBSheet.close();
             Toast.show({
@@ -138,7 +151,7 @@ export default class ImagePreviewScreen extends React.Component {
             >
                 <Image
                 resizeMode="contain"
-                source={{ uri : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
+                source={{ uri : this.props.route.params.type === "otherUserPost" ? this.props.route.params.image.post_img_video_live[0].post_url : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
                 style={{height: heightToDp("100%"), width: widthToDp("100%"), resizeMode: "contain"}}
                 />
             </LinearGradient> 
@@ -156,7 +169,17 @@ export default class ImagePreviewScreen extends React.Component {
                     alignItems: 'center'
                 }}
                 activeOpacity={0.7}
-                onPress={() => this.props.navigation.goBack()}
+                onPress={
+                    () => 
+                    this.props.route.params.type === "otherUserPost" ?
+                    this.props.navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: "HomeScreen" }
+                        ]
+                    })
+                    : this.props.navigation.goBack()
+                }
             >
                 <Icon
                     name="chevron-left"
@@ -213,16 +236,19 @@ export default class ImagePreviewScreen extends React.Component {
                         paddingLeft: widthToDp("2%")
                     }}
                 >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
-                <TouchableOpacity
-                    style={{paddingLeft: widthToDp("4%")}}
-                    onPress={this.deleteImage}
-                >
-                    <Icon
-                        name="trash-alt"
-                        color="#fff"
-                        size={25}
-                    />
-                </TouchableOpacity>
+                {
+                    this.props.route.params.type !== "otherUserPost" &&
+                    <TouchableOpacity
+                        style={{paddingLeft: widthToDp("4%")}}
+                        onPress={this.deleteImage}
+                    >
+                        <Icon
+                            name="trash-alt"
+                            color="#fff"
+                            size={25}
+                        />
+                    </TouchableOpacity>
+                }                
             </View> 
             <View
                 style={{
@@ -238,8 +264,8 @@ export default class ImagePreviewScreen extends React.Component {
                     style={{
                         color: '#fff',
                         fontSize: widthToDp("3.5%"),
-                        width: widthToDp("83%"),
-                        borderBottomWidth: this.state.captionEditable ? 1 : 0,
+                        width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
+                        borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
                         borderBottomColor: '#fff'
                     }}
                     multiline
@@ -247,25 +273,28 @@ export default class ImagePreviewScreen extends React.Component {
                     editable={this.state.captionEditable}
                     onChangeText={text => this.setState({postCaption: text.trim()})}
                 />
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={{
-                        marginLeft: widthToDp("5%")
-                    }}
-                    disabled={this.state.isUpdatingCaption}
-                    onPress={this.updateCaption}
-                >
-                    {
-                        this.state.isUpdatingCaption ? 
-                        <ActivityIndicator size="small" color="#fff"/>
-                        : <Icon
-                            name={this.state.captionEditable ? "paper-plane" : "pen"}
-                            color="#fff"
-                            size={20}                    
-                        /> 
-                    } 
-                </TouchableOpacity>                
-            </View>   
+                {
+                    this.props.route.params.type !== "otherUserPost" &&
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        style={{
+                            marginLeft: widthToDp("5%")
+                        }}
+                        disabled={this.state.isUpdatingCaption}
+                        onPress={this.updateCaption}
+                    >
+                        {
+                            this.state.isUpdatingCaption ? 
+                            <ActivityIndicator size="small" color="#fff"/>
+                            : <Icon
+                                name={this.state.captionEditable ? "paper-plane" : "pen"}
+                                color="#fff"
+                                size={20}                    
+                            /> 
+                        } 
+                    </TouchableOpacity>  
+                }                              
+            </View> 
             <RBSheet
                 ref={ref => {
                     this.RBSheet = ref;

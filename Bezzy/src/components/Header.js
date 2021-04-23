@@ -209,7 +209,12 @@ export default class Header extends React.Component {
                                     "ImagePreviewScreen",
                                     {commentCount: this.props.commentCount}
                                 ) :
-                                this.props.navigation.goBack()
+                                this.props.navigation.reset({
+                                    index: 0,
+                                    routes: [
+                                        { name: "HomeScreen" }
+                                    ]
+                                })
                         }
                     >
                         {

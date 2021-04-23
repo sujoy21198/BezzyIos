@@ -1,12 +1,15 @@
 import React from 'react';
-import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput } from 'react-native';
+import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput, ActivityIndicator, StatusBar } from 'react-native';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import RBSheet1 from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Toast } from 'native-base';
 
 export default class SearchScreen extends React.Component {
     constructor(props) {
@@ -36,11 +39,37 @@ export default class SearchScreen extends React.Component {
         this.setState({ userList: user })
     }
 
+    followUser = async (item, index) => {
+        this.RBSheet.open();
+        let userId = await AsyncStorage.getItem("userId");
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
+            "user_one_id": userId,
+            "user_two_id": item.user_id
+        });
+        if (response.data.status === "success") {
+            Toast.show({
+                text: "Follow successful",
+                type: "success",
+                duration: 2000
+            })
+            this.props.navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "HomeScreen" }
+                ]
+            });
+        } else {
+            //
+        }
+        this.RBSheet.close();
+    }
+
     render() {
         var userList = []
         userList = this.state.userList
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
+                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
                         <Text style={{ fontSize: widthToDp("4.5%"),color:'#69abff',fontWeight: 'bold' }}>Search for friends</Text>
@@ -126,10 +155,36 @@ export default class SearchScreen extends React.Component {
                                     padding: 5,
                                     marginHorizontal: 5
                                 }}
-                            // onPress={() => }
+                                onPress={() => this.followUser(item, index)}
                             >
                                 <Text style={{ color: "#fff" }}>FOLLOW</Text>
                             </TouchableOpacity>
+                            <RBSheet1
+                                ref={ref => {
+                                    this.RBSheet = ref;
+                                }}
+                                height={heightToDp("6%")}
+                                closeOnPressMask={false}
+                                closeOnPressBack={false}
+                                // openDuration={250}
+                                customStyles={{
+                                    container: {
+                                        width: widthToDp("15%"),
+                                        position: 'absolute',
+                                        top: heightToDp("45%"),
+                                        left: widthToDp("40%"),
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: '#fff',
+                                        borderRadius: 10
+                                    },
+                                }}
+                            >
+                                <ActivityIndicator
+                                    size="large"
+                                    color="#69abff"
+                                />
+                            </RBSheet1>
                         </View>
                     )}
                 />

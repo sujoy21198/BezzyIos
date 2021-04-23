@@ -85,7 +85,7 @@ export default class CommentScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={this.state.comments.length}/>
+            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={this.props.route.params.type !== "otherUserPost" ? this.state.comments.length : undefined} />
             <View
                 style={{flex: 1}}
             >
