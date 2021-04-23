@@ -108,14 +108,17 @@ export default class HomeScreen extends React.Component {
                             style={{ height: heightToDp("13%"), width: widthToDp("22%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
                         />
                         <View>
-                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-1%") }}>
-                                <Image
-                                    source={require("../../../assets/ago.png")}
-                                    resizeMode="contain"
-                                    style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
-                                />
-                            </View>
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("-1.5%") }}>
+                            {
+                                section.have_post === "Yes" &&
+                                <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-1%") }}>
+                                    <Image
+                                        source={require("../../../assets/ago.png")}
+                                        resizeMode="contain"
+                                        style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                    />
+                                </View>
+                            }
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.have_post === "Yes" ? -1.5 : 3}%`) }}>
                                 <Text>{section.friend_name}</Text>
                             </View>
                             {
