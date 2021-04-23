@@ -95,7 +95,7 @@ export default class ForgotPassword extends React.Component {
         <KeyboardAwareScrollView 
         keyboardShouldPersistTaps='handled'
         style={{flex: 1, backgroundColor: '#69abff'}}>
-            <Header headerText={"Forgot Password"} isBackButton navigation={this.props.navigation}/>
+            <Header headerText={"Forgot Password"} isBackButton loginStack={true} navigation={this.props.navigation}/>
             <View
                 style={{
                     height: heightToDp("100%"),

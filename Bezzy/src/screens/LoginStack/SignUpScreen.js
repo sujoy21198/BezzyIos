@@ -281,7 +281,7 @@ export default class SignUpScreen extends React.Component {
             keyboardShouldPersistTaps='handled'
             style={{ flex: 1, backgroundColor: '#69abff' }}
         >
-            <Header headerText={"Go Login"} isBackButton navigation={this.props.navigation} />
+            <Header headerText={"Go Login"} isBackButton loginStack={true} navigation={this.props.navigation} />
             <View
                 style={{
                     height: heightToDp("100%"),

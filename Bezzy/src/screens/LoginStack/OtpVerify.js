@@ -127,7 +127,7 @@ export default class OtpVerify extends React.Component {
         <KeyboardAwareScrollView 
         keyboardShouldPersistTaps='handled'
         style={{flex: 1, backgroundColor: '#69abff'}}>
-            <Header headerText={"OTP Verification"} isBackButton navigation={this.props.navigation}/>
+            <Header headerText={"OTP Verification"} isBackButton loginStack={true} navigation={this.props.navigation}/>
             <View
                 style={{
                     height: heightToDp("100%"),
