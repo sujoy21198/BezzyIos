@@ -210,9 +210,9 @@ export default class Header extends React.Component {
                                     {commentCount: this.props.commentCount}
                                 ) :
                                 this.props.navigation.reset({
-                                    index: 0,
+                                    index: this.props.backToProfile ? 3 : 0,
                                     routes: [
-                                        { name: "HomeScreen" }
+                                        { name: this.props.backToProfile ? "ProfileScreen" : "HomeScreen" }
                                     ]
                                 })
                         }

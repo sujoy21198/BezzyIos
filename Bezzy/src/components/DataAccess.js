@@ -25,7 +25,8 @@ const DataAccess = {
     postCommentedUsers: 'comment-list',
     postComment: "comment-post",
     likeDislikeComment: 'commentlikedislike',
-    updatePostCaption: 'updatepostcaption'
+    updatePostCaption: 'updatepostcaption',
+    changePassword: 'changepassword'
 }
 
 export default DataAccess
