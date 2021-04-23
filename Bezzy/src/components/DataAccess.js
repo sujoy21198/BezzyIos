@@ -11,6 +11,7 @@ const DataAccess = {
     userList: "RegisterUserList",
     followUser: "followingreqsend",
     friendList: "getuserfollowinglist",
+    followerList: "getfollowerslist",
     followingList: "getuserfollowinglist",
     unfollow: "unfollowuser",
     getProfileDetails: 'geteditprofiledata',
@@ -25,7 +26,8 @@ const DataAccess = {
     postCommentedUsers: 'comment-list',
     postComment: "comment-post",
     likeDislikeComment: 'commentlikedislike',
-    updatePostCaption: 'updatepostcaption'
+    updatePostCaption: 'updatepostcaption',
+    changePassword: 'changepassword'
 }
 
 export default DataAccess

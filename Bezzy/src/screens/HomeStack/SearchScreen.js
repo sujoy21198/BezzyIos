@@ -72,7 +72,7 @@ export default class SearchScreen extends React.Component {
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
-                        <Text style={{ fontSize: widthToDp("4.5%"),color:'#69abff',fontWeight: 'bold' }}>Search for friends</Text>
+                        <Text style={{ fontSize: widthToDp("4.5%"),color:'#007dfe',fontWeight: 'bold' }}>Search for friends</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}

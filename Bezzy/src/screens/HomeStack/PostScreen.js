@@ -337,12 +337,12 @@ export default class PostScreen extends React.Component {
                                 <Icon
                                     name={Platform.OS === 'android' ? 'md-camera' : 'ios-camera'}
                                     size={23}
-                                    color={this.state.focusedTab === "photo" ? "#69abff" : "#808080"}
+                                    color={this.state.focusedTab === "photo" ? "#007dfe" : "#808080"}
                                 />
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
-                                        color: this.state.focusedTab === "photo" ? "#69abff" : "#808080"
+                                        color: this.state.focusedTab === "photo" ? "#007dfe" : "#808080"
                                     }}
                                 >PHOTO</Text>
                             </TouchableOpacity>
@@ -365,12 +365,12 @@ export default class PostScreen extends React.Component {
                                 <Icon
                                     name={Platform.OS === 'android' ? 'md-videocam-outline' : 'ios-videocam-outline'}
                                     size={23}
-                                    color={this.state.focusedTab === "video" ? "#69abff" : "#808080"}
+                                    color={this.state.focusedTab === "video" ? "#007dfe" : "#808080"}
                                 />
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
-                                        color: this.state.focusedTab === "video" ? "#69abff" : "#808080"
+                                        color: this.state.focusedTab === "video" ? "#007dfe" : "#808080"
                                     }}
                                 >Video</Text>
                             </TouchableOpacity>

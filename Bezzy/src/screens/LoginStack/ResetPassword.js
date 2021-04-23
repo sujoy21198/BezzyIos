@@ -94,7 +94,7 @@ export default class ResetPassword extends React.Component {
                 flex: 1,
             }}
         >
-            <Header isBackButton navigation={this.props.navigation} headerText="Create New Password"/>
+            <Header isBackButton navigation={this.props.navigation} loginStack={true} headerText="Create New Password"/>
             <View style={{height: heightToDp("2%")}}/>
             <KeyboardAwareScrollView
                 style={{

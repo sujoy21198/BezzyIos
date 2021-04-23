@@ -278,7 +278,7 @@ export default class EditProfileScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1}}>
-            <Header isBackButton isHomeStackInnerPage headerText={"Edit Profile"} navigation={this.props.navigation}/>
+            <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"
             >
