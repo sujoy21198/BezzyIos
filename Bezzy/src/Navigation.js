@@ -20,6 +20,7 @@ import ChangePassword from './screens/HomeStack/ChangePassword';
 import ResetPassword from './screens/LoginStack/ResetPassword';
 import ImagePreviewScreen from './screens/HomeStack/ImagePreviewScreen';
 import CommentScreen from './screens/HomeStack/CommentScreen';
+import NotificationScreen from './screens/HomeStack/NotificationScreen';
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const Navigation = () => (
             <Stack.Screen name="ResetPassword" component={ResetPassword} options={{headerShown: false}}/>
             <Stack.Screen name="ImagePreviewScreen" component={ImagePreviewScreen} options={{headerShown: false}}/>
             <Stack.Screen name="CommentScreen" component={CommentScreen} options={{headerShown: false}}/>
+            <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

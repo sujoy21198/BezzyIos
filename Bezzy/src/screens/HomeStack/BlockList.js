@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 export default class BlockList extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1}}>
-            <Header isHomeStackInnerPage isBackButton headerText={"Block List"} navigation={this.props.navigation}/>
+            <Header isHomeStackInnerPage isBackButton backToProfile={true} headerText={"Block List"} navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }
