@@ -26,7 +26,6 @@ export default class FollowingScreen extends React.Component {
     unfollow = async (item, index) => {
         this.RBSheet.open();
         let userId = await AsyncStorage.getItem("userId");
-        let numberOfFollowings = await AsyncStorage.getItem("numberOfFollowings");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.unfollow, {
             "loginUserID" : userId,
             "unfriendID" : item.friend_id
@@ -35,14 +34,13 @@ export default class FollowingScreen extends React.Component {
             let followingList = this.state.followingList;
             followingList.splice(index, 1);
             this.setState({followingList});
-            await AsyncStorage.setItem("numberOfFollowings", String(Number(numberOfFollowings) - 1));
-            return Toast.show({
+            Toast.show({
                 type: "success",
                 text: response.data.alert_msg,
                 duration: 3000
             })
         } else {
-            return Toast.show({
+            Toast.show({
                 type: "success",
                 text: response.data.alert_msg,
                 duration: 3000
@@ -54,7 +52,7 @@ export default class FollowingScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1}}>
-            <Header isHomeStackInnerPage isBackButton headerText={this.props.route.params.user} navigation={this.props.navigation}/>
+            <Header isHomeStackInnerPage isBackButton backToProfile={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
             <FlatList
             contentContainerStyle={{
                 padding: widthToDp("2%")

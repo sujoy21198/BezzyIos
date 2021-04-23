@@ -71,7 +71,7 @@ export default class Header extends React.Component {
                                         style={{ height: heightToDp("3%"), width: widthToDp("20%"), marginLeft: widthToDp(`${this.props.isBackButton ? 3 : 0}%`) }}
                                     /> :
                                     <Text style={{
-                                        color: !this.props.headerText ? '#fff' : '#69abff',
+                                        color: !this.props.headerText ? '#fff' : '#007dfe',
                                         fontSize: widthToDp("4.5%"),
                                         fontWeight: 'bold',
                                         marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
@@ -226,7 +226,7 @@ export default class Header extends React.Component {
                             />
                         }
                         <Text style={{
-                            color: this.props.isHomeStackInnerPage ? '#69abff' : '#fff',
+                            color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
                             fontSize: 15,
                             fontWeight: 'bold',
                             marginLeft: this.props.isBackButton ? widthToDp("2%") : 0

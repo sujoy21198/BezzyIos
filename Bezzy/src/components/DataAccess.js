@@ -11,6 +11,7 @@ const DataAccess = {
     userList: "RegisterUserList",
     followUser: "followingreqsend",
     friendList: "getuserfollowinglist",
+    followerList: "getfollowerslist",
     followingList: "getuserfollowinglist",
     unfollow: "unfollowuser",
     getProfileDetails: 'geteditprofiledata',

@@ -53,14 +53,14 @@ export default class BottomTab extends React.Component {
                         <Icon
                             name={Platform.OS==='android' ? 'md-home-outline' : 'ios-home-outline'}
                             size={23}
-                            color={this.props.isHomeFocused ? "#69abff" : "#808080"}
+                            color={this.props.isHomeFocused ? "#007dfe" : "#808080"}
                         />
                         {
                             this.props.isHomeFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#007dfe"
                                 }}
                             >Home</Text>
                         }
@@ -83,14 +83,14 @@ export default class BottomTab extends React.Component {
                         <Icon
                             name={Platform.OS==='android' ? 'md-chatbubbles-outline' : 'ios-chatbubbles-outline'}
                             size={23}
-                            color={this.props.isChatFocused ? "#69abff" : "#808080"}
+                            color={this.props.isChatFocused ? "#007dfe" : "#808080"}
                         />
                         {
                             this.props.isChatFocused && 
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#007dfe"
                                 }}
                             >Chat</Text>
                         }
@@ -123,7 +123,7 @@ export default class BottomTab extends React.Component {
                                 height: 50, 
                                 width: 50, 
                                 borderRadius: 50 / 2,
-                                backgroundColor: "#69abff",
+                                backgroundColor: "#007dfe",
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 elevation: 2
@@ -167,14 +167,14 @@ export default class BottomTab extends React.Component {
                         <Icon
                             name={Platform.OS==='android' ? 'md-search-outline' : 'ios-search-outline'}
                             size={23}
-                            color={this.props.isSearchFocused ? "#69abff" : "#808080"}
+                            color={this.props.isSearchFocused ? "#007dfe" : "#808080"}
                         />
                         {
                             this.props.isSearchFocused && 
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#007dfe"
                                 }}
                             >Search</Text>
                         }
@@ -204,14 +204,14 @@ export default class BottomTab extends React.Component {
                         <Icon
                             name={Platform.OS==='android' ? 'md-person-outline' : 'ios-person-outline'}
                             size={23}
-                            color={this.props.isProfileFocused ? "#69abff" : "#808080"}
+                            color={this.props.isProfileFocused ? "#007dfe" : "#808080"}
                         />
                         {
                             this.props.isProfileFocused && 
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#007dfe"
                                 }}
                             >Profile</Text>
                         }

@@ -78,8 +78,7 @@ export default class ProfileScreen extends React.Component {
                         />
                         <Text
                             style={{
-                                color: '#69abff',
-                                fontWeight: 'bold',
+                                color: '#007dfe',
                                 marginTop: heightToDp('1.5%'),
                                 marginBottom: heightToDp('0.5%'),
                                 fontSize: widthToDp("4.5%")
@@ -110,7 +109,7 @@ export default class ProfileScreen extends React.Component {
                             }}
                             activeOpacity={0.7}
                             disabled={this.state.userDetails.following === 0}
-                            onPress={() => this.props.navigation.navigate("FollowingScreen", {user: "Demo User"})}
+                            onPress={() => this.props.navigation.navigate("FollowingScreen", {user: this.state.userDetails.get_name})}
                         >   
                             <Text>{this.state.userDetails.following}</Text>
                             <Text
@@ -125,7 +124,7 @@ export default class ProfileScreen extends React.Component {
                             }}
                             activeOpacity={0.7}
                             disabled={this.state.userDetails.followers === 0}
-                            onPress={() => this.props.navigation.navigate("FollowerScreen", {user: "Demo User"})}
+                            onPress={() => this.props.navigation.navigate("FollowerScreen", {user: this.state.userDetails.get_name})}
                         >   
                             <Text>{this.state.userDetails.followers}</Text>
                             <Text
