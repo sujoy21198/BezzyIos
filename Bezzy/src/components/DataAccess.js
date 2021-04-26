@@ -8,6 +8,7 @@ const DataAccess = {
     SendOtp: 'verifyotp',
     ResetPassword: 'setforgotpassword',
     resendOtp: "resendotp",
+    terms: 'terms-condition', 
 
     //user listing api's
     userList: "RegisterUserList",

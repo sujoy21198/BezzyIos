@@ -516,7 +516,7 @@ export default class SignUpScreen extends React.Component {
                                 marginLeft: widthToDp("1%")
                             }}
                         >
-                            I accept the <Text style={{ color: "#69abff" }}>Terms & Conditions</Text>
+                            I accept the <Text style={{ color: "#69abff" }} onPress={() => this.props.navigation.navigate("Terms")}>Terms & Conditions</Text>
                         </Text>
                     </View>
                     {
