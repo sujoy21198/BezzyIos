@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -72,32 +72,48 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     deleteImage = async () => {
-        this.RBSheet.open();
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
-            "imgvideoID" : this.props.route.params.image.id,
-            "post_type" : this.props.route.params.image.post_type
-        });
-        if(response.data.status === "success") {
-            this.RBSheet.close();
-            Toast.show({
-                text: response.data.message,
-                type: "success",
-                duration: 2000
-            })
-            this.props.navigation.reset({
-                index: 3,
-                routes: [
-                    { name: "ProfileScreen" }
-                ]
-            })
-        } else {
-            this.RBSheet.close();
-            Toast.show({
-                text: response.data,
-                type: "danger",
-                duration: 2000
-            })
-        }
+        Alert.alert(
+            "Delete", 
+            "Are you sure to delete this image?",
+            [
+                {
+                    text: "No",
+                    onPress: () => undefined,
+                    style:  'cancel'
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        this.RBSheet.open();
+                        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
+                            "imgvideoID" : this.props.route.params.image.id,
+                            "post_type" : this.props.route.params.image.post_type
+                        });
+                        if(response.data.status === "success") {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data.message,
+                                type: "success",
+                                duration: 2000
+                            })
+                            this.props.navigation.reset({
+                                index: 3,
+                                routes: [
+                                    { name: "ProfileScreen" }
+                                ]
+                            })
+                        } else {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data,
+                                type: "danger",
+                                duration: 2000
+                            })
+                        }
+                    }
+                }
+            ]
+        )
     }
 
     likeImage = async () => {

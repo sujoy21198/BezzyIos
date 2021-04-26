@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from './Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -10,24 +10,38 @@ export default class Header extends React.Component {
         openUserModal: false
     }
     navigateToOtherScreen = async (type) => {
-        // await AsyncStorage.removeItem("userDetails");
-        // await AsyncStorage.removeItem("userId");
-        await AsyncStorage.removeItem("token");
-        // await AsyncStorage.removeItem("otpStatus");
-        // await AsyncStorage.removeItem('numberOfFollowings');
-        //async storage will be null
         this.RBSheet.close();
         if (type === "block") {
             this.props.navigation.navigate("BlockList");
         } else if (type === "changePassword") {
             this.props.navigation.navigate('ChangePassword');
         } else if (type === "logout") {
-            this.props.navigation.reset({
-                index: 0,
-                routes: [
-                    { name: "SignInScreen" }
+            Alert.alert(
+                "Log out",
+                "Are you sure to Log out?", [
+                    {
+                        text: "Cancel",
+                        onPress: () => undefined,
+                        style: "cancel"
+                    },
+                    {
+                        text: "Yes",
+                        onPress: async () => {         
+                            //async storage will be null                   
+                            await AsyncStorage.removeItem("userDetails");
+                            await AsyncStorage.removeItem("userId");
+                            await AsyncStorage.removeItem("token");
+                            await AsyncStorage.removeItem("otpStatus");
+                            this.props.navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: "SignInScreen" }
+                                ]
+                            });
+                        }
+                    }
                 ]
-            });
+            )
         }
     }
 
