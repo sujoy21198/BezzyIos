@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -120,6 +120,7 @@ export default class SignInScreen extends React.Component {
         <SafeAreaView
             style={{ flex: 1, backgroundColor: '#69abff' }}
         >
+            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header headerText={"Welcome to Bezzy"} />
             <KeyboardAwareScrollView                
                 keyboardShouldPersistTaps='handled'

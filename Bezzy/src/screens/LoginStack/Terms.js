@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import {ActivityIndicator, Dimensions, SafeAreaView, ScrollView, View} from 'react-native'; 
+import {ActivityIndicator, Dimensions, SafeAreaView, ScrollView, StatusBar, View} from 'react-native'; 
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import HTML from "react-native-render-html";
@@ -26,6 +26,7 @@ export default class Terms extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1}}>
+            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header isBackButton loginStack={true} headerText={"Terms & Conditions"} navigation={this.props.navigation} />
             {
                 this.state.isLoading ?

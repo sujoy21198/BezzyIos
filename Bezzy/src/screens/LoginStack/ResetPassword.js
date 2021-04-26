@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Toast } from 'native-base';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -94,6 +94,7 @@ export default class ResetPassword extends React.Component {
                 flex: 1,
             }}
         >
+            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header isBackButton navigation={this.props.navigation} loginStack={true} headerText="Create New Password"/>
             <View style={{height: heightToDp("2%")}}/>
             <KeyboardAwareScrollView
