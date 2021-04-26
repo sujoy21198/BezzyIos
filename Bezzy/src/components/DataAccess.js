@@ -24,13 +24,13 @@ const DataAccess = {
     getProfileDetails: 'geteditprofiledata',
     editProfile: 'UpdateProfileData',
     uploadProfileImage: 'UpdateProfilePicture',
+    UpdateProfilePicture:'UpdateProfilePicture',
     friendblockdetails : 'friendblockdetails/',
     updateProfile: 'UpdateProfileData',
     changePassword: 'changepassword',
 
     //post api's
     deletePost: 'deletepostimagevideo',
-    UpdateProfilePicture:'UpdateProfilePicture',
     likePost: 'postlikedislike',
     postLikedUsers: 'postlikeuserslist',
     postCommentedUsers: 'comment-list',
