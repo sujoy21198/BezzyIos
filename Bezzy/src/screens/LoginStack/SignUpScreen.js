@@ -277,12 +277,12 @@ export default class SignUpScreen extends React.Component {
     }
 
     render = () => (
-        <KeyboardAwareScrollView
-            keyboardShouldPersistTaps='handled'
+        <SafeAreaView
             style={{ flex: 1, backgroundColor: '#69abff' }}
         >
             <Header headerText={"Go Login"} isBackButton loginStack={true} navigation={this.props.navigation} />
-            <View
+            <KeyboardAwareScrollView                
+                keyboardShouldPersistTaps='handled'
                 style={{
                     height: heightToDp("100%"),
                     backgroundColor: '#fff',
@@ -555,7 +555,7 @@ export default class SignUpScreen extends React.Component {
                         </> 
                     }
                 </View>
-            </View>
-        </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+        </SafeAreaView>
     )
 }

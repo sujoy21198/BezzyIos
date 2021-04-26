@@ -92,11 +92,11 @@ export default class ForgotPassword extends React.Component {
     }
 
     render = () => (
-        <KeyboardAwareScrollView 
-        keyboardShouldPersistTaps='handled'
+        <SafeAreaView 
         style={{flex: 1, backgroundColor: '#69abff'}}>
             <Header headerText={"Forgot Password"} isBackButton loginStack={true} navigation={this.props.navigation}/>
-            <View
+            <KeyboardAwareScrollView
+                keyboardShouldPersistTaps='handled'
                 style={{
                     height: heightToDp("100%"),
                     backgroundColor: '#fff',
@@ -180,7 +180,7 @@ export default class ForgotPassword extends React.Component {
                         />
                     </RBSheet>        
                 </View>
-            </View>
-        </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+        </SafeAreaView>
     )
 }
