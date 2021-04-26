@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -105,7 +105,8 @@ export default class ChangePassword extends React.Component {
             style={{
                 flex: 1,
             }}
-        >
+        >       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage backToProfile={true} navigation={this.props.navigation} headerText="Change Password"/>
             <View style={{height: heightToDp("2%")}}/>
             <KeyboardAwareScrollView

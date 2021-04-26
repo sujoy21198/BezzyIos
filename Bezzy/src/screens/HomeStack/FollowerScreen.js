@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
@@ -28,7 +28,8 @@ export default class FollowerScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isHomeStackInnerPage isBackButton backToProfile={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
             {
                 this.state.isLoading ?

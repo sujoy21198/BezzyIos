@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -277,7 +277,8 @@ export default class EditProfileScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"

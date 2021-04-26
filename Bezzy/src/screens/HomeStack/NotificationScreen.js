@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, View } from 'react-native';
 import Header from '../../components/Header';
 import DataAccess from '../../components/DataAccess';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -48,7 +48,8 @@ export default class NotificationScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isHomeStackInnerPage isBackButton notification={this.state.notificationList.length > 0 ? true : false} clearNotifications={this.clearNotifications} headerText={"Notifications"} navigation={this.props.navigation}/>
             {
                 this.state.isLoading ?
