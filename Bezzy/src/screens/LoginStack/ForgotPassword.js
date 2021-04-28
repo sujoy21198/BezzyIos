@@ -5,7 +5,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
-import { Toast } from 'native-base';
+import { Form, Input, Item, Label, Toast } from 'native-base';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import NetInfo from '@react-native-community/netinfo';
 import ButtonComponent from '../../components/ButtonComponent';
@@ -15,7 +15,8 @@ export default class ForgotPassword extends React.Component {
         super(props)
         this.state={
             email:'',
-            isEmailValid: false
+            isEmailValid: false,            
+            isEmailFocused: false,
         }
     }
 
@@ -122,34 +123,52 @@ export default class ForgotPassword extends React.Component {
                     >
                         Enter your registered Email Id
                     </Text>
-                    <View
-                        style={{ 
-                            alignItems: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"), 
+                    <Form
+                        style={{
+                            marginLeft: widthToDp("-3%")
                         }}
                     >
-                        <TextInput
+                        <Item 
                             style={{
-                                color: '#808080',
-                                fontSize: widthToDp("4%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("95%")
+                                alignItems: 'center',
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
+                                marginTop: heightToDp("3%"),
                             }}
-                            placeholder="Enter Mail Id"
-                            placeholderTextColor="#808080"
-                            onChangeText={this.setEmail}
-                        />       
-                    </View>                  
-                    {
-                        !this.state.isEmailValid && this.state.email !== "" &&
-                        <Text
-                            style={{
-                                color: "#ff0000"
-                            }}
-                        >Entered email address is not valid</Text>
-                    }
+                            floatingLabel
+                        >
+                            <Label
+                                style={{
+                                    color: this.state.isEmailFocused ? '#69abff' : '#808080',
+                                    fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
+                                    marginTop: heightToDp("-0.5%"),
+                                }}
+                            >Enter Mail Id</Label>
+                            <Input
+                                style={{
+                                    width: widthToDp("99%"),
+                                    borderWidth: 0,
+                                    fontSize: widthToDp("3.6%"),
+                                    color: '#1b1b1b',
+                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: 'Oswald-Medium'
+                                }}
+                                onChangeText={(text) => this.setEmail(text)}
+                                onFocus={() => this.setState({ isEmailFocused: true })}
+                                returnKeyType="done"
+                                onSubmitEditing={() => this.setState({ isNameFocused: false, isEmailFocused: false })}
+                            />
+                        </Item>
+                        {
+                            !this.state.isEmailValid && this.state.email !== "" &&
+                            <Text
+                                style={{
+                                    color: "#ff0000",
+                                    marginLeft: widthToDp("3%"),
+                                }}
+                            >Entered email address is not valid</Text>
+                        }
+                    </Form>
                     <ButtonComponent
                         onPressButton={this.forgotPassword}
                         buttonText={"Next"}

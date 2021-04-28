@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Toast, ActionSheet } from 'native-base';
+import { Toast, ActionSheet, Input, Form, Item, Label } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } from 'react-native-permissions'
 import axios from 'axios';
@@ -26,6 +26,10 @@ export default class SignUpScreen extends React.Component {
         checkTerms: false,
         imagePath: '',
         isImagePathPresent: false,
+        isNameFocused: false,
+        isEmailFocused: false,
+        isPasswordFocused: false,
+        isConfirmPasswordFocused: false
     };
 
     //SET EMAIL FUNCTION
@@ -345,166 +349,234 @@ export default class SignUpScreen extends React.Component {
                         }
 
                     </TouchableOpacity>
-                    <View
+                    <Form
                         style={{
-                            alignItems: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("2%"),
+                            marginLeft: widthToDp("-3%")
                         }}
                     >
-                        <TextInput
+                        <Item 
                             style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.6%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("95%")
+                                alignItems: 'center',
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.isNameFocused ? '#69abff' : '#a9a9a9',
+                                marginTop: heightToDp("2%"),
                             }}
-                            placeholder="Name"
-                            placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ name: text.trim() })}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"),
-                        }}
-                    >
-                        <TextInput
-                            style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.6%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("95%")
-                            }}
-                            placeholder="Email Address"
-                            keyboardType="email-address"
-                            placeholderTextColor="#808080"
-                            onChangeText={(text) => this.setEmail(text)}
-                        />
-                    </View>
-                    {
-                        !this.state.isEmailValid && this.state.email !== "" &&
-                        <Text
-                            style={{
-                                color: "#ff0000"
-                            }}
-                        >Entered email address is not valid</Text>
-                    }
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"),
-                        }}
-                    >
-                        <TextInput
-                            style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.6%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("87%")
-                            }}
-                            placeholder="Password"
-                            secureTextEntry={!this.state.showPassword}
-                            placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ password: text.trim() })}
-                        />
-                        <Icon
-                            name={this.state.showPassword ? "eye-off" : "eye"}
-                            size={20}
-                            color="#808080"
-                            onPress={() => this.setState({ showPassword: !this.state.showPassword })}
-                            style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
-                        />
-                    </View>
-                    {
-                        this.state.password!=="" && this.state.password.trim().length < 8 &&
-                        <Text
-                            style={{
-                                color: "#ff0000"
-                            }}
-                        >Password should have at least 8 characters</Text>
-                    }
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"),
-                        }}
-                    >
-                        <TextInput
-                            style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.6%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("87%")
-                            }}
-                            placeholder="Confirm Password"
-                            secureTextEntry={!this.state.showConfirmPassword}
-                            placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ confirmPassword: text.trim() })}
-                        />
-                        <Icon
-                            name={this.state.showConfirmPassword ? "eye-off" : "eye"}
-                            size={20}
-                            color="#808080"
-                            onPress={() => this.setState({ showConfirmPassword: !this.state.showConfirmPassword })}
-                            style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
-                        />
-                    </View>
-                    {
-                        this.state.confirmPassword.trim()!=="" && this.state.password.trim()!==this.state.confirmPassword.trim() &&
-                        <Text
-                            style={{
-                                color: "#ff0000"
-                            }}
-                        >Passwords should match</Text>
-                    }
-                    <View
-                        style={{
-                            marginTop: heightToDp("3%"),
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            backgroundColor: "#fff",
-                            alignItems: "flex-start"
-                        }}
-                    >
-                        <Picker
-                            style={{
-                                width: widthToDp("95%"),
-                            }}
-                            mode="dropdown"
-                            onValueChange={(item, index) => this.setState({ gender: item })}
+                            floatingLabel
                         >
-                            <Picker.Item label="Select Your Gender" value="-1" color="#808080" style={{ fontSize: widthToDp("3.5%") }} />
-                            <Picker.Item label="Male" value="0" color="#808080" />
-                            <Picker.Item label="Female" value="1" color="#808080" />
-                        </Picker>
-                    </View>
+                            <Label
+                                style={{
+                                    color: this.state.isNameFocused ? '#69abff' : '#808080',
+                                    fontSize: widthToDp(`${this.state.isNameFocused ? 3 : 3.4}%`),
+                                    marginTop: heightToDp("-0.5%"),
+                                }}
+                            >Name</Label>
+                            <Input
+                                style={{
+                                    width: widthToDp("99%"),
+                                    borderWidth: 0,
+                                    fontSize: widthToDp("3.6%"),
+                                    color: '#1b1b1b',
+                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: 'Oswald-Medium'
+                                }}
+                                onChangeText={(text) => this.setState({ name: text.trim() })}
+                                onFocus={() => this.setState({ isNameFocused: true, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
+                                returnKeyType="next"
+                                onSubmitEditing={() => {
+                                    this.setState({ isNameFocused: false, isEmailFocused: true, isPasswordFocused: false, isConfirmPasswordFocused: false })
+                                    this.refEmail._root.focus()
+                                }}
+                            />
+                        </Item>
+                        <Item 
+                            style={{
+                                alignItems: 'center',
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
+                                marginTop: heightToDp("3%"),
+                            }}
+                            floatingLabel
+                        >
+                            <Label
+                                style={{
+                                    color: this.state.isEmailFocused ? '#69abff' : '#808080',
+                                    fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
+                                    marginTop: heightToDp("-0.5%"),
+                                }}
+                            >Email Address</Label>
+                            <Input
+                                getRef={ref => this.refEmail = ref}
+                                style={{
+                                    width: widthToDp("99%"),
+                                    borderWidth: 0,
+                                    fontSize: widthToDp("3.6%"),
+                                    color: '#1b1b1b',
+                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: 'Oswald-Medium'
+                                }}
+                                onChangeText={(text) => this.setEmail(text)}
+                                onFocus={() => this.setState({ isEmailFocused: true, isNameFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
+                                returnKeyType="next"
+                                onSubmitEditing={() => {
+                                    this.setState({ isNameFocused: false, isEmailFocused: false, isPasswordFocused: true, isConfirmPasswordFocused: false });
+                                    this.refPassword._root.focus();
+                                }}
+                            />
+                        </Item>
+                        {
+                            !this.state.isEmailValid && this.state.email !== "" &&
+                            <Text
+                                style={{
+                                    color: "#ff0000",
+                                    marginLeft: widthToDp("3%"),
+                                }}
+                            >Entered email address is not valid</Text>
+                        }
+                        <View style={{
+                            flexDirection: 'row', 
+                            alignItems: 'center',
+                            borderBottomWidth: 1,
+                            borderBottomColor: this.state.isPasswordFocused ? '#69abff' : '#a9a9a9',
+                            marginTop: heightToDp("5%"),
+                            marginLeft: widthToDp("3%")
+                        }}>
+                            <Item 
+                                style={{
+                                    alignItems: 'center',
+                                    marginTop: heightToDp("-2%"),
+                                    width: widthToDp("87%"),
+                                    marginLeft: widthToDp("0%"),
+                                    borderBottomWidth: 0
+                                }}
+                                floatingLabel
+                            >
+                                <Label
+                                    style={{
+                                        color: this.state.isPasswordFocused ? '#69abff' : '#808080',
+                                        fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
+                                        marginTop: heightToDp("-0.5%"),
+                                    }}
+                                >Password</Label>
+                                <Input
+                                    getRef={ref => this.refPassword = ref}
+                                    style={{
+                                        borderWidth: 0,
+                                        fontSize: widthToDp("3.6%"),
+                                        color: '#1b1b1b',
+                                        marginLeft: widthToDp("-1%"),
+                                        fontFamily: 'Oswald-Medium'
+                                    }}
+                                    secureTextEntry={!this.state.showPassword}
+                                    onChangeText={(text) => this.setState({ password: text.trim() })}
+                                    onFocus={() => this.setState({ isNameFocused: false, isEmailFocused: false, isPasswordFocused: true, isConfirmPasswordFocused: false })}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => {
+                                        this.setState({ isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: true });
+                                        this.refConfirmPassword._root.focus();
+                                    }}
+                                />
+                            </Item>
+                            <Icon
+                                name={this.state.showPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color="#808080"
+                                onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                            />
+                        </View>
+                        {
+                            this.state.password!=="" && this.state.password.trim().length < 8 &&
+                            <Text
+                                style={{
+                                    color: "#ff0000",
+                                    marginLeft: widthToDp("3%"),
+                                }}
+                            >Password should have at least 8 characters</Text>
+                        }
+                        <View style={{
+                            flexDirection: 'row', 
+                            alignItems: 'center',
+                            borderBottomWidth: 1,
+                            borderBottomColor: this.state.isConfirmPasswordFocused ? '#69abff' : '#a9a9a9',
+                            marginTop: heightToDp("5%"),
+                            marginLeft: widthToDp("3%")
+                        }}>
+                            <Item 
+                                style={{
+                                    alignItems: 'center',
+                                    marginTop: heightToDp("-2%"),
+                                    width: widthToDp("87%"),
+                                    marginLeft: widthToDp("0%"),
+                                    borderBottomWidth: 0
+                                }}
+                                floatingLabel
+                            >
+                                <Label
+                                    style={{
+                                        color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
+                                        fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
+                                        marginTop: heightToDp("-0.5%"),
+                                    }}
+                                >Confirm Password</Label>
+                                <Input
+                                    getRef={ref => this.refConfirmPassword = ref}
+                                    style={{
+                                        borderWidth: 0,
+                                        fontSize: widthToDp("3.6%"),
+                                        color: '#1b1b1b',
+                                        marginLeft: widthToDp("-1%"),
+                                        fontFamily: 'Oswald-Medium'
+                                    }}
+                                    secureTextEntry={!this.state.showConfirmPassword}
+                                    onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
+                                    onFocus={() => this.setState({ isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: true })}
+                                    returnKeyType="done"
+                                    onSubmitEditing={() => this.setState({ isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
+                                />
+                            </Item>
+                            <Icon
+                                name={this.state.showConfirmPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color="#808080"
+                                onPress={() => this.setState({ showConfirmPassword: !this.state.showConfirmPassword })}
+                            />
+                        </View>
+                        {
+                            this.state.confirmPassword.trim()!=="" && this.state.password.trim()!==this.state.confirmPassword.trim() &&
+                            <Text
+                                style={{
+                                    color: "#ff0000",
+                                    marginLeft: widthToDp("3%"),
+                                }}
+                            >Passwords should match</Text>
+                        }
+                    </Form>   
+                    {
+                        this.state.dob !== "" &&
+                        <Text
+                            style={{                                
+                                color: '#808080',
+                                fontSize: widthToDp("3.0%"),
+                                marginTop: heightToDp("3%"),
+                                marginBottom: heightToDp("0.5%")
+                            }}
+                        >Date of Birth</Text>
+                    }                 
                     <TouchableOpacity
                         style={{
-                            marginTop: heightToDp("4%"),
+                            marginTop: heightToDp( `${this.state.dob !== "" ? 0 : 5}%`),
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
                             backgroundColor: "#fff",
                             alignItems: "flex-start"
                         }}
                         activeOpacity={0.7}
-                        onPress={() => this.setState({ showDatePicker: true })}
+                        onPress={() => this.setState({ showDatePicker: true, isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
                     >
                         <Text
                             style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.6%"),
-                                paddingBottom: heightToDp("2%"),
+                                color: this.state.dob === ""  ? '#808080' : "#1b1b1b",
+                                fontSize: widthToDp("3.4%"),
+                                paddingBottom: heightToDp("1%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("87%")
                             }}
@@ -523,6 +595,27 @@ export default class SignUpScreen extends React.Component {
                             onChange={this.setDate}
                         />
                     }
+                    <View
+                        style={{
+                            marginTop: heightToDp("3%"),
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#a9a9a9',
+                            backgroundColor: "#fff",
+                            alignItems: "flex-start"
+                        }}
+                    >
+                        <Picker
+                            style={{
+                                width: widthToDp("95%"),
+                            }}
+                            mode="dropdown"
+                            onValueChange={(item, index) => this.setState({ gender: item, isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
+                        >
+                            <Picker.Item label="Select Your Gender" value="-1" color="#808080" style={{ fontSize: widthToDp("3.5%") }} />
+                            <Picker.Item label="Male" value="0" color="#1b1b1b" />
+                            <Picker.Item label="Female" value="1" color="#1b1b1b" />
+                        </Picker>
+                    </View>
                     <View
                         style={{
                             flexDirection: 'row',
