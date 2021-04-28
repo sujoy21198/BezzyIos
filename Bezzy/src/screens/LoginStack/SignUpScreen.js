@@ -195,6 +195,14 @@ export default class SignUpScreen extends React.Component {
                 }
             })
         }
+        if(this.state.password.trim().length < 8) {
+            return Toast.show({
+                text: "Password should have at least 8 characters",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         if(this.state.confirmPassword.trim()==="") {
             return Toast.show({
                 text: "Please confirm the entered password",
@@ -308,20 +316,20 @@ export default class SignUpScreen extends React.Component {
                         Register
                     </Text>
                     <TouchableOpacity
+                        activeOpacity={0.7}                        
                         style={{
                             marginTop: heightToDp("2%"),
                         }}
-                        activeOpacity={0.7}
                         onPress={() => this.uploadPicture()}
                     >
                         {
                             this.state.isImagePathPresent ?
                                 <Image
                                     source={{ uri: this.state.imagePath }}
-                                    resizeMode="contain"
                                     style={{
                                         height: heightToDp("7%"),
-                                        width: widthToDp("20%"),
+                                        width: widthToDp("14%"),
+                                        borderRadius: 8,
                                         alignSelf: "center"
                                     }}
                                 /> :
@@ -348,7 +356,7 @@ export default class SignUpScreen extends React.Component {
                         <TextInput
                             style={{
                                 color: '#808080',
-                                fontSize: widthToDp("3.3%"),
+                                fontSize: widthToDp("3.6%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("95%")
                             }}
@@ -368,7 +376,7 @@ export default class SignUpScreen extends React.Component {
                         <TextInput
                             style={{
                                 color: '#808080',
-                                fontSize: widthToDp("3.3%"),
+                                fontSize: widthToDp("3.6%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("95%")
                             }}
@@ -398,7 +406,7 @@ export default class SignUpScreen extends React.Component {
                         <TextInput
                             style={{
                                 color: '#808080',
-                                fontSize: widthToDp("3.3%"),
+                                fontSize: widthToDp("3.6%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("87%")
                             }}
@@ -415,6 +423,14 @@ export default class SignUpScreen extends React.Component {
                             style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
                         />
                     </View>
+                    {
+                        this.state.password!=="" && this.state.password.trim().length < 8 &&
+                        <Text
+                            style={{
+                                color: "#ff0000"
+                            }}
+                        >Password should have at least 8 characters</Text>
+                    }
                     <View
                         style={{
                             flexDirection: 'row',
@@ -427,7 +443,7 @@ export default class SignUpScreen extends React.Component {
                         <TextInput
                             style={{
                                 color: '#808080',
-                                fontSize: widthToDp("3.3%"),
+                                fontSize: widthToDp("3.6%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("87%")
                             }}
@@ -444,6 +460,14 @@ export default class SignUpScreen extends React.Component {
                             style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
                         />
                     </View>
+                    {
+                        this.state.confirmPassword.trim()!=="" && this.state.password.trim()!==this.state.confirmPassword.trim() &&
+                        <Text
+                            style={{
+                                color: "#ff0000"
+                            }}
+                        >Passwords should match</Text>
+                    }
                     <View
                         style={{
                             marginTop: heightToDp("3%"),
@@ -479,7 +503,7 @@ export default class SignUpScreen extends React.Component {
                         <Text
                             style={{
                                 color: '#808080',
-                                fontSize: widthToDp("3.3%"),
+                                fontSize: widthToDp("3.6%"),
                                 paddingBottom: heightToDp("2%"),
                                 fontFamily: 'Oswald-Medium',
                                 width: widthToDp("87%")

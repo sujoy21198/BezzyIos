@@ -247,23 +247,30 @@ export default class EditProfileScreen extends React.Component {
     //upload converted image function
     updateProfilePicture = async(base64ImageName) => {
         let userID = await AsyncStorage.getItem('userId')
-        axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
+        let response = await axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
             'userID' : userID,
             'profile_picture' : base64ImageName
-        }).then(function(response){
-            return Toast.show({
+        })
+        this.RBSheet.close()
+        if(response.data.resp === "true") {
+            Toast.show({
                 text: "Profile has been updated successfully",
                 type: "success",
                 duration: 3000
             });
-            
-        }).catch(function(error){
+            this.props.navigation.reset({
+                index: 3,
+                routes: [
+                    { name: "ProfileScreen" }
+                ]
+            })
+        } else {
             Toast.show({
                 text: response.data.reg_msg,
                 type: "danger",
                 duration: 3000
             });
-        })
+        }
     }
 
     //GRANT PERMISSION FUNCTION
@@ -285,20 +292,32 @@ export default class EditProfileScreen extends React.Component {
             >
                 <TouchableOpacity
                     style={{
-                        marginTop: heightToDp("5%")
+                        marginVertical: heightToDp("5%")
                     }}
                     activeOpacity={0.7}
                     onPress={() => this.uploadPicture()}
                 >
-                    <Image
-                        source={this.state.image!=="" ? {uri: this.state.image} : require("../../../assets/sign_up.png")}
-                        resizeMode="contain"
-                        style={{
-                            height: heightToDp("7%"),
-                            width: widthToDp("20%"),
-                            alignSelf: "center"
-                        }}
-                    />
+                    {
+                        this.state.image!=="" ?
+                            <Image
+                                source={{ uri: this.state.image }}
+                                style={{
+                                    height: heightToDp("10%"),
+                                    width: widthToDp("22%"),
+                                    borderRadius: 50,
+                                    alignSelf: "center"
+                                }}
+                            /> :
+                            <Image
+                                source={require("../../../assets/sign_up.png")}
+                                resizeMode="contain"
+                                style={{
+                                    height: heightToDp("7%"),
+                                    width: widthToDp("14%"),
+                                    alignSelf: "center"
+                                }}
+                            />
+                    }
                 </TouchableOpacity>
                 
                 <View
@@ -306,7 +325,6 @@ export default class EditProfileScreen extends React.Component {
                         alignItems: 'center',
                         borderBottomWidth: 1,
                         borderBottomColor: '#a9a9a9',
-                        marginTop: heightToDp("6%"),
                         marginHorizontal: widthToDp("3.5%")
                     }}
                 >

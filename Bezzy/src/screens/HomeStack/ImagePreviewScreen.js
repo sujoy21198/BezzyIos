@@ -185,17 +185,7 @@ export default class ImagePreviewScreen extends React.Component {
                     alignItems: 'center'
                 }}
                 activeOpacity={0.7}
-                onPress={
-                    () => 
-                    this.props.route.params.type === "otherUserPost" ?
-                    this.props.navigation.reset({
-                        index: 0,
-                        routes: [
-                            { name: "HomeScreen" }
-                        ]
-                    })
-                    : this.props.navigation.goBack()
-                }
+                onPress={() => this.props.navigation.goBack()}
             >
                 <Icon
                     name="chevron-left"
@@ -215,7 +205,7 @@ export default class ImagePreviewScreen extends React.Component {
                 <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={this.likeImage}
-                    disabled={this.state.isLoading}
+                    disabled={this.state.isLoading || (this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost")}
                 >
                     {
                         this.state.isLiked ?
@@ -238,13 +228,18 @@ export default class ImagePreviewScreen extends React.Component {
                         paddingLeft: widthToDp("2%")
                     }}
                 >{this.state.numberOfLikes}</Text>
-                <Icon
-                    name="comment"
-                    color="#fff"
-                    size={25}
+                <TouchableOpacity
+                    activeOpacity={0.7}
                     style={{paddingLeft: widthToDp("4%")}}
                     onPress={() => this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image})}
-                />
+                    disabled={this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost"}
+                >
+                    <Icon
+                        name="comment"
+                        color="#fff"
+                        size={25}
+                    />
+                </TouchableOpacity>
                 <Text
                     style={{
                         color: "#fff",
