@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Alert, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -160,17 +160,18 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex:1}}>
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+        <ScrollView style={{flex:1, backgroundColor: '#1b1b1b'}}>
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />            
             <LinearGradient
+                style={{paddingTop: heightToDp("4%")}}
                 colors={['#fff', '#1b1b1b']}
             >
                 <Image
                 resizeMode="contain"
                 source={{ uri : this.props.route.params.type === "otherUserPost" ? this.props.route.params.image.post_img_video_live[0].post_url : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
-                style={{height: heightToDp("100%"), width: widthToDp("100%"), resizeMode: "contain"}}
+                style={{ height: heightToDp("80%"), width: widthToDp("100%"), resizeMode: "contain"}}
                 />
-            </LinearGradient> 
+            </LinearGradient>   
             <TouchableOpacity
                 style={{
                     position: 'absolute',
@@ -195,9 +196,57 @@ export default class ImagePreviewScreen extends React.Component {
             </TouchableOpacity>            
             <View
                 style={{
-                    position: 'absolute',
-                    bottom: heightToDp("4%"),
-                    right: widthToDp("4%"),
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: '#1b1b1b',
+                    paddingTop: heightToDp("2%"),
+                    paddingHorizontal: widthToDp("3%")
+                }}
+            >                
+                <TextInput
+                    style={{
+                        color: '#fff',
+                        fontSize: widthToDp("3.5%"),
+                        width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
+                        borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                        borderBottomColor: '#fff'
+                    }}
+                    multiline
+                    defaultValue={this.state.postCaption}
+                    editable={this.state.captionEditable}
+                    onChangeText={text => this.setState({postCaption: text.trim()})}
+                />
+                {
+                    this.props.route.params.type !== "otherUserPost" &&
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        style={{
+                            marginLeft: widthToDp("5%")
+                        }}
+                        disabled={this.state.isUpdatingCaption}
+                        onPress={this.updateCaption}
+                    >
+                        {
+                            this.state.isUpdatingCaption ? 
+                            <ActivityIndicator size="small" color="#fff"/>
+                            : <Icon
+                                name={this.state.captionEditable ? "paper-plane" : "pen"}
+                                color="#fff"
+                                size={20}                    
+                            /> 
+                        } 
+                    </TouchableOpacity>  
+                }                              
+            </View>          
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#1b1b1b',
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: widthToDp("3%"),
+                    paddingTop: heightToDp("2%"),
+                    paddingBottom: heightToDp("1%"),
                     flexDirection: 'row',
                     alignItems: 'center'
                 }}
@@ -261,51 +310,7 @@ export default class ImagePreviewScreen extends React.Component {
                     </TouchableOpacity>
                 }                
             </View> 
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: heightToDp("12%"),
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingHorizontal: widthToDp("3%")
-                }}
-            >                
-                <TextInput
-                    style={{
-                        color: '#fff',
-                        fontSize: widthToDp("3.5%"),
-                        width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
-                        borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
-                        borderBottomColor: '#fff'
-                    }}
-                    multiline
-                    defaultValue={this.state.postCaption}
-                    editable={this.state.captionEditable}
-                    onChangeText={text => this.setState({postCaption: text.trim()})}
-                />
-                {
-                    this.props.route.params.type !== "otherUserPost" &&
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={{
-                            marginLeft: widthToDp("5%")
-                        }}
-                        disabled={this.state.isUpdatingCaption}
-                        onPress={this.updateCaption}
-                    >
-                        {
-                            this.state.isUpdatingCaption ? 
-                            <ActivityIndicator size="small" color="#fff"/>
-                            : <Icon
-                                name={this.state.captionEditable ? "paper-plane" : "pen"}
-                                color="#fff"
-                                size={20}                    
-                            /> 
-                        } 
-                    </TouchableOpacity>  
-                }                              
-            </View> 
+             
             <RBSheet
                 ref={ref => {
                     this.RBSheet = ref;
@@ -332,6 +337,6 @@ export default class ImagePreviewScreen extends React.Component {
                     color="#69abff"
                 />
             </RBSheet>    
-        </SafeAreaView>
+        </ScrollView>
     )
 }
