@@ -128,7 +128,7 @@ export default class HomeScreen extends React.Component {
                             {
                                 section.past_post_days !== "" &&
                                 <View style={{ marginLeft: widthToDp("6%"), }}>
-                                    <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} days ago</Text>
+                                    <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                 </View>
                             }
                             <TouchableOpacity
@@ -207,16 +207,31 @@ export default class HomeScreen extends React.Component {
                                                 <Text style={{ color: 'black' }}>{i.post_content}</Text>
                                             </View>
                                         }  
-                                        <TouchableOpacity 
-                                            activeOpacity={0.7}
-                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: i})}
-                                            style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
-                                        >
-                                            <Image
-                                                style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
-                                                source={{ uri: i.post_img_video_live[0].post_url}}
+                                        {
+                                            i.post_img_video_live.length > 0 &&
+                                            <FlatList
+                                                data={i.post_img_video_live}
+                                                horizontal={true}
+                                                contentContainerStyle={{
+                                                    paddingHorizontal: widthToDp("4%")
+                                                }}
+                                                showsHorizontalScrollIndicator={false}
+                                                ItemSeparatorComponent={() => <View style={{width: widthToDp("2%")}}/>}
+                                                renderItem={({item, index}) => (
+                                                    <TouchableOpacity 
+                                                        activeOpacity={0.7}
+                                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: i})}
+                                                        style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
+                                                        key={index}
+                                                    >
+                                                        <Image
+                                                            style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
+                                                            source={{ uri: item.post_url}}
+                                                        />
+                                                    </TouchableOpacity>
+                                                )}
                                             />
-                                        </TouchableOpacity>
+                                        }                                        
                                         
                                         <View
                                             style={{
@@ -271,7 +286,7 @@ export default class HomeScreen extends React.Component {
                                             <Icon2
                                                 name={Platform.OS==='android' ? 'md-arrow-redo-outline' : 'ios-arrow-redo-outline'}
                                                 color="#69abff"
-                                                size={23}
+                                                size={25}
                                                 style={{paddingLeft: widthToDp("4%")}}
                                             />
                                         </View>
@@ -348,6 +363,10 @@ export default class HomeScreen extends React.Component {
                     <ScrollView>
                         <Accordion
                             sections={followingList}
+                            touchableProps={{
+                                activeOpacity: 0.95
+                            }}
+                            underlayColor="#ececec"
                             activeSections={this.state.activeSections}
                             //renderSectionTitle={this._renderSectionTitle}
                             renderHeader={this._renderHeader}

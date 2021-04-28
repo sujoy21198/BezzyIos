@@ -10,6 +10,8 @@ import ButtonComponent from '../../components/ButtonComponent';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
 
 export default class ProfileScreen extends React.Component {
     state = {
@@ -19,7 +21,8 @@ export default class ProfileScreen extends React.Component {
         numberOfFollowings: 1,
         numberOfPosts: 6,
         isLoading: true,
-        userPosts: []
+        userPosts: [],
+        userDetails: {}
     }
 
     onPostTabPress = () => {
@@ -31,7 +34,6 @@ export default class ProfileScreen extends React.Component {
     )
 
     componentDidMount() {
-        this.RBSheet.open();
         this.setState({isLoading: true})
         this.getProfileData();
     } 
@@ -49,7 +51,6 @@ export default class ProfileScreen extends React.Component {
         }).catch(err => console.log(err))
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false})
-        this.RBSheet.close();
     }
 
     render = () => (
@@ -72,27 +73,33 @@ export default class ProfileScreen extends React.Component {
                             paddingVertical: heightToDp("1%")
                         }}
                     >
-                        <Image
-                            source={{uri: this.state.userDetails.profile_pic}}
-                            style={{height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20}}
-                        />
-                        <Text
-                            style={{
-                                color: '#007dfe',
-                                marginTop: heightToDp('1.5%'),
-                                marginBottom: heightToDp('0.5%'),
-                                fontSize: widthToDp("4.5%")
-                            }}
-                        >{this.state.userDetails.get_name}</Text>
                         {
-                            this.state.userDetails.bio &&
-                            <Text
-                                style={{
-                                    // paddingVertical: heightToDp('0%'),
-                                    fontSize: widthToDp("4%")
-                                }}
-                            >{this.state.userDetails.bio}</Text>
+                            Object.keys(this.state.userDetails).length > 0 &&
+                            <>
+                                <Image
+                                    source={{uri: this.state.userDetails.profile_pic}}
+                                    style={{height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20}}
+                                />
+                                <Text
+                                    style={{
+                                        color: '#007dfe',
+                                        marginTop: heightToDp('1.5%'),
+                                        marginBottom: heightToDp('0.5%'),
+                                        fontSize: widthToDp("4.5%")
+                                    }}
+                                >{this.state.userDetails.get_name}</Text>
+                                {
+                                    this.state.userDetails.bio &&
+                                    <Text
+                                        style={{
+                                            // paddingVertical: heightToDp('0%'),
+                                            fontSize: widthToDp("4%")
+                                        }}
+                                    >{this.state.userDetails.bio}</Text>
+                                } 
+                            </>
                         }                        
+                                               
                     </View>
                     <View
                         style={{
@@ -108,10 +115,10 @@ export default class ProfileScreen extends React.Component {
                                 alignItems: 'center',
                             }}
                             activeOpacity={0.7}
-                            disabled={this.state.userDetails.following === 0}
+                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0}
                             onPress={() => this.props.navigation.navigate("FollowingScreen", {user: this.state.userDetails.get_name})}
                         >   
-                            <Text>{this.state.userDetails.following}</Text>
+                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
                             <Text
                                 style={{
                                     fontSize: widthToDp("3.8%")
@@ -123,10 +130,10 @@ export default class ProfileScreen extends React.Component {
                                 alignItems: 'center',
                             }}
                             activeOpacity={0.7}
-                            disabled={this.state.userDetails.followers === 0}
+                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0}
                             onPress={() => this.props.navigation.navigate("FollowerScreen", {user: this.state.userDetails.get_name})}
                         >   
-                            <Text>{this.state.userDetails.followers}</Text>
+                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
                             <Text
                                 style={{
                                     fontSize: widthToDp("3.8%")
@@ -138,7 +145,7 @@ export default class ProfileScreen extends React.Component {
                                 alignItems: 'center',
                             }}
                         >   
-                            <Text>{this.state.userDetails.number_of_post}</Text>
+                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
                             <Text
                                 style={{
                                     fontSize: widthToDp("3.8%")
@@ -157,6 +164,7 @@ export default class ProfileScreen extends React.Component {
                             onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
                             buttonText={"Edit Profile"}
                             editProfile={true}
+                            disabled={Object.keys(this.state.userDetails).length == 0}
                         />
                     </View>
                     <View
@@ -205,18 +213,31 @@ export default class ProfileScreen extends React.Component {
                             />
                         </TouchableOpacity>
                     </View>
-                    {
-                        this.state.isPostsFocused && this.state.userPosts && this.state.userPosts.length > 0 && 
-                        <FlatList
-                            data={this.state.userPosts}
-                            contentContainerStyle={{
-                                paddingHorizontal: widthToDp("2%")
-                            }}
-                            numColumns={2}
-                            keyExtractor={({item, index}) => index}
-                            ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
-                            renderItem={({item, index}) => (
-                                <>
+                    <FlatList
+                        data={this.state.userPosts}
+                        contentContainerStyle={{
+                            paddingHorizontal: widthToDp("2%")
+                        }}
+                        numColumns={2}
+                        keyExtractor={({item, index}) => index}
+                        ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
+                        ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
+                        renderItem={({item, index}) => (
+                            <>
+                                {
+                                    !(item && item.post_url) ? 
+                                    <ShimmerPlaceHolder
+                                        height={heightToDp("20%")}
+                                        width={widthToDp("47.5%")}
+                                        duration={2000}
+                                        shimmerStyle={{
+                                            borderRadius: 5
+                                        }}
+                                        shimmerColors={[
+                                            "#cdcdcd", "#ececec"
+                                        ]}
+                                        LinearGradient={LinearGradient}
+                                    /> :
                                     <TouchableOpacity
                                         onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item})}
                                     >
@@ -230,8 +251,11 @@ export default class ProfileScreen extends React.Component {
                                                 borderRadius: 5,
                                             }}
                                             key={index}
-                                        />
+                                        />                                    
                                     </TouchableOpacity>
+                                }                                
+                                {
+                                    (item && item.post_date && item.post_time) &&
                                     <View
                                         style={{
                                             position: 'absolute',
@@ -246,14 +270,14 @@ export default class ProfileScreen extends React.Component {
                                             }}
                                         >{item.post_date + " " + item.post_time}</Text>
                                     </View>
-                                    {
-                                        index % 2 === 0 &&
-                                        <View style={{width: widthToDp("1%")}}/>
-                                    }
-                                </>
-                            )}
-                        />
-                    }
+                                }
+                                {
+                                    (this.state.userPosts.length > 0 && index % 2 === 0) &&
+                                    <View style={{width: widthToDp("1%")}}/>
+                                }
+                            </>
+                        )}
+                    />  
                     {
                         this.state.isShareFocused &&
                         <FlatList

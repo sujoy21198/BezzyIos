@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -166,11 +166,27 @@ export default class ImagePreviewScreen extends React.Component {
                 style={{paddingTop: heightToDp("4%")}}
                 colors={['#fff', '#1b1b1b']}
             >
-                <Image
-                resizeMode="contain"
-                source={{ uri : this.props.route.params.type === "otherUserPost" ? this.props.route.params.image.post_img_video_live[0].post_url : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
-                style={{ height: heightToDp("80%"), width: widthToDp("100%"), resizeMode: "contain"}}
-                />
+                {
+                    (this.props.route.params.type === "otherUserPost" && this.props.route.params.image.post_img_video_live && this.props.route.params.image.post_img_video_live.length > 0) ?
+                    <FlatList
+                        data={this.props.route.params.image.post_img_video_live}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        ItemSeparatorComponent={() => <View style={{width: widthToDp("5%")}}/>}
+                        renderItem={({item, index}) => (
+                            <Image
+                                resizeMode="contain"
+                                style={{ height: heightToDp("80%"), width: widthToDp("100%") }}
+                                source={{ uri: item.post_url}}
+                            />
+                        )}
+                    /> :
+                    <Image
+                        resizeMode="contain"
+                        source={{ uri : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
+                        style={{ height: heightToDp("80%"), width: widthToDp("100%"), resizeMode: "contain"}}
+                    />
+                }                
             </LinearGradient>   
             <TouchableOpacity
                 style={{
