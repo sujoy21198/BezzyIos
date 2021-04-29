@@ -39,6 +39,14 @@ export default class ResetPassword extends React.Component {
                 }
             })
         }
+        if(this.state.password.trim().length < 8) {
+            return Toast.show({
+                text: "Password should have at least 8 characters",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         if(this.state.confirmPassword.trim()==="") {
             return Toast.show({
                 text: "Please confirm the entered password",

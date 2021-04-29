@@ -105,16 +105,16 @@ export default class HomeScreen extends React.Component {
     _renderHeader = section => {
         return (
             <View >
-                <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                <Card style={{ paddingVertical: heightToDp("1.5%"), paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
                             source={{ uri: section.friend_photo }}
-                            style={{ height: heightToDp("13%"), width: widthToDp("22%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
+                            style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
                         />
                         <View>
                             {
                                 section.have_post === "Yes" &&
-                                <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-1%") }}>
+                                <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
                                     <Image
                                         source={require("../../../assets/ago.png")}
                                         resizeMode="contain"
@@ -122,19 +122,19 @@ export default class HomeScreen extends React.Component {
                                     />
                                 </View>
                             }
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.have_post === "Yes" ? -1.5 : 3}%`) }}>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days!=="" ? -0.5 : section.have_post=== "No" ? 3.5 : 0}%`) }}>
                                 <Text>{section.friend_name}</Text>
                             </View>
                             {
                                 section.past_post_days !== "" &&
-                                <View style={{ marginLeft: widthToDp("6%"), }}>
+                                <View style={{ marginLeft: widthToDp("6%") }}>
                                     <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                 </View>
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("MessageScreen")}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days !== "" ? 2 : 4}%`) }}>
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.3}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
                                     size={23}
@@ -360,7 +360,11 @@ export default class HomeScreen extends React.Component {
                 <Header isHomeScreen  navigation={this.props.navigation}/>
                 {
                     this.state.followingList.length > 0 ?
-                    <ScrollView>
+                    <ScrollView 
+                    contentContainerStyle={{
+                        paddingTop: heightToDp("1%")
+                    }}
+                    >
                         <Accordion
                             sections={followingList}
                             touchableProps={{

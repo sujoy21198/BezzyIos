@@ -213,71 +213,74 @@ export default class ProfileScreen extends React.Component {
                             />
                         </TouchableOpacity>
                     </View>
-                    <FlatList
-                        data={this.state.userPosts}
-                        contentContainerStyle={{
-                            paddingHorizontal: widthToDp("2%")
-                        }}
-                        numColumns={2}
-                        keyExtractor={({item, index}) => index}
-                        ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
-                        ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
-                        renderItem={({item, index}) => (
-                            <>
-                                {
-                                    !(item && item.post_url) ? 
-                                    <ShimmerPlaceHolder
-                                        height={heightToDp("20%")}
-                                        width={widthToDp("47.5%")}
-                                        duration={2000}
-                                        shimmerStyle={{
-                                            borderRadius: 5
-                                        }}
-                                        shimmerColors={[
-                                            "#cdcdcd", "#ececec"
-                                        ]}
-                                        LinearGradient={LinearGradient}
-                                    /> :
-                                    <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item})}
-                                    >
-                                        <Image
-                                            source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
-                                            // resizeMode="contain"
-                                            style={{
-                                                height: heightToDp("20%"), 
-                                                marginBottom: heightToDp("0.5%"), 
-                                                width: widthToDp("47.5%"), 
-                                                borderRadius: 5,
+                    {
+                        this.state.isPostsFocused &&
+                        <FlatList
+                            data={this.state.userPosts}
+                            contentContainerStyle={{
+                                paddingHorizontal: widthToDp("2%")
+                            }}
+                            numColumns={2}
+                            keyExtractor={({item, index}) => index}
+                            ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
+                            ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
+                            renderItem={({item, index}) => (
+                                <>
+                                    {
+                                        !(item && item.post_url) ? 
+                                        <ShimmerPlaceHolder
+                                            height={heightToDp("20%")}
+                                            width={widthToDp("47.5%")}
+                                            duration={2000}
+                                            shimmerStyle={{
+                                                borderRadius: 5
                                             }}
-                                            key={index}
-                                        />                                    
-                                    </TouchableOpacity>
-                                }                                
-                                {
-                                    (item && item.post_date && item.post_time) &&
-                                    <View
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: heightToDp("1.2%"),
-                                            left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
-                                        }}
-                                    >
-                                        <Text
+                                            shimmerColors={[
+                                                "#cdcdcd", "#ececec"
+                                            ]}
+                                            LinearGradient={LinearGradient}
+                                        /> :
+                                        <TouchableOpacity
+                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item})}
+                                        >
+                                            <Image
+                                                source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
+                                                // resizeMode="contain"
+                                                style={{
+                                                    height: heightToDp("20%"), 
+                                                    marginBottom: heightToDp("0.5%"), 
+                                                    width: widthToDp("47.5%"), 
+                                                    borderRadius: 5,
+                                                }}
+                                                key={index}
+                                            />                                    
+                                        </TouchableOpacity>
+                                    }                                
+                                    {
+                                        (item && item.post_date && item.post_time) &&
+                                        <View
                                             style={{
-                                                color: "#db472b",
-                                                fontSize: widthToDp("3%")
+                                                position: 'absolute',
+                                                bottom: heightToDp("1.2%"),
+                                                left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
                                             }}
-                                        >{item.post_date + " " + item.post_time}</Text>
-                                    </View>
-                                }
-                                {
-                                    (this.state.userPosts.length > 0 && index % 2 === 0) &&
-                                    <View style={{width: widthToDp("1%")}}/>
-                                }
-                            </>
-                        )}
-                    />  
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: "#db472b",
+                                                    fontSize: widthToDp("3%")
+                                                }}
+                                            >{item.post_date + " " + item.post_time}</Text>
+                                        </View>
+                                    }
+                                    {
+                                        (this.state.userPosts.length > 0 && index % 2 === 0) &&
+                                        <View style={{width: widthToDp("1%")}}/>
+                                    }
+                                </>
+                            )}
+                        />  
+                    }
                     {
                         this.state.isShareFocused &&
                         <FlatList

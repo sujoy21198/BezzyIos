@@ -331,8 +331,8 @@ export default class SignUpScreen extends React.Component {
                                 <Image
                                     source={{ uri: this.state.imagePath }}
                                     style={{
-                                        height: heightToDp("7%"),
-                                        width: widthToDp("14%"),
+                                        height: heightToDp("9%"),
+                                        width: widthToDp("18%"),
                                         borderRadius: 8,
                                         alignSelf: "center"
                                     }}
@@ -414,6 +414,7 @@ export default class SignUpScreen extends React.Component {
                                     marginLeft: widthToDp("-1%"),
                                     fontFamily: 'Oswald-Medium'
                                 }}
+                                keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
                                 onFocus={() => this.setState({ isEmailFocused: true, isNameFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
                                 returnKeyType="next"

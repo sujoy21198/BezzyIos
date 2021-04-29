@@ -153,6 +153,7 @@ export default class ForgotPassword extends React.Component {
                                     marginLeft: widthToDp("-1%"),
                                     fontFamily: 'Oswald-Medium'
                                 }}
+                                keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
                                 onFocus={() => this.setState({ isEmailFocused: true })}
                                 returnKeyType="done"

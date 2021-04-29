@@ -51,6 +51,14 @@ export default class ChangePassword extends React.Component {
                 }
             })
         }
+        if(this.state.newPassword.trim().length < 8) {
+            return Toast.show({
+                text: "New Password should have at least 8 characters",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
         if(this.state.confirmPassword.trim()==="") {
             return Toast.show({
                 text: "Please confirm your new password",

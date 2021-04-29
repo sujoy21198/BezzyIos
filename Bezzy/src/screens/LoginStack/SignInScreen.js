@@ -184,6 +184,7 @@ export default class SignInScreen extends React.Component {
                                     marginLeft: widthToDp("-1%"),
                                     fontFamily: 'Oswald-Medium'
                                 }}
+                                keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
                                 onFocus={() => this.setState({ isEmailFocused: true, isPasswordFocused: false })}
                                 returnKeyType="next"
