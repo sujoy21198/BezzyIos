@@ -45,14 +45,13 @@ export default class HomeScreen extends React.Component {
             .then(async function (response) {
                 console.log(response.data.total_feed_response)
                 if (response.data.status === "error") {
-                    await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
-                        "searchval" : "",
+                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
                         "log_userID": userId
                     })
                         .then(function (responseUserList) {
                             if (responseUserList.data.resp === "success") {
-                                responseUserList.data.search_result = responseUserList.data.search_result.filter(item => String(item.user_id) !== userId)
-                                userList = responseUserList.data.search_result;
+                                responseUserList.data.all_user_list = responseUserList.data.all_user_list.filter(item => String(item.user_id) !== userId)
+                                userList = responseUserList.data.all_user_list;
                                 followingList = [];
                             } else {
                                 userList = [];
@@ -84,20 +83,31 @@ export default class HomeScreen extends React.Component {
 
     followUser = async (item, index) => {
         this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
-            "user_one_id": userId,
-            "user_two_id": item.user_id
-        });
+        let userId = await AsyncStorage.getItem("userId"), response;
+        if(item.user_is_flollowers==="No") {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
+                "user_one_id": userId,
+                "user_two_id": item.user_id
+            });
+        } else {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
+                "login_userID" : userId,
+                "userID" : item.user_id
+            });
+        }
         if (response.data.status === "success") {
             this.fetchHomeListing();
-            return Toast.show({
-                text: "Follow successful",
+            Toast.show({
+                text: item.user_is_flollowers==="No" ? "Follow successful" : response.data.message,
                 type: "success",
                 duration: 2000
             })
         } else {
-            //
+            Toast.show({
+                text:  response.data.message,
+                type: "warning",
+                duration: 2000
+            })
         }
         this.RBSheet.close();
     }
@@ -418,7 +428,7 @@ export default class HomeScreen extends React.Component {
                                     }}
                                     onPress={() => this.followUser(item, index)}
                                 >
-                                    <Text style={{ color: "#fff" }}>FOLLOW</Text>
+                                    <Text style={{ color: "#fff" }}>{item.user_is_flollowers==="No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                 </TouchableOpacity>
                                 <RBSheet
                                     ref={ref => {

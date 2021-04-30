@@ -93,7 +93,7 @@ export default class FollowingScreen extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.friend_photo}}
-                                    style={{height: heightToDp("5%"), width: widthToDp("12%")}}
+                                    style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 40, borderWidth: 1, borderColor: '#69abff'}}
                                 />
                                 <Text
                                     style={{
