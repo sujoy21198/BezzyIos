@@ -6,6 +6,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import RBSheet1 from 'react-native-raw-bottom-sheet';
+import RBSheet2 from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,38 +21,53 @@ export default class SearchScreen extends React.Component {
         }
     }
     componentDidMount() {
+        this.RBSheet2.open()
         this.searchUsers("")
     }
     searchUsers = async (text, type) => {
         if(type === "pullRefresh") {this.setState({userList: []})}
-        var user = []
+        var user = [], response;
         let userId = await AsyncStorage.getItem("userId");
-        await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
-            searchval: text,
-            loguser_id: userId
-        }).then(function (response) {
-            if (response.data.resp === 'error') {
-                user = []
+        if(text !== "") {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
+                searchval: text,
+                loguser_id: userId
+            })
+        } else {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                log_userID: userId
+            })
+        }
+        if(response.data.resp === "success") {
+            if(text !== "") {
+                user = response.data.search_result;
             } else {
-                user = response.data.search_result
+                user = response.data.all_user_list;
             }
-            console.log(response.data.search_result)
-        }).catch(function (error) {
-            console.log(error)
-        })
+        } else {
+            user = [];
+        }
         this.setState({ userList: user, isRefreshing: false })
+        this.RBSheet2.close()
     }
 
     followUser = async (item, index) => {
         this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
-            "user_one_id": userId,
-            "user_two_id": item.user_id
-        });
+        let userId = await AsyncStorage.getItem("userId"), response;
+        if(item.user_is_flollowers==="No") {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
+                "user_one_id": userId,
+                "user_two_id": item.user_id
+            });
+        } else {
+            response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
+                "login_userID" : userId,
+                "userID" : item.user_id
+            });
+        }
         if (response.data.status === "success") {
             Toast.show({
-                text: "Follow successful",
+                text: item.user_is_flollowers==="No" ? "Follow successful" : response.data.message,
                 type: "success",
                 duration: 2000
             })
@@ -59,10 +75,14 @@ export default class SearchScreen extends React.Component {
                 index: 0,
                 routes: [
                     { name: "HomeScreen" }
-                ]
+                ]   
             });
         } else {
-            //
+            Toast.show({
+                text:  response.data.message,
+                type: "warning",
+                duration: 2000
+            })
         }
         this.RBSheet.close();
     }
@@ -161,7 +181,7 @@ export default class SearchScreen extends React.Component {
                                 }}
                                 onPress={() => this.followUser(item, index)}
                             >
-                                <Text style={{ color: "#fff" }}>FOLLOW</Text>
+                                <Text style={{ color: "#fff" }}>{item.user_is_flollowers==="No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                             </TouchableOpacity>
                             <RBSheet1
                                 ref={ref => {
@@ -192,6 +212,32 @@ export default class SearchScreen extends React.Component {
                         </View>
                     )}
                 />
+                <RBSheet2
+                    ref={ref => {
+                        this.RBSheet2 = ref;
+                    }}
+                    height={heightToDp("6%")}
+                    closeOnPressMask={false}
+                    closeOnPressBack={false}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            width: widthToDp("15%"),
+                            position: 'absolute',
+                            top: heightToDp("45%"),
+                            left: widthToDp("40%"),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            borderRadius: 10
+                        },
+                    }}
+                >
+                    <ActivityIndicator
+                        size="large"
+                        color="#69abff"
+                    />
+                </RBSheet2>
                 <BottomTab isSearchFocused navigation={this.props.navigation} />
             </SafeAreaView>
         )
