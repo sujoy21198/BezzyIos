@@ -14,6 +14,7 @@ import RBSheet1 from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FlatGrid} from 'react-native-super-grid'
+import { element } from 'prop-types';
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -69,7 +70,16 @@ export default class HomeScreen extends React.Component {
             .catch(function (error) {
                 console.log(error);
             })
-        this.setState({ userList, followingList })
+        let noPostUsers = [], postUsers = [];
+        followingList.length > 0 && 
+        followingList.map(element => {
+            if(element.have_post === "No") {
+                noPostUsers.push(element);
+            } else {
+                postUsers.push(element);
+            }
+        })
+        this.setState({ userList, followingList : [...postUsers, ...noPostUsers] })
         this.RBSheet1.close();
     }
 
