@@ -280,23 +280,23 @@ export default class PostScreen extends React.Component {
                     </View>
                 </View>
                 {
-                    this.state.focusedTab === 'photo' ? <View style={{ alignSelf: 'center' }}>
-                        <FlatList
-                            data={imagesArray}
-                            numColumns={2}
-                            renderItem={({ index, item }) => (
-                                <View style={{ padding: widthToDp("2%") }}>
-                                    <Image
-                                        source={{ uri: item.path }}
-                                        style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center', margin: widthToDp("1%") }}
-                                    />
-                                </View>
-                            )}
-                        />
-                    </View> : <View>
+                    this.state.focusedTab === 'photo' ? 
+                    <FlatList
+                        data={imagesArray}
+                        numColumns={2}
+                        ItemSeparatorComponent={() => <View style={{width: widthToDp("0.5%")}}/>}
+                        renderItem={({ index, item }) => (
+                            <View style={{ paddingHorizontal: widthToDp("1%"), paddingVertical: heightToDp("0.5%") }}>
+                                <Image
+                                    source={{ uri: item.path }}
+                                    style={{ width: widthToDp("48%"), height: heightToDp("30%"), alignSelf: 'center', borderRadius: 10 }}
+                                />
+                            </View>
+                        )}
+                    /> : <View>
                         <Image
                             source={{ uri: this.state.thumbnail}}
-                            style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center', margin: widthToDp("1%") }}
+                            style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center' }}
                         />
                     </View>
                 }
