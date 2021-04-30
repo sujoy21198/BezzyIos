@@ -134,7 +134,7 @@ export default class HomeScreen extends React.Component {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("MessageScreen")}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.3}%`) }}>
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.5}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
                                     size={23}
@@ -176,6 +176,7 @@ export default class HomeScreen extends React.Component {
                     <Card style={{ height: heightToDp("50%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                         <ActivityIndicator size="large" color="#69abff"/>
                     </Card> : (
+                        postDetails && postDetails.length > 0 &&
                         <Card style={{
                             paddingHorizontal: widthToDp("2%"),
                             paddingVertical: heightToDp("1%"), 
@@ -183,8 +184,7 @@ export default class HomeScreen extends React.Component {
                             alignSelf: 'center',
                             borderRadius: 10
                         }}>
-                            {
-                                postDetails && postDetails.length > 0 &&
+                            {                                
                                 postDetails.map((i, key) => (
                                     <View style={{ width: widthToDp("95%"), alignSelf: 'center' }}>
                                         <View style={{ flexDirection: 'row' }}>
