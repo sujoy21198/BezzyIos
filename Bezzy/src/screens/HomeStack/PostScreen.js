@@ -165,7 +165,7 @@ export default class PostScreen extends React.Component {
                 filePaths.forEach((element, i) => {
                     formData.append('post_image[]', {
                         uri: element,
-                        name: 'userProfile.jpg',
+                        name: `userProfile${i}.jpg`,
                         type: 'image/jpg'
                     })
                     formData.append('userID', userID)
@@ -285,7 +285,7 @@ export default class PostScreen extends React.Component {
                             data={imagesArray}
                             numColumns={2}
                             renderItem={({ index, item }) => (
-                                <View style={{ alignSelf: 'center' }}>
+                                <View style={{ padding: widthToDp("2%") }}>
                                     <Image
                                         source={{ uri: item.path }}
                                         style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center', margin: widthToDp("1%") }}
