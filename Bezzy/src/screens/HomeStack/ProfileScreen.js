@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -71,14 +71,23 @@ export default class ProfileScreen extends React.Component {
                 >
                     <View
                         style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
                             paddingVertical: heightToDp("1%")
                         }}
                     >
                         {
                             Object.keys(this.state.userDetails).length > 0 &&
-                            <>
+                            <ScrollView
+                                contentContainerStyle={{                                    
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                refreshControl={
+                                    <RefreshControl                                        
+                                        refreshing={this.state.isRefreshing}
+                                        onRefresh={() => this.setState({isRefreshing: true}, this.getProfileData)}
+                                    />
+                                }
+                            >
                                 <Image
                                     source={{uri: this.state.userDetails.profile_pic}}
                                     style={{height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20}}
@@ -100,7 +109,7 @@ export default class ProfileScreen extends React.Component {
                                         }}
                                     >{this.state.userDetails.bio}</Text>
                                 } 
-                            </>
+                            </ScrollView>
                         }                        
                                                
                     </View>
@@ -225,8 +234,6 @@ export default class ProfileScreen extends React.Component {
                             }}
                             numColumns={2}
                             keyExtractor={({item, index}) => index}
-                            refreshing={this.state.isRefreshing}
-                            onRefresh={() => this.setState({isRefreshing: true}, () => this.getProfileData("", "pullRefresh"))}
                             ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
                             ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
                             renderItem={({item, index}) => (

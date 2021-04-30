@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
@@ -25,7 +25,8 @@ export default class HomeScreen extends React.Component {
             userList: [],
             followingList: [],
             expand: false,
-            postDetails: []
+            postDetails: [],
+            isRefreshing: false
         }
     }
 
@@ -39,7 +40,8 @@ export default class HomeScreen extends React.Component {
     //     alert(user_id)
     // }
 
-    fetchHomeListing = async () => {
+    fetchHomeListing = async (type) => {
+        if(type === "pullRefresh") {this.setState({userList: [], followingList: []})}
         var userList = [], followingList = [];
         let userId = await AsyncStorage.getItem("userId");
         await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId)
@@ -79,7 +81,7 @@ export default class HomeScreen extends React.Component {
                 postUsers.push(element);
             }
         })
-        this.setState({ userList, followingList : [...postUsers, ...noPostUsers] })
+        this.setState({ userList, followingList : [...postUsers, ...noPostUsers], isRefreshing: false })
         this.RBSheet1.close();
     }
 
@@ -383,6 +385,12 @@ export default class HomeScreen extends React.Component {
                     contentContainerStyle={{
                         paddingTop: heightToDp("1%")
                     }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={() => this.setState({isRefreshing: true}, () => this.fetchHomeListing("pullRefresh"))}
+                        />
+                    }
                     >
                         <Accordion
                             sections={followingList}
@@ -404,6 +412,8 @@ export default class HomeScreen extends React.Component {
                         contentContainerStyle={{
                             padding: widthToDp("2%")
                         }}
+                        refreshing={this.state.isRefreshing}
+                        onRefresh={() => this.setState({isRefreshing: true}, () => this.fetchHomeListing("pullRefresh"))}
                         ListFooterComponent={<View style={{ height: heightToDp("10%") }} />}
                         renderItem={({ item, index }) => (
                             <View
