@@ -15,13 +15,15 @@ export default class SearchScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            userList: []
+            userList: [],
+            isRefreshing: false
         }
     }
     componentDidMount() {
         this.searchUsers("")
     }
-    searchUsers = async (text) => {
+    searchUsers = async (text, type) => {
+        if(type === "pullRefresh") {this.setState({userList: []})}
         var user = []
         let userId = await AsyncStorage.getItem("userId");
         await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
@@ -37,7 +39,7 @@ export default class SearchScreen extends React.Component {
         }).catch(function (error) {
             console.log(error)
         })
-        this.setState({ userList: user })
+        this.setState({ userList: user, isRefreshing: false })
     }
 
     followUser = async (item, index) => {
@@ -123,6 +125,8 @@ export default class SearchScreen extends React.Component {
                     contentContainerStyle={{
                         padding: widthToDp("2%")
                     }}
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={() => this.setState({isRefreshing: true}, () => this.searchUsers("", "pullRefresh"))}
                     ListFooterComponent={<View style={{ height: heightToDp("10%") }} />}
                     renderItem={({ item, index }) => (
                         <View

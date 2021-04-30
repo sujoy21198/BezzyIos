@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import DataAccess from '../../components/DataAccess';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -16,6 +16,10 @@ export default class NotificationScreen extends React.Component {
 
     componentDidMount = async () => {
         this.setState({isLoading: true})
+        this.fetchNotifications();
+    }
+
+    fetchNotifications = async () => {
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId);
         if(response.data.status === "success") {
@@ -88,7 +92,7 @@ export default class NotificationScreen extends React.Component {
                     ListFooterComponent={<View style={{height: heightToDp("1.5%")}}/>}
                     ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
                     renderItem={({item, index}) => (
-                        <View
+                        <TouchableOpacity
                             style={{
                                 width: widthToDp("95%"),
                                 flexDirection: 'row',
@@ -101,6 +105,9 @@ export default class NotificationScreen extends React.Component {
                                 borderLeftColor: '#007dfe',
                                 borderLeftWidth: 5.5,
                             }}
+                            disabled={item.respostID === ""}
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {hideFunctionalities: true, image: {post_id: item.respostID}})}
                         >
                             <View
                                 style={{
@@ -119,7 +126,7 @@ export default class NotificationScreen extends React.Component {
                                     }}
                                 >{item.activity_message}</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                 />
             }

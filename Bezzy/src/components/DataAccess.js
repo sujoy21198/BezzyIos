@@ -40,6 +40,7 @@ const DataAccess = {
     postComment: "comment-post",
     likeDislikeComment: 'commentlikedislike',
     updatePostCaption: 'updatepostcaption',
+    getPostDetails: 'friendsingleblockdetails',
 
     //notification api's
     fetchNotifications: 'Notificationlist',

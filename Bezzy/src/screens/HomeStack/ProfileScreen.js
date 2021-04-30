@@ -21,6 +21,7 @@ export default class ProfileScreen extends React.Component {
         numberOfFollowings: 1,
         numberOfPosts: 6,
         isLoading: true,
+        isRefreshing: false,
         userPosts: [],
         userDetails: {}
     }
@@ -34,6 +35,7 @@ export default class ProfileScreen extends React.Component {
     )
 
     componentDidMount() {
+        this.RBSheet.open();
         this.setState({isLoading: true})
         this.getProfileData();
     } 
@@ -50,7 +52,8 @@ export default class ProfileScreen extends React.Component {
             })
         }).catch(err => console.log(err))
         this.setState({userDetails, userPosts})
-        this.setState({isLoading: false})
+        this.setState({isLoading: false, isRefreshing: false})
+        this.RBSheet.close()
     }
 
     render = () => (
@@ -222,6 +225,8 @@ export default class ProfileScreen extends React.Component {
                             }}
                             numColumns={2}
                             keyExtractor={({item, index}) => index}
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={() => this.setState({isRefreshing: true}, () => this.getProfileData("", "pullRefresh"))}
                             ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
                             ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
                             renderItem={({item, index}) => (

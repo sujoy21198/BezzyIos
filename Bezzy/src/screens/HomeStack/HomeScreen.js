@@ -220,7 +220,7 @@ export default class HomeScreen extends React.Component {
                                                 renderItem={({item, index}) => (
                                                     <TouchableOpacity 
                                                         activeOpacity={0.7}
-                                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: i})}
+                                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: {...item, post_id: i.post_id}})}
                                                         style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
                                                         key={index}
                                                     >
@@ -342,7 +342,6 @@ export default class HomeScreen extends React.Component {
             postDetails = [];
         }
         this.setState({postDetails});
-
         if (status === 'success') {
             this.setState({ expand: true })
         } else {
