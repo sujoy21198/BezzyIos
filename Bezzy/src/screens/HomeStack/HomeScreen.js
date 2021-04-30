@@ -1,8 +1,9 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -12,6 +13,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import RBSheet1 from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {FlatGrid} from 'react-native-super-grid'
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -43,12 +45,14 @@ export default class HomeScreen extends React.Component {
             .then(async function (response) {
                 console.log(response.data.total_feed_response)
                 if (response.data.status === "error") {
-                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                    await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
+                        "searchval" : "",
                         "log_userID": userId
                     })
                         .then(function (responseUserList) {
                             if (responseUserList.data.resp === "success") {
-                                userList = responseUserList.data.all_user_list;
+                                responseUserList.data.search_result = responseUserList.data.search_result.filter(item => String(item.user_id) !== userId)
+                                userList = responseUserList.data.search_result;
                                 followingList = [];
                             } else {
                                 userList = [];
@@ -101,37 +105,40 @@ export default class HomeScreen extends React.Component {
     _renderHeader = section => {
         return (
             <View >
-                <Card style={{ height: heightToDp("15%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                <Card style={{ paddingVertical: heightToDp("1.5%"), paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Image
                             source={{ uri: section.friend_photo }}
-                            style={{ height: heightToDp("13%"), width: widthToDp("22%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
+                            style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
                         />
                         <View>
-                            <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-1%") }}>
-                                <Image
-                                    source={require("../../../assets/ago.png")}
-                                    resizeMode="contain"
-                                    style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
-                                />
-                            </View>
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("-1.5%") }}>
+                            {
+                                section.have_post === "Yes" &&
+                                <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
+                                    <Image
+                                        source={require("../../../assets/ago.png")}
+                                        resizeMode="contain"
+                                        style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                    />
+                                </View>
+                            }
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days!=="" ? -0.5 : section.have_post=== "No" ? 3.5 : 0}%`) }}>
                                 <Text>{section.friend_name}</Text>
                             </View>
                             {
                                 section.past_post_days !== "" &&
-                                <View style={{ marginLeft: widthToDp("6%"), }}>
-                                    <Text style={{ color: '#ff0000' }}>{section.past_post_days} days ago</Text>
+                                <View style={{ marginLeft: widthToDp("6%") }}>
+                                    <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                 </View>
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("MessageScreen")}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days !== "" ? 2 : 4}%`) }}>
-                                <Icon
-                                    name="comments"
-                                    size={20}
-                                    color={"#87CEEB"}
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.5}%`) }}>
+                                <Icon2
+                                    name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
+                                    size={23}
+                                    color={"#69abff"}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -170,98 +177,127 @@ export default class HomeScreen extends React.Component {
                         <ActivityIndicator size="large" color="#69abff"/>
                     </Card> : (
                         postDetails && postDetails.length > 0 &&
-                        postDetails.map((i) => (
-                            <Card style={{ height: heightToDp(`${i.post_content!=="" ? 50 : 47}%`), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Image
-                                        source={{ uri: section.friend_photo }}
-                                        style={{ height: heightToDp("5%"), width: widthToDp("10%"), marginLeft: widthToDp("4%"), borderRadius: 300, marginTop: heightToDp("2%") }}
-                                    />
-                                    <View>
-                                        <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                            <Text>{section.friend_name}</Text>
-                                        </View>
-                                        <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                            <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                                {
-                                    i.post_content!=="" &&
-                                    <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
-                                        <Text style={{ color: 'black' }}>{i.post_content}</Text>
-                                    </View>
-                                }                                
-                                <TouchableOpacity 
-                                    activeOpacity={0.7}
-                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: i})}
-                                    style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
-                                >
-                                    <Image
-                                        style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
-                                        source={{ uri: i.post_img_video_live[0].post_url}}
-                                    />
-                                </TouchableOpacity>
-                                <View
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: heightToDp("1.5%"),
-                                        left: widthToDp("3%"),
-                                        flexDirection: 'row',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        onPress={() => this.likePost(i)}
-                                        activeOpacity={0.7}
-                                    >
-                                        {
-                                            i.log_user_like_status === "No" ?
-                                            <Icon
-                                                name="heart"
-                                                color="#69abff"
-                                                size={23}
-                                            /> :
-                                            <Icon1
-                                                name="heart"
-                                                color="#ff0000"
-                                                size={23}
+                        <Card style={{
+                            paddingHorizontal: widthToDp("2%"),
+                            paddingVertical: heightToDp("1%"), 
+                            width: widthToDp("95%"),
+                            alignSelf: 'center',
+                            borderRadius: 10
+                        }}>
+                            {                                
+                                postDetails.map((i, key) => (
+                                    <View style={{ width: widthToDp("95%"), alignSelf: 'center' }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <Image
+                                                source={{ uri: section.friend_photo }}
+                                                style={{ height: heightToDp("5%"), width: widthToDp("10%"), marginLeft: widthToDp("4%"), borderRadius: 300, marginTop: heightToDp("2%") }}
                                             />
+                                            <View>
+                                                <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
+                                                    <Text>{section.friend_name}</Text>
+                                                </View>
+                                                <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
+                                                    <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        {
+                                            i.post_content!=="" &&
+                                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
+                                                <Text style={{ color: 'black' }}>{i.post_content}</Text>
+                                            </View>
+                                        }  
+                                        {
+                                            i.post_img_video_live.length > 0 &&
+                                            <FlatList
+                                                data={i.post_img_video_live}
+                                                horizontal={true}
+                                                contentContainerStyle={{
+                                                    paddingHorizontal: widthToDp("4%")
+                                                }}
+                                                showsHorizontalScrollIndicator={false}
+                                                ItemSeparatorComponent={() => <View style={{width: widthToDp("2%")}}/>}
+                                                renderItem={({item, index}) => (
+                                                    <TouchableOpacity 
+                                                        activeOpacity={0.7}
+                                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {type: "otherUserPost", image: i})}
+                                                        style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
+                                                        key={index}
+                                                    >
+                                                        <Image
+                                                            style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
+                                                            source={{ uri: item.post_url}}
+                                                        />
+                                                    </TouchableOpacity>
+                                                )}
+                                            />
+                                        }                                        
+                                        
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: 'center', 
+                                                paddingVertical: heightToDp("1.5%"), 
+                                                paddingHorizontal: widthToDp("4.5%")
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                onPress={() => this.likePost(i)}
+                                                activeOpacity={0.7}
+                                            >
+                                                {
+                                                    i.log_user_like_status === "No" ?
+                                                    <Icon
+                                                        name="heart"
+                                                        color="#69abff"
+                                                        size={23}
+                                                    /> :
+                                                    <Icon1
+                                                        name="heart"
+                                                        color="#ff0000"
+                                                        size={23}
+                                                    />
+                                                }
+                                            </TouchableOpacity>                                    
+                                            <Text
+                                                style={{
+                                                    color: "#cdcdcd",
+                                                    fontSize: widthToDp("3.5%"),
+                                                    paddingLeft: widthToDp("1%")
+                                                }}
+                                            >{i.number_of_like}</Text>
+                                            <TouchableOpacity
+                                                onPress={() => this.props.navigation.navigate("CommentScreen", {post: i, type: "otherUserPost"})}
+                                            >
+                                                <Icon
+                                                    name="comment"
+                                                    color="#69abff"
+                                                    size={23}
+                                                    style={{paddingLeft: widthToDp("4%")}}
+                                                />
+                                            </TouchableOpacity>
+                                            <Text
+                                                style={{
+                                                    color: "#cdcdcd",
+                                                    fontSize: widthToDp("3.5%"),
+                                                    paddingLeft: widthToDp("1%")
+                                                }}
+                                            >{i.number_of_comment}</Text>
+                                            <Icon2
+                                                name={Platform.OS==='android' ? 'md-arrow-redo-outline' : 'ios-arrow-redo-outline'}
+                                                color="#69abff"
+                                                size={25}
+                                                style={{paddingLeft: widthToDp("4%")}}
+                                            />
+                                        </View>
+                                        {
+                                            key !== postDetails.length - 1 &&
+                                            <View style={{borderWidth: 0.5, borderColor: '#cdcdcd', marginHorizontal: widthToDp("4%")}}/>
                                         }
-                                    </TouchableOpacity>                                    
-                                    <Text
-                                        style={{
-                                            color: "#cdcdcd",
-                                            fontSize: widthToDp("3.5%"),
-                                            paddingLeft: widthToDp("1%")
-                                        }}
-                                    >{i.number_of_like}</Text>
-                                    <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate("CommentScreen", {post: i, type: "otherUserPost"})}
-                                    >
-                                        <Icon
-                                            name="comment"
-                                            color="#69abff"
-                                            size={23}
-                                            style={{paddingLeft: widthToDp("4%")}}
-                                        />
-                                    </TouchableOpacity>
-                                    <Text
-                                        style={{
-                                            color: "#cdcdcd",
-                                            fontSize: widthToDp("3.5%"),
-                                            paddingLeft: widthToDp("1%")
-                                        }}
-                                    >{i.number_of_comment}</Text>
-                                    <Icon
-                                        name="share"
-                                        color="#69abff"
-                                        size={23}
-                                        style={{paddingLeft: widthToDp("4%")}}
-                                    />
-                                </View>
-                            </Card>
-                        ))
+                                    </View>
+                                ))
+                            }
+                        </Card>
                     )
                 }
                 {/* {
@@ -321,12 +357,20 @@ export default class HomeScreen extends React.Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>                
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <Header isHomeScreen />
+                <Header isHomeScreen  navigation={this.props.navigation}/>
                 {
                     this.state.followingList.length > 0 ?
-                    <ScrollView>
+                    <ScrollView 
+                    contentContainerStyle={{
+                        paddingTop: heightToDp("1%")
+                    }}
+                    >
                         <Accordion
                             sections={followingList}
+                            touchableProps={{
+                                activeOpacity: 0.95
+                            }}
+                            underlayColor="#ececec"
                             activeSections={this.state.activeSections}
                             //renderSectionTitle={this._renderSectionTitle}
                             renderHeader={this._renderHeader}
@@ -345,19 +389,18 @@ export default class HomeScreen extends React.Component {
                         renderItem={({ item, index }) => (
                             <View
                                 style={{
-                                    paddingVertical: heightToDp("1%"),
-                                    width: widthToDp("30%"),
+                                    paddingBottom: heightToDp("1%"),
+                                    width: widthToDp("31%"),
                                     backgroundColor: "#fff",
                                     borderRadius: 10,
-                                    marginRight: widthToDp("2%"),
-                                    marginBottom: heightToDp("1%")
+                                    marginRight: widthToDp("1.5%"),
+                                    marginBottom: heightToDp("0.8%")
                                 }}
                                 key={index}
                             >
                                 <Image
                                     source={{ uri: item.image }}
-                                    style={{ height: heightToDp("13%"), width: widthToDp("30%") }}
-                                    resizeMode="contain"
+                                    style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
                                 />
                                 <Text
                                     style={{

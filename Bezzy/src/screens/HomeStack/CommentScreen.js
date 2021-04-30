@@ -83,7 +83,7 @@ export default class CommentScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={this.props.route.params.type !== "otherUserPost" ? this.state.comments.length : undefined} />
             <View
@@ -107,11 +107,11 @@ export default class CommentScreen extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.userimage}}
-                                    style={{height: heightToDp("4%"), width: widthToDp("8%"), borderRadius: 20}}
+                                    style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 25}}
                                 />
                                 <View
                                     style={{
-                                        marginLeft: widthToDp("5%"),
+                                        marginLeft: widthToDp("3%"),
                                         padding: widthToDp("2%"),
                                         backgroundColor: 'rgba(0, 255, 255, 0.1)',
                                         borderRadius: 10,
@@ -122,6 +122,7 @@ export default class CommentScreen extends React.Component {
                                         style={{
                                             width: widthToDp("100%"),
                                             color: '#1b1b1b',
+                                            fontWeight: 'bold',
                                             fontSize: widthToDp("3.5%")
                                         }}
                                     >{item.username}</Text>
@@ -215,7 +216,7 @@ export default class CommentScreen extends React.Component {
                         paddingHorizontal: widthToDp("2%"),
                         width: widthToDp("98%"),
                         borderWidth: 1,
-                        borderRadius: 5,
+                        borderRadius: 10,
                         borderColor: "#69abff",
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -227,8 +228,9 @@ export default class CommentScreen extends React.Component {
                         placeholderTextColor="#808080"
                         style={{
                             width: widthToDp("88%"),
-                            padding: widthToDp("1%"),
-                            fontSize: widthToDp("3.5%"),
+                            paddingHorizontal: widthToDp("1%"),
+                            paddingVertical: heightToDp("0%"),
+                            fontSize: widthToDp("4.3%"),
                             color: '#777'
                         }}
                         multiline

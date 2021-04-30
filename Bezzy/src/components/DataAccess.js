@@ -1,33 +1,49 @@
 const DataAccess = {
     BaseUrl : 'http://161.35.122.165/bezzy.websteptech.co.uk/api/',
+
+    //login api's
     SignIn: 'login',
     Registration: 'registration',
     ForgotPass:'forgotpassotpsend',
-    Search:'searchregisteruser', 
     SendOtp: 'verifyotp',
     ResetPassword: 'setforgotpassword',
     resendOtp: "resendotp",
-    friendBlockList: "friendblocklist",
+    terms: 'terms-condition', 
+
+    //user listing api's
     userList: "RegisterUserList",
+    Search:'searchregisteruser', 
+
+    //follow api's
     followUser: "followingreqsend",
-    friendList: "getuserfollowinglist",
     followerList: "getfollowerslist",
-    followingList: "getuserfollowinglist",
+    friendBlockList: "friendblocklist",
     unfollow: "unfollowuser",
+    followBack: 'followingback',
+    removeUser: 'removeuser',
+    blockUser: 'blockuser',
+
+    //profile api's
     getProfileDetails: 'geteditprofiledata',
     editProfile: 'UpdateProfileData',
     uploadProfileImage: 'UpdateProfilePicture',
+    UpdateProfilePicture:'UpdateProfilePicture',
     friendblockdetails : 'friendblockdetails/',
     updateProfile: 'UpdateProfileData',
+    changePassword: 'changepassword',
+
+    //post api's
     deletePost: 'deletepostimagevideo',
-    UpdateProfilePicture:'UpdateProfilePicture',
     likePost: 'postlikedislike',
     postLikedUsers: 'postlikeuserslist',
     postCommentedUsers: 'comment-list',
     postComment: "comment-post",
     likeDislikeComment: 'commentlikedislike',
     updatePostCaption: 'updatepostcaption',
-    changePassword: 'changepassword'
+
+    //notification api's
+    fetchNotifications: 'Notificationlist',
+    clearNotification: 'ClearNotificationlist'
 }
 
 export default DataAccess

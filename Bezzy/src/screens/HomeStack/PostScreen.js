@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image } from 'react-native';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar } from 'react-native';
 import { ActionSheet } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -204,7 +204,8 @@ export default class PostScreen extends React.Component {
         var imagesArray = []
         imagesArray = this.state.imagesArray
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>       
+                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <Header isHomeStackInnerPage isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
 
                 <View

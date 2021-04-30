@@ -19,6 +19,7 @@ export default class ButtonComponent extends React.Component {
             <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={this.props.onPressButton}
+                disabled={this.props.disabled}
             >
                 <Text
                     style={{

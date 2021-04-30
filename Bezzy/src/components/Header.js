@@ -1,5 +1,5 @@
 import React from 'react';
-import { BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from './Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -10,24 +10,38 @@ export default class Header extends React.Component {
         openUserModal: false
     }
     navigateToOtherScreen = async (type) => {
-        // await AsyncStorage.removeItem("userDetails");
-        // await AsyncStorage.removeItem("userId");
-        await AsyncStorage.removeItem("token");
-        // await AsyncStorage.removeItem("otpStatus");
-        // await AsyncStorage.removeItem('numberOfFollowings');
-        //async storage will be null
         this.RBSheet.close();
         if (type === "block") {
             this.props.navigation.navigate("BlockList");
         } else if (type === "changePassword") {
             this.props.navigation.navigate('ChangePassword');
         } else if (type === "logout") {
-            this.props.navigation.reset({
-                index: 0,
-                routes: [
-                    { name: "SignInScreen" }
+            Alert.alert(
+                "Log out",
+                "Are you sure to Log out?", [
+                    {
+                        text: "Cancel",
+                        onPress: () => undefined,
+                        style: "cancel"
+                    },
+                    {
+                        text: "Yes",
+                        onPress: async () => {         
+                            //async storage will be null                   
+                            await AsyncStorage.removeItem("userDetails");
+                            await AsyncStorage.removeItem("userId");
+                            await AsyncStorage.removeItem("token");
+                            await AsyncStorage.removeItem("otpStatus");
+                            this.props.navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: "SignInScreen" }
+                                ]
+                            });
+                        }
+                    }
                 ]
-            });
+            )
         }
     }
 
@@ -127,7 +141,10 @@ export default class Header extends React.Component {
                         }
                         {
                             this.props.isHomeScreen &&
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                            >
                                 <Image
                                     source={require("../../assets/notification.png")}
                                     resizeMode="contain"
@@ -227,14 +244,44 @@ export default class Header extends React.Component {
                                 color={this.props.isHomeStackInnerPage ? '#69abff' : "#fff"}
                             />
                         }
-                        <Text style={{
-                            color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
-                            fontSize: 15,
-                            fontWeight: 'bold',
-                            marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
-                        }}>
-                            {this.props.headerText}
-                        </Text>
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: 'space-between',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Text style={{
+                                color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
+                                fontSize: 15,
+                                fontWeight: 'bold',
+                                marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
+                            }}>
+                                {this.props.headerText}
+                            </Text>                                                
+                            {
+                                this.props.notification &&
+                                <TouchableOpacity
+                                    style={{
+                                        paddingVertical: heightToDp("0.5%"),
+                                        paddingHorizontal: widthToDp("1%"),
+                                        backgroundColor: '#007dfe',
+                                        borderRadius: 10
+                                    }}
+                                    activeOpacity={0.7}
+                                    onPress={this.props.clearNotifications}
+                                >
+                                    <Text
+                                        style={{
+                                            color: '#fff',
+                                            textAlign: 'center',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >Clear All</Text>
+                                </TouchableOpacity>
+                            }
+                        </View>
                     </TouchableOpacity>
             }
         </SafeAreaView>

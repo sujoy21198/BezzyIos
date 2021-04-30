@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Platform, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, StatusBar, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,7 +13,8 @@ export default class MessageScreen extends React.Component {
                 backgroundColor: '#fff'
             }}
             keyboardShouldPersistTaps="handled"
-        >
+        >       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <TouchableOpacity
                 style={{
                     paddingHorizontal: widthToDp("2%"),

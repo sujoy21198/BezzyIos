@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -247,23 +247,30 @@ export default class EditProfileScreen extends React.Component {
     //upload converted image function
     updateProfilePicture = async(base64ImageName) => {
         let userID = await AsyncStorage.getItem('userId')
-        axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
+        let response = await axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
             'userID' : userID,
             'profile_picture' : base64ImageName
-        }).then(function(response){
-            return Toast.show({
+        })
+        this.RBSheet.close()
+        if(response.data.resp === "true") {
+            Toast.show({
                 text: "Profile has been updated successfully",
                 type: "success",
                 duration: 3000
             });
-            
-        }).catch(function(error){
+            this.props.navigation.reset({
+                index: 3,
+                routes: [
+                    { name: "ProfileScreen" }
+                ]
+            })
+        } else {
             Toast.show({
                 text: response.data.reg_msg,
                 type: "danger",
                 duration: 3000
             });
-        })
+        }
     }
 
     //GRANT PERMISSION FUNCTION
@@ -277,27 +284,42 @@ export default class EditProfileScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>       
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"
             >
                 <TouchableOpacity
                     style={{
-                        marginTop: heightToDp("5%")
+                        marginVertical: heightToDp("5%")
                     }}
                     activeOpacity={0.7}
                     onPress={() => this.uploadPicture()}
                 >
-                    <Image
-                        source={this.state.image!=="" ? {uri: this.state.image} : require("../../../assets/sign_up.png")}
-                        resizeMode="contain"
-                        style={{
-                            height: heightToDp("7%"),
-                            width: widthToDp("20%"),
-                            alignSelf: "center"
-                        }}
-                    />
+                    {
+                        this.state.image!=="" ?
+                            <Image
+                                source={{ uri: this.state.image }}
+                                style={{
+                                    height: heightToDp("11%"),
+                                    width: widthToDp("22%"),
+                                    borderRadius: 50,
+                                    alignSelf: "center",
+                                    borderWidth: 1,
+                                    borderColor: '#69abff'
+                                }}
+                            /> :
+                            <Image
+                                source={require("../../../assets/sign_up.png")}
+                                resizeMode="contain"
+                                style={{
+                                    height: heightToDp("7%"),
+                                    width: widthToDp("14%"),
+                                    alignSelf: "center",
+                                }}
+                            />
+                    }
                 </TouchableOpacity>
                 
                 <View
@@ -305,7 +327,6 @@ export default class EditProfileScreen extends React.Component {
                         alignItems: 'center',
                         borderBottomWidth: 1,
                         borderBottomColor: '#a9a9a9',
-                        marginTop: heightToDp("6%"),
                         marginHorizontal: widthToDp("3.5%")
                     }}
                 >

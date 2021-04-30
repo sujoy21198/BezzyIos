@@ -23,9 +23,10 @@ export default class SearchScreen extends React.Component {
     }
     searchUsers = async (text) => {
         var user = []
+        let userId = await AsyncStorage.getItem("userId");
         await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
             searchval: text,
-            loguser_id: '232'
+            loguser_id: userId
         }).then(function (response) {
             if (response.data.resp === 'error') {
                 user = []
@@ -126,19 +127,18 @@ export default class SearchScreen extends React.Component {
                     renderItem={({ item, index }) => (
                         <View
                             style={{
-                                paddingVertical: heightToDp("1%"),
-                                width: widthToDp("30%"),
+                                paddingBottom: heightToDp("1%"),
+                                width: widthToDp("31%"),
                                 backgroundColor: "#fff",
                                 borderRadius: 10,
-                                marginRight: widthToDp("2%"),
-                                marginBottom: heightToDp("1%")
+                                marginRight: widthToDp("1.5%"),
+                                marginBottom: heightToDp("0.8%")
                             }}
                             key={index}
                         >
                             <Image
                                 source={{uri:item.image}}
-                                style={{ height: heightToDp("13%"), width: widthToDp("30%") }}
-                                resizeMode="contain"
+                                style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
                             />
                             <Text
                                 style={{

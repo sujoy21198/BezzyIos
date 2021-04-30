@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -72,32 +72,48 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     deleteImage = async () => {
-        this.RBSheet.open();
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
-            "imgvideoID" : this.props.route.params.image.id,
-            "post_type" : this.props.route.params.image.post_type
-        });
-        if(response.data.status === "success") {
-            this.RBSheet.close();
-            Toast.show({
-                text: response.data.message,
-                type: "success",
-                duration: 2000
-            })
-            this.props.navigation.reset({
-                index: 3,
-                routes: [
-                    { name: "ProfileScreen" }
-                ]
-            })
-        } else {
-            this.RBSheet.close();
-            Toast.show({
-                text: response.data,
-                type: "danger",
-                duration: 2000
-            })
-        }
+        Alert.alert(
+            "Delete", 
+            "Are you sure to delete this image?",
+            [
+                {
+                    text: "No",
+                    onPress: () => undefined,
+                    style:  'cancel'
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        this.RBSheet.open();
+                        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
+                            "imgvideoID" : this.props.route.params.image.id,
+                            "post_type" : this.props.route.params.image.post_type
+                        });
+                        if(response.data.status === "success") {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data.message,
+                                type: "success",
+                                duration: 2000
+                            })
+                            this.props.navigation.reset({
+                                index: 3,
+                                routes: [
+                                    { name: "ProfileScreen" }
+                                ]
+                            })
+                        } else {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data,
+                                type: "danger",
+                                duration: 2000
+                            })
+                        }
+                    }
+                }
+            ]
+        )
     }
 
     likeImage = async () => {
@@ -144,17 +160,34 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex:1}}>
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+        <ScrollView style={{flex:1, backgroundColor: '#1b1b1b'}}>
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />            
             <LinearGradient
+                style={{paddingTop: heightToDp("4%")}}
                 colors={['#fff', '#1b1b1b']}
             >
-                <Image
-                resizeMode="contain"
-                source={{ uri : this.props.route.params.type === "otherUserPost" ? this.props.route.params.image.post_img_video_live[0].post_url : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
-                style={{height: heightToDp("100%"), width: widthToDp("100%"), resizeMode: "contain"}}
-                />
-            </LinearGradient> 
+                {
+                    (this.props.route.params.type === "otherUserPost" && this.props.route.params.image.post_img_video_live && this.props.route.params.image.post_img_video_live.length > 0) ?
+                    <FlatList
+                        data={this.props.route.params.image.post_img_video_live}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        ItemSeparatorComponent={() => <View style={{width: widthToDp("5%")}}/>}
+                        renderItem={({item, index}) => (
+                            <Image
+                                resizeMode="contain"
+                                style={{ height: heightToDp("80%"), width: widthToDp("100%") }}
+                                source={{ uri: item.post_url}}
+                            />
+                        )}
+                    /> :
+                    <Image
+                        resizeMode="contain"
+                        source={{ uri : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
+                        style={{ height: heightToDp("80%"), width: widthToDp("100%"), resizeMode: "contain"}}
+                    />
+                }                
+            </LinearGradient>   
             <TouchableOpacity
                 style={{
                     position: 'absolute',
@@ -169,17 +202,7 @@ export default class ImagePreviewScreen extends React.Component {
                     alignItems: 'center'
                 }}
                 activeOpacity={0.7}
-                onPress={
-                    () => 
-                    this.props.route.params.type === "otherUserPost" ?
-                    this.props.navigation.reset({
-                        index: 0,
-                        routes: [
-                            { name: "HomeScreen" }
-                        ]
-                    })
-                    : this.props.navigation.goBack()
-                }
+                onPress={() => this.props.navigation.goBack()}
             >
                 <Icon
                     name="chevron-left"
@@ -189,74 +212,11 @@ export default class ImagePreviewScreen extends React.Component {
             </TouchableOpacity>            
             <View
                 style={{
-                    position: 'absolute',
-                    bottom: heightToDp("4%"),
-                    right: widthToDp("4%"),
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                }}
-            >
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={this.likeImage}
-                    disabled={this.state.isLoading}
-                >
-                    {
-                        this.state.isLiked ?
-                        <Icon1
-                            name="heart"
-                            color={"#ff0000"}
-                            size={25}
-                        /> :
-                        <Icon
-                            name="heart"
-                            color={"#fff"}
-                            size={25}
-                        />
-                    }
-                </TouchableOpacity>
-                <Text
-                    style={{
-                        color: "#fff",
-                        fontSize: widthToDp("3.5%"),
-                        paddingLeft: widthToDp("2%")
-                    }}
-                >{this.state.numberOfLikes}</Text>
-                <Icon
-                    name="comment"
-                    color="#fff"
-                    size={25}
-                    style={{paddingLeft: widthToDp("4%")}}
-                    onPress={() => this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image})}
-                />
-                <Text
-                    style={{
-                        color: "#fff",
-                        fontSize: widthToDp("3.5%"),
-                        paddingLeft: widthToDp("2%")
-                    }}
-                >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
-                {
-                    this.props.route.params.type !== "otherUserPost" &&
-                    <TouchableOpacity
-                        style={{paddingLeft: widthToDp("4%")}}
-                        onPress={this.deleteImage}
-                    >
-                        <Icon
-                            name="trash-alt"
-                            color="#fff"
-                            size={25}
-                        />
-                    </TouchableOpacity>
-                }                
-            </View> 
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: heightToDp("12%"),
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    backgroundColor: '#1b1b1b',
+                    paddingTop: heightToDp("2%"),
                     paddingHorizontal: widthToDp("3%")
                 }}
             >                
@@ -294,7 +254,79 @@ export default class ImagePreviewScreen extends React.Component {
                         } 
                     </TouchableOpacity>  
                 }                              
+            </View>          
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: '#1b1b1b',
+                    alignSelf: 'flex-end',
+                    paddingHorizontal: widthToDp("3%"),
+                    paddingTop: heightToDp("2%"),
+                    paddingBottom: heightToDp("1%"),
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={this.likeImage}
+                    disabled={this.state.isLoading || (this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost")}
+                >
+                    {
+                        this.state.isLiked ?
+                        <Icon1
+                            name="heart"
+                            color={"#ff0000"}
+                            size={25}
+                        /> :
+                        <Icon
+                            name="heart"
+                            color={"#fff"}
+                            size={25}
+                        />
+                    }
+                </TouchableOpacity>
+                <Text
+                    style={{
+                        color: "#fff",
+                        fontSize: widthToDp("3.5%"),
+                        paddingLeft: widthToDp("2%")
+                    }}
+                >{this.state.numberOfLikes}</Text>
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={{paddingLeft: widthToDp("4%")}}
+                    onPress={() => this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image})}
+                    disabled={this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost"}
+                >
+                    <Icon
+                        name="comment"
+                        color="#fff"
+                        size={25}
+                    />
+                </TouchableOpacity>
+                <Text
+                    style={{
+                        color: "#fff",
+                        fontSize: widthToDp("3.5%"),
+                        paddingLeft: widthToDp("2%")
+                    }}
+                >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
+                {
+                    this.props.route.params.type !== "otherUserPost" &&
+                    <TouchableOpacity
+                        style={{paddingLeft: widthToDp("4%")}}
+                        onPress={this.deleteImage}
+                    >
+                        <Icon
+                            name="trash-alt"
+                            color="#fff"
+                            size={25}
+                        />
+                    </TouchableOpacity>
+                }                
             </View> 
+             
             <RBSheet
                 ref={ref => {
                     this.RBSheet = ref;
@@ -321,6 +353,6 @@ export default class ImagePreviewScreen extends React.Component {
                     color="#69abff"
                 />
             </RBSheet>    
-        </SafeAreaView>
+        </ScrollView>
     )
 }

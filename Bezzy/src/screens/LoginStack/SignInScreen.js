@@ -1,12 +1,12 @@
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios'
 import DataAccess from '../../components/DataAccess'
-import { Toast } from 'native-base';
+import { Form, Input, Item, Label, Toast } from 'native-base';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
@@ -18,17 +18,16 @@ export default class SignInScreen extends React.Component {
         this.state = {
             email: "",
             password: "",
-            isEmailValid: ''
+            isEmailValid: '',
+            isEmailFocused: false,
+            isPasswordFocused: false,
         }
     }
 
     setEmail = (text) => {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!emailRegex.test(text.trim())) {
-            // this.setState({ isEmailValid: false, email: text.trim() })
-            // alert(this.state.email)
-            this.state.email = text
-            this.state.isEmailValid = false
+            this.setState({ isEmailValid: false, email: text.trim() })
         } else {
             this.setState({ email: text.trim(), isEmailValid: true });
         }
@@ -117,11 +116,13 @@ export default class SignInScreen extends React.Component {
     }
 
     render = () => (
-        <KeyboardAwareScrollView
+        <SafeAreaView
             style={{ flex: 1, backgroundColor: '#69abff' }}
-            keyboardShouldPersistTaps='handled'>
+        >
+            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header headerText={"Welcome to Bezzy"} />
-            <View
+            <KeyboardAwareScrollView                
+                keyboardShouldPersistTaps='handled'
                 style={{
                     height: heightToDp('100%'),
                     backgroundColor: '#fff',
@@ -153,65 +154,104 @@ export default class SignInScreen extends React.Component {
                     >
                         Let's get started
                     </Text>
-                    <View
+                    <Form
                         style={{
+                            marginLeft: widthToDp("-3%")
+                        }}
+                    >
+                        <Item
+                            style={{
+                                alignItems: 'center',
+                                borderBottomWidth: 1,
+                                borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
+                                marginTop: heightToDp("10%"),
+                            }}
+                            floatingLabel
+                        >
+                            <Label
+                                style={{
+                                    color: this.state.isEmailFocused ? '#69abff' : '#808080',
+                                    fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
+                                    marginTop: heightToDp("-0.5%"),
+                                }}
+                            >Email Id</Label>
+                            <Input
+                                style={{
+                                    width: widthToDp("99%"),
+                                    borderWidth: 0,
+                                    fontSize: widthToDp("3.6%"),
+                                    color: '#1b1b1b',
+                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: 'Oswald-Medium'
+                                }}
+                                keyboardType="email-address"
+                                onChangeText={(text) => this.setEmail(text)}
+                                onFocus={() => this.setState({ isEmailFocused: true, isPasswordFocused: false })}
+                                returnKeyType="next"
+                                onSubmitEditing={() => {
+                                    this.setState({ iisEmailFocused: false, isPasswordFocused: true });
+                                    this.refPassword._root.focus();
+                                }}
+                            />
+                        </Item>
+                        {
+                            !this.state.isEmailValid && this.state.email !== "" &&
+                            <Text
+                                style={{
+                                    color: "#ff0000",
+                                    marginLeft: widthToDp("3%"),
+                                }}
+                            >Entered email address is not valid</Text>
+                        }
+                        <View style={{
+                            flexDirection: 'row', 
                             alignItems: 'center',
                             borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("10%"),
-                        }}
-                    >
-                        <TextInput
-                            style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.3%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("95%")
-                            }}
-                            placeholder="Email id"
-                            keyboardType="email-address"
-                            placeholderTextColor="#808080"
-                            autoCapitalize = 'none'
-                            onChangeText={this.setEmail}
-                        />
-                    </View>
-                    {
-                        !this.state.isEmailValid && this.state.email !== "" &&
-                        <Text
-                            style={{
-                                color: "#ff0000"
-                            }}
-                        >Entered email address is not valid</Text>
-                    }
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            marginTop: heightToDp("3%"),
-                        }}
-                    >
-                        <TextInput
-                            style={{
-                                color: '#808080',
-                                fontSize: widthToDp("3.3%"),
-                                fontFamily: 'Oswald-Medium',
-                                width: widthToDp("87%")
-                            }}
-                            placeholder="Password"
-                            secureTextEntry={!this.state.showPassword}
-                            placeholderTextColor="#808080"
-                            onChangeText={text => this.setState({ password: text.trim() })}
-                        />
-                        <Icon
-                            name={this.state.showPassword ? "eye-off" : "eye"}
-                            size={20}
-                            color="#808080"
-                            onPress={() => this.setState({ showPassword: !this.state.showPassword })}
-                            style={{ marginTop: heightToDp("1.7%"), marginRight: widthToDp("4%") }}
-                        />
-                    </View>
+                            borderBottomColor: this.state.isPasswordFocused ? '#69abff' : '#a9a9a9',
+                            marginTop: heightToDp("5%"),
+                            marginLeft: widthToDp("3%")
+                        }}>
+                            <Item 
+                                style={{
+                                    alignItems: 'center',
+                                    marginTop: heightToDp("-2%"),
+                                    width: widthToDp("87%"),
+                                    marginLeft: widthToDp("0%"),
+                                    borderBottomWidth: 0
+                                }}
+                                floatingLabel
+                            >
+                                <Label
+                                    style={{
+                                        color: this.state.isPasswordFocused ? '#69abff' : '#808080',
+                                        fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
+                                        marginTop: heightToDp("-0.5%"),
+                                    }}
+                                >Password</Label>
+                                <Input
+                                    getRef={ref => this.refPassword = ref}
+                                    style={{
+                                        borderWidth: 0,
+                                        fontSize: widthToDp("3.6%"),
+                                        color: '#1b1b1b',
+                                        marginLeft: widthToDp("-1%"),
+                                        fontFamily: 'Oswald-Medium'
+                                    }}
+                                    secureTextEntry={!this.state.showPassword}
+                                    onChangeText={(text) => this.setState({ password: text.trim() })}
+                                    onFocus={() => this.setState({ isEmailFocused: false, isPasswordFocused: true })}
+                                    returnKeyType="done"
+                                    onSubmitEditing={() => this.setState({ isEmailFocused: false, isPasswordFocused: false })}
+                                />
+                            </Item>
+                            <Icon
+                                name={this.state.showPassword ? "eye-off" : "eye"}
+                                size={20}
+                                color="#808080"
+                                onPress={() => this.setState({ showPassword: !this.state.showPassword })}
+                            />
+                        </View>
+                    </Form>
                     <ButtonComponent
                         onPressButton={this.logIn}
                         buttonText={"Login"}
@@ -274,7 +314,7 @@ export default class SignInScreen extends React.Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-        </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+        </SafeAreaView>
     )
 }
