@@ -42,6 +42,10 @@ export default class SignUpScreen extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.askPermission();
+    }
+
     //SET THE DATE FUNCTION
     setDate = (date) => {
         if (date.type === "set") {
@@ -81,14 +85,6 @@ export default class SignUpScreen extends React.Component {
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
     takePhotoFromCamera = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
-            .then((result) => {
-                if (RESULTS.DENIED) {
-                    this.askPermission();
-                } else if (RESULTS.GRANTED) {
-                    return;
-                }
-            })
         ImagePicker.openCamera({
             width: 300,
             height: 400,
@@ -110,14 +106,6 @@ export default class SignUpScreen extends React.Component {
 
     //OPEN GALLERY TO SELECT IMAGE
     choosePhotosFromGallery = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
-            .then((result) => {
-                if (RESULTS.DENIED) {
-                    this.askPermission();
-                } else if (RESULTS.GRANTED) {
-                    return;
-                }
-            })
 
         ImagePicker.openPicker({
             width: 300,
