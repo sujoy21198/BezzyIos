@@ -14,7 +14,7 @@ const DataAccess = {
     userList: "RegisterUserList",
     Search:'searchregisteruser', 
 
-    //follow api's
+    //follow-block api's
     followUser: "followingreqsend",
     followerList: "getfollowerslist",
     friendBlockList: "friendblocklist",
@@ -22,6 +22,8 @@ const DataAccess = {
     followBack: 'followingback',
     removeUser: 'removeuser',
     blockUser: 'blockuser',
+    blockList: 'userblocklist',
+    unblockUser: 'unblockuser',
 
     //profile api's
     getProfileDetails: 'geteditprofiledata',
