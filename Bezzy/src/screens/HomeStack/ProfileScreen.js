@@ -44,7 +44,7 @@ export default class ProfileScreen extends React.Component {
         var userDetails = {}, userPosts = [];
         let userId = await AsyncStorage.getItem("userId");
         await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
-            "profile_id" : userId
+            "profile_id" : this.props.viewProfile ? this.props.userId : userId
         }).then(res => {
             userDetails = res.data.usedetails;
             res.data.user_all_posts.map((item, key) => {
@@ -58,8 +58,8 @@ export default class ProfileScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: '#ececec'}}>            
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isProfileFocused headerText="Profile" navigation={this.props.navigation}/>
+            {!this.props.viewProfile && <StatusBar backgroundColor="#69abff" barStyle="light-content" />}
+            {!this.props.viewProfile && <Header isProfileFocused headerText="Profile" navigation={this.props.navigation}/>}
 
             {
                 !this.state.isLoading &&
@@ -127,7 +127,7 @@ export default class ProfileScreen extends React.Component {
                                 alignItems: 'center',
                             }}
                             activeOpacity={0.7}
-                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0}
+                            disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0) || this.props.viewProfile}
                             onPress={() => this.props.navigation.navigate("FollowingScreen", {user: this.state.userDetails.get_name})}
                         >   
                             <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
@@ -142,7 +142,7 @@ export default class ProfileScreen extends React.Component {
                                 alignItems: 'center',
                             }}
                             activeOpacity={0.7}
-                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0}
+                            disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0) || this.props.viewProfile}
                             onPress={() => this.props.navigation.navigate("FollowerScreen", {user: this.state.userDetails.get_name})}
                         >   
                             <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
@@ -165,66 +165,72 @@ export default class ProfileScreen extends React.Component {
                             >Posts</Text>
                         </View>
                     </View>
-                    <View
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            paddingVertical: heightToDp("1%")
-                        }}
-                    >
-                        <ButtonComponent
-                            onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
-                            buttonText={"Edit Profile"}
-                            editProfile={true}
-                            disabled={Object.keys(this.state.userDetails).length == 0}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            paddingVertical: heightToDp("0.5%"),
-                            paddingHorizontal: widthToDp('1%'),
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                width: widthToDp("48.8%"),
-                                // padding: widthToDp("1%"),
-                                backgroundColor: "#fff",
-                                alignItems: 'center'
-                            }}
-                            activeOpacity={0.7}
-                            onPress={this.onPostTabPress}
-                        >
-                            <Image
-                            source={
-                                this.state.isPostsFocused ? 
-                                require("../../../assets/posts.png") :
-                                require("../../../assets/default_posts.png")
-                            }
-                            resizeMode="contain"
-                            style={{height: heightToDp("5%"), width: widthToDp("5%")}}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                width: widthToDp("48.8%"),
-                                padding: widthToDp("2%"),
-                                backgroundColor: "#fff",
-                                alignItems: 'center'
-                            }}
-                            activeOpacity={0.7}
-                            onPress={this.onShareTabPress}
-                        >
-                            <Icon
-                            name={'share'}
-                            size={24}
-                            color={this.state.isShareFocused ? "#69abff" : "#666"}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                    {
+                        this.props.viewProfile ?
+                        <View style={{height: heightToDp("2%")}}/>:
+                        <>
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    paddingVertical: heightToDp("1%")
+                                }}
+                            >
+                                <ButtonComponent
+                                    onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
+                                    buttonText={"Edit Profile"}
+                                    editProfile={true}
+                                    disabled={Object.keys(this.state.userDetails).length == 0}
+                                />
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingVertical: heightToDp("0.5%"),
+                                    paddingHorizontal: widthToDp('1%'),
+                                }}
+                            >
+                                <TouchableOpacity
+                                    style={{
+                                        width: widthToDp("48.8%"),
+                                        // padding: widthToDp("1%"),
+                                        backgroundColor: "#fff",
+                                        alignItems: 'center'
+                                    }}
+                                    activeOpacity={0.7}
+                                    onPress={this.onPostTabPress}
+                                >
+                                    <Image
+                                    source={
+                                        this.state.isPostsFocused ? 
+                                        require("../../../assets/posts.png") :
+                                        require("../../../assets/default_posts.png")
+                                    }
+                                    resizeMode="contain"
+                                    style={{height: heightToDp("5%"), width: widthToDp("5%")}}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        width: widthToDp("48.8%"),
+                                        padding: widthToDp("2%"),
+                                        backgroundColor: "#fff",
+                                        alignItems: 'center'
+                                    }}
+                                    activeOpacity={0.7}
+                                    onPress={this.onShareTabPress}
+                                >
+                                    <Icon
+                                    name={'share'}
+                                    size={24}
+                                    color={this.state.isShareFocused ? "#69abff" : "#666"}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    }
                     {
                         this.state.isPostsFocused &&
                         <FlatList
@@ -253,7 +259,7 @@ export default class ProfileScreen extends React.Component {
                                             LinearGradient={LinearGradient}
                                         /> :
                                         <TouchableOpacity
-                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item})}
+                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item, viewProfile: this.props.viewProfile})}
                                         >
                                             <Image
                                                 source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
@@ -294,7 +300,7 @@ export default class ProfileScreen extends React.Component {
                         />  
                     }
                     {
-                        this.state.isShareFocused &&
+                        this.state.isShareFocused && !this.props.viewProfile &&
                         <FlatList
                             data={[
                                 require("../../../assets/default_person.png"),

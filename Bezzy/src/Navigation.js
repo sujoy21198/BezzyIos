@@ -22,6 +22,7 @@ import ImagePreviewScreen from './screens/HomeStack/ImagePreviewScreen';
 import CommentScreen from './screens/HomeStack/CommentScreen';
 import NotificationScreen from './screens/HomeStack/NotificationScreen';
 import Terms from './screens/LoginStack/Terms';
+import ViewProfileScreen from './screens/HomeStack/ViewProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ const Navigation = () => (
             <Stack.Screen name="CommentScreen" component={CommentScreen} options={{headerShown: false}}/>
             <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{headerShown: false}}/>
             <Stack.Screen name="Terms" component={Terms} options={{headerShown: false}}/>
+            <Stack.Screen name="ViewProfileScreen" component={ViewProfileScreen} options={{headerShown: false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

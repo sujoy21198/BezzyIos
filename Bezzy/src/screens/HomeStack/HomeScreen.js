@@ -129,10 +129,15 @@ export default class HomeScreen extends React.Component {
             <View >
                 <Card style={{ paddingVertical: heightToDp("1.5%"), paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Image
-                            source={{ uri: section.friend_photo }}
-                            style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
-                        />
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: section.friend_name, id: section.friend_id, loginStack: false})}
+                        >
+                            <Image
+                                source={{ uri: section.friend_photo }}
+                                style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
+                            />
+                        </TouchableOpacity>
                         <View>
                             {
                                 section.have_post === "Yes" &&

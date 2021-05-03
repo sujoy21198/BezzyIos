@@ -125,8 +125,10 @@ export default class FollowerScreen extends React.Component {
                     }}
                     data={this.state.followerList}
                     ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
-                    renderItem={({item, index}) => (
-                        <View
+                    renderItem={({item, index}) => {
+                        console.warn(item);
+                        return (
+                        <TouchableOpacity
                             style={{
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
@@ -135,6 +137,8 @@ export default class FollowerScreen extends React.Component {
                                 padding: widthToDp("3%"),
                                 borderRadius: 10
                             }}
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.name, id: item.following_user_id, loginStack: true})}
                         >
                             <View
                                 style={{
@@ -197,8 +201,8 @@ export default class FollowerScreen extends React.Component {
                                     />
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                    )}
+                        </TouchableOpacity>
+                    )}}
                 />
             }
             <RBSheet

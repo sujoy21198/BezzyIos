@@ -216,7 +216,7 @@ export default class ImagePreviewScreen extends React.Component {
                         onChangeText={text => this.setState({postCaption: text.trim()})}
                     />
                     {
-                        this.props.route.params.type !== "otherUserPost" &&
+                        (this.props.route.params.type !== "otherUserPost" && !(this.props.route && this.props.route.params && this.props.route.params.viewProfile)) &&
                         <TouchableOpacity
                             activeOpacity={0.7}
                             style={{
@@ -298,7 +298,7 @@ export default class ImagePreviewScreen extends React.Component {
                         }}
                     >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
                     {
-                        this.props.route.params.type !== "otherUserPost" &&
+                        (this.props.route.params.type !== "otherUserPost" && !(this.props.route && this.props.route.params && this.props.route.params.viewProfile)) &&
                         <TouchableOpacity
                             style={{paddingLeft: widthToDp("4%")}}
                             onPress={this.deleteImage}

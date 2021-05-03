@@ -75,7 +75,7 @@ export default class FollowingScreen extends React.Component {
                     data={this.state.followingList}
                     ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
                     renderItem={({item, index}) => (
-                        <View
+                        <TouchableOpacity
                             style={{
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
@@ -84,6 +84,8 @@ export default class FollowingScreen extends React.Component {
                                 padding: widthToDp("3%"),
                                 borderRadius: 10
                             }}
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.friend_name, id: item.friend_id, loginStack: true})}
                         >
                             <View
                                 style={{
@@ -137,7 +139,7 @@ export default class FollowingScreen extends React.Component {
                                     color="#69abff"
                                 />
                             </RBSheet> 
-                        </View>
+                        </TouchableOpacity>
                     )}
                 />
             }
