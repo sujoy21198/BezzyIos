@@ -21,7 +21,11 @@ export default class BlockList extends React.Component {
             "loginuserID" : userId
         });
         if(response.data.resp === "success") {
-            this.setState({blockList: response.data.block_user_list});
+            if(response.data.block_user_list !== "No user found!") {
+                this.setState({blockList: response.data.block_user_list});
+            } else {
+                this.setState({blockList: []})
+            }            
         } else {
             this.setState({blockList: []});
         }
