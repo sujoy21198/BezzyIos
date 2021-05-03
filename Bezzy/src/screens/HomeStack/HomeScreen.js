@@ -432,15 +432,22 @@ export default class HomeScreen extends React.Component {
                                 }}
                                 key={index}
                             >
-                                <Image
-                                    source={{ uri: item.image }}
-                                    style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-                                />
+                                <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.name, id: item.user_id, loginStack: false})}
+                                >
+                                    <Image
+                                        source={{ uri: item.image }}
+                                        style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+                                    />  
+                                </TouchableOpacity>
+                                
                                 <Text
                                     style={{
                                         textAlign: "center",
                                         paddingVertical: heightToDp("0.8%"),
                                     }}
+                                    onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.name, id: item.user_id, loginStack: false})}
                                 >{item.name}</Text>
                                 <TouchableOpacity
                                     activeOpacity={0.7}
