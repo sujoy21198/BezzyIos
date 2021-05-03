@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar } from 'react-native';
-import { ActionSheet } from 'native-base'
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator } from 'react-native';
+import { ActionSheet, Toast } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
@@ -11,6 +11,7 @@ import { FlatGrid } from 'react-native-super-grid'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -48,7 +49,7 @@ export default class PostScreen extends React.Component {
             ImagePicker.openPicker({
                 width: 300,
                 height: 200,
-                mediaType: 'video'
+                mediaType: 'video',
             })
                 .then(images => {
                     this.createThumbnailVIdeo(images.path)
@@ -127,7 +128,8 @@ export default class PostScreen extends React.Component {
             width: 300,
             height: 200,
             cropping: true,
-            multiple: true
+            multiple: true,
+            maxFiles: 5
         })
             .then(images => {
                 this.state.imagePath = images.path
@@ -155,10 +157,12 @@ export default class PostScreen extends React.Component {
 
     //Upload photo and video function
     postImage = async () => {
+        this.RBSheet.open();
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
             if (this.state.imagesArray.length <= 0 || this.state.caption === '') {
                 alert('please enter image and caption')
+                this.RBSheet.close();  
             } else {
                 var filePaths = this.state.imagesArray.map((i) => i.path)
                 var formData = new FormData()
@@ -180,23 +184,32 @@ export default class PostScreen extends React.Component {
                 // formData.append('userID', '232')
                 // formData.append('post_content', this.state.caption)
                 // console.log(formData._parts)
-                await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formData)
-                    .then(function (response) {
-                        console.log(response.data)
-                    }).catch(function (error) {
-                        console.log(error)
+                let response = await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formData)
+                
+                if(response.data.resp === "success") {
+                    Toast.show({
+                        type: "success",
+                        text: response.data.message,
+                        duration: 3000
                     })
-
-
-                this.props.navigation.reset({
-                    index: 0,
-                    routes: [
-                        { name: "HomeScreen" }
-                    ]
-                });
+                    this.props.navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: "HomeScreen" }
+                        ]
+                    });
+                } else {
+                    Toast.show({
+                        type: "warning",
+                        text: response.data.message ? response.data.message : "Some error happened. Please retry.",
+                        duration: 3000
+                    })
+                }
+                this.RBSheet.close();               
+                
             }
         } else {
-
+            this.RBSheet.close();  
         }
     }
 
@@ -378,6 +391,32 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                <RBSheet
+                    ref={ref => {
+                        this.RBSheet = ref;
+                    }}
+                    height={heightToDp("6%")}
+                    closeOnPressMask={false}
+                    closeOnPressBack={false}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            width: widthToDp("15%"),
+                            position: 'absolute',
+                            top: heightToDp("45%"),
+                            left: widthToDp("40%"),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            borderRadius: 10
+                        },
+                    }}
+                >
+                    <ActivityIndicator
+                        size="large"
+                        color="#69abff"
+                    />
+                </RBSheet>
             </SafeAreaView>
         )
     }
