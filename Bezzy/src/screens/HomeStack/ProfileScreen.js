@@ -91,7 +91,7 @@ export default class ProfileScreen extends React.Component {
                             <ShimmerPlaceHolder
                                 height={heightToDp("10%")}
                                 width={widthToDp("20%")}
-                                duration={2000}
+                                duration={4000}
                                 shimmerStyle={{
                                     borderRadius: 20
                                 }}
@@ -260,7 +260,7 @@ export default class ProfileScreen extends React.Component {
                                     <ShimmerPlaceHolder
                                         height={heightToDp("20%")}
                                         width={widthToDp("47.5%")}
-                                        duration={2000}
+                                        duration={4000}
                                         shimmerStyle={{
                                             borderRadius: 5
                                         }}
