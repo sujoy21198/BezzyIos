@@ -24,6 +24,10 @@ export default class PostScreen extends React.Component {
         thumbnail: ''
     }
 
+    componentDidMount() {
+        this.askPermission()
+    }
+
     uploadButtonFunction = async () => {
         if (this.state.buttonText === 'UPLOAD PHOTO') {
             const buttons = ['Camera', 'Photo Library', 'Cancel'];
@@ -84,14 +88,14 @@ export default class PostScreen extends React.Component {
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
     takePhotoFromCamera = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
-            .then((result) => {
-                if (RESULTS.DENIED) {
-                    this.askPermission();
-                } else if (RESULTS.GRANTED) {
-                    return;
-                }
-            })
+        // checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        //     .then((result) => {
+        //         if (RESULTS.DENIED) {
+        //             this.askPermission();
+        //         } else if (RESULTS.GRANTED) {
+        //             return;
+        //         }
+        //     })
         if (this.state.focusedTab === 'photo') {
             ImagePicker.openCamera({
                 width: 300,
@@ -115,21 +119,21 @@ export default class PostScreen extends React.Component {
 
     //OPEN GALLERY TO SELECT IMAGE
     choosePhotosFromGallery = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
-            .then((result) => {
-                if (RESULTS.DENIED) {
-                    this.askPermission();
-                } else if (RESULTS.GRANTED) {
-                    return;
-                }
-            })
+        // checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        //     .then((result) => {
+        //         if (RESULTS.DENIED) {
+        //             this.askPermission();
+        //         } else if (RESULTS.GRANTED) {
+        //             return;
+        //         }
+        //     })
 
         ImagePicker.openPicker({
             width: 300,
             height: 200,
             cropping: true,
             multiple: true,
-            maxFiles: 5
+            maxFiles: 5 //applicable for only ios
         })
             .then(images => {
                 this.state.imagePath = images.path

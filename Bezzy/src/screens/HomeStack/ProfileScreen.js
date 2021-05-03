@@ -249,6 +249,7 @@ export default class ProfileScreen extends React.Component {
                         }}
                         numColumns={2}
                         ListEmptyComponent={
+                            this.state.isLoading &&
                             <FlatList
                                 data={["a", "b", "c", "d", "e", "f", "g", "h"]}
                                 contentContainerStyle={{
@@ -313,7 +314,7 @@ export default class ProfileScreen extends React.Component {
                                 }
                                 {
                                     (this.state.userPosts.length > 0 && index % 2 === 0) &&
-                                    <View style={{width: widthToDp("1%")}}/>
+                                    <View style={{width: widthToDp("1.5%")}}/>
                                 }
                             </>
                         )}
