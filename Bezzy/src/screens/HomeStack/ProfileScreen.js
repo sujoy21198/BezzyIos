@@ -35,7 +35,6 @@ export default class ProfileScreen extends React.Component {
     )
 
     componentDidMount() {
-        this.RBSheet.open();
         this.setState({isLoading: true})
         this.getProfileData();
     } 
@@ -53,7 +52,6 @@ export default class ProfileScreen extends React.Component {
         }).catch(err => console.log(err))
         this.setState({userDetails, userPosts})
         this.setState({isLoading: false, isRefreshing: false})
-        this.RBSheet.close()
     }
 
     render = () => (
@@ -61,262 +59,231 @@ export default class ProfileScreen extends React.Component {
             {!this.props.viewProfile && <StatusBar backgroundColor="#69abff" barStyle="light-content" />}
             {!this.props.viewProfile && <Header isProfileFocused headerText="Profile" navigation={this.props.navigation}/>}
 
-            {
-                !this.state.isLoading &&
+            <View
+                style={{
+                    flex: 1,
+                    paddingVertical: heightToDp("1%")
+                }}
+            >
                 <View
                     style={{
-                        flex: 1,
                         paddingVertical: heightToDp("1%")
                     }}
                 >
-                    <View
-                        style={{
-                            paddingVertical: heightToDp("1%")
+                    <ScrollView
+                        contentContainerStyle={{                                    
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
+                        refreshControl={
+                            <RefreshControl                                        
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={() => this.setState({isRefreshing: true}, this.getProfileData)}
+                            />
+                        }
                     >
                         {
-                            Object.keys(this.state.userDetails).length > 0 &&
-                            <ScrollView
-                                contentContainerStyle={{                                    
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
+                            Object.keys(this.state.userDetails).length > 0 ?
+                            <Image
+                                source={{uri: this.state.userDetails.profile_pic}}
+                                style={{height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20}}
+                            /> :
+                            <ShimmerPlaceHolder
+                                height={heightToDp("10%")}
+                                width={widthToDp("20%")}
+                                duration={2000}
+                                shimmerStyle={{
+                                    borderRadius: 20
                                 }}
-                                refreshControl={
-                                    <RefreshControl                                        
-                                        refreshing={this.state.isRefreshing}
-                                        onRefresh={() => this.setState({isRefreshing: true}, this.getProfileData)}
-                                    />
-                                }
-                            >
-                                <Image
-                                    source={{uri: this.state.userDetails.profile_pic}}
-                                    style={{height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20}}
-                                />
-                                <Text
-                                    style={{
-                                        color: '#007dfe',
-                                        marginTop: heightToDp('1.5%'),
-                                        marginBottom: heightToDp('0.5%'),
-                                        fontSize: widthToDp("4.5%")
-                                    }}
-                                >{this.state.userDetails.get_name}</Text>
-                                {
-                                    this.state.userDetails.bio &&
-                                    <Text
-                                        style={{
-                                            // paddingVertical: heightToDp('0%'),
-                                            fontSize: widthToDp("4%")
-                                        }}
-                                    >{this.state.userDetails.bio}</Text>
-                                } 
-                            </ScrollView>
-                        }                        
-                                               
-                    </View>
+                                shimmerColors={[
+                                    "#ececec", "#cdcdcd"
+                                ]}
+                                visible={false}
+                                LinearGradient={LinearGradient}
+                            />
+                        }
+                        
+                        <Text
+                            style={{
+                                color: '#007dfe',
+                                marginTop: heightToDp('1.5%'),
+                                marginBottom: heightToDp('0.5%'),
+                                fontSize: widthToDp("4.5%")
+                            }}
+                        >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.get_name : ""}</Text>
+                        {
+                            this.state.userDetails.bio &&
+                            <Text
+                                style={{
+                                    // paddingVertical: heightToDp('0%'),
+                                    fontSize: widthToDp("4%")
+                                }}
+                            >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.bio : ""}</Text>
+                        } 
+                    </ScrollView>            
+                </View>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingHorizontal: widthToDp("10%"),
+                        paddingVertical: heightToDp("0.5%")
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            alignItems: 'center',
+                        }}
+                        activeOpacity={0.7}
+                        disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0) || this.props.viewProfile}
+                        onPress={() => this.props.navigation.navigate("FollowingScreen", {user: this.state.userDetails.get_name})}
+                    >   
+                        <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
+                        <Text
+                            style={{
+                                fontSize: widthToDp("3.8%")
+                            }}
+                        >Following</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            alignItems: 'center',
+                        }}
+                        activeOpacity={0.7}
+                        disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0) || this.props.viewProfile}
+                        onPress={() => this.props.navigation.navigate("FollowerScreen", {user: this.state.userDetails.get_name})}
+                    >   
+                        <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
+                        <Text
+                            style={{
+                                fontSize: widthToDp("3.8%")
+                            }}
+                        >Followers</Text>
+                    </TouchableOpacity>
                     <View
                         style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
                             alignItems: 'center',
-                            paddingHorizontal: widthToDp("10%"),
-                            paddingVertical: heightToDp("0.5%")
                         }}
-                    >
-                        <TouchableOpacity
+                    >   
+                        <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
+                        <Text
                             style={{
-                                alignItems: 'center',
+                                fontSize: widthToDp("3.8%")
                             }}
-                            activeOpacity={0.7}
-                            disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0) || this.props.viewProfile}
-                            onPress={() => this.props.navigation.navigate("FollowingScreen", {user: this.state.userDetails.get_name})}
-                        >   
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
-                            <Text
-                                style={{
-                                    fontSize: widthToDp("3.8%")
-                                }}
-                            >Following</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                alignItems: 'center',
-                            }}
-                            activeOpacity={0.7}
-                            disabled={(Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0) || this.props.viewProfile}
-                            onPress={() => this.props.navigation.navigate("FollowerScreen", {user: this.state.userDetails.get_name})}
-                        >   
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
-                            <Text
-                                style={{
-                                    fontSize: widthToDp("3.8%")
-                                }}
-                            >Followers</Text>
-                        </TouchableOpacity>
+                        >Posts</Text>
+                    </View>
+                </View>
+                {
+                    this.props.viewProfile ?
+                    <View style={{height: heightToDp("2%")}}/>:
+                    <>
                         <View
                             style={{
+                                justifyContent: 'center',
                                 alignItems: 'center',
+                                paddingVertical: heightToDp("1%")
                             }}
-                        >   
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
-                            <Text
-                                style={{
-                                    fontSize: widthToDp("3.8%")
-                                }}
-                            >Posts</Text>
+                        >
+                            <ButtonComponent
+                                onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
+                                buttonText={"Edit Profile"}
+                                editProfile={true}
+                                disabled={Object.keys(this.state.userDetails).length == 0}
+                            />
                         </View>
-                    </View>
-                    {
-                        this.props.viewProfile ?
-                        <View style={{height: heightToDp("2%")}}/>:
-                        <>
-                            <View
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                paddingVertical: heightToDp("0.5%"),
+                                paddingHorizontal: widthToDp('1%'),
+                            }}
+                        >
+                            <TouchableOpacity
                                 style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    paddingVertical: heightToDp("1%")
+                                    width: widthToDp("48.8%"),
+                                    // padding: widthToDp("1%"),
+                                    backgroundColor: "#fff",
+                                    alignItems: 'center'
                                 }}
+                                activeOpacity={0.7}
+                                onPress={this.onPostTabPress}
                             >
-                                <ButtonComponent
-                                    onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
-                                    buttonText={"Edit Profile"}
-                                    editProfile={true}
-                                    disabled={Object.keys(this.state.userDetails).length == 0}
+                                <Image
+                                source={
+                                    this.state.isPostsFocused ? 
+                                    require("../../../assets/posts.png") :
+                                    require("../../../assets/default_posts.png")
+                                }
+                                resizeMode="contain"
+                                style={{height: heightToDp("5%"), width: widthToDp("5%")}}
                                 />
-                            </View>
-                            <View
+                            </TouchableOpacity>
+                            <TouchableOpacity
                                 style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    paddingVertical: heightToDp("0.5%"),
-                                    paddingHorizontal: widthToDp('1%'),
+                                    width: widthToDp("48.8%"),
+                                    padding: widthToDp("2%"),
+                                    backgroundColor: "#fff",
+                                    alignItems: 'center'
                                 }}
+                                activeOpacity={0.7}
+                                onPress={this.onShareTabPress}
                             >
+                                <Icon
+                                name={'share'}
+                                size={24}
+                                color={this.state.isShareFocused ? "#69abff" : "#666"}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                }
+                {
+                    this.state.isPostsFocused &&
+                    <FlatList
+                        data={this.state.userPosts}
+                        contentContainerStyle={{
+                            paddingHorizontal: widthToDp("2%")
+                        }}
+                        numColumns={2}
+                        ListEmptyComponent={
+                            <FlatList
+                                data={["a", "b", "c", "d", "e", "f", "g", "h"]}
+                                contentContainerStyle={{
+                                    paddingHorizontal: widthToDp("2%")
+                                }}
+                                numColumns={2}
+                                renderItem={({item, index}) => (
+                                    <ShimmerPlaceHolder
+                                        height={heightToDp("20%")}
+                                        width={widthToDp("47.5%")}
+                                        duration={2000}
+                                        shimmerStyle={{
+                                            borderRadius: 5
+                                        }}
+                                        shimmerColors={[
+                                            "#cdcdcd", "#ececec"
+                                        ]}
+                                        LinearGradient={LinearGradient}
+                                    />
+                                )}
+                                keyExtractor={({item, index}) => index}
+                                ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
+                                ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
+                            />
+                        }
+                        keyExtractor={({item, index}) => index}
+                        ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
+                        ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
+                        renderItem={({item, index}) => (
+                            <>
                                 <TouchableOpacity
-                                    style={{
-                                        width: widthToDp("48.8%"),
-                                        // padding: widthToDp("1%"),
-                                        backgroundColor: "#fff",
-                                        alignItems: 'center'
-                                    }}
-                                    activeOpacity={0.7}
-                                    onPress={this.onPostTabPress}
+                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item, viewProfile: this.props.viewProfile})}
                                 >
                                     <Image
-                                    source={
-                                        this.state.isPostsFocused ? 
-                                        require("../../../assets/posts.png") :
-                                        require("../../../assets/default_posts.png")
-                                    }
-                                    resizeMode="contain"
-                                    style={{height: heightToDp("5%"), width: widthToDp("5%")}}
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={{
-                                        width: widthToDp("48.8%"),
-                                        padding: widthToDp("2%"),
-                                        backgroundColor: "#fff",
-                                        alignItems: 'center'
-                                    }}
-                                    activeOpacity={0.7}
-                                    onPress={this.onShareTabPress}
-                                >
-                                    <Icon
-                                    name={'share'}
-                                    size={24}
-                                    color={this.state.isShareFocused ? "#69abff" : "#666"}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                    }
-                    {
-                        this.state.isPostsFocused &&
-                        <FlatList
-                            data={this.state.userPosts}
-                            contentContainerStyle={{
-                                paddingHorizontal: widthToDp("2%")
-                            }}
-                            numColumns={2}
-                            keyExtractor={({item, index}) => index}
-                            ItemSeparatorComponent={() => <View style={{height: heightToDp("0.3%")}}/>}
-                            ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
-                            renderItem={({item, index}) => (
-                                <>
-                                    {
-                                        !(item && item.post_url) ? 
-                                        <ShimmerPlaceHolder
-                                            height={heightToDp("20%")}
-                                            width={widthToDp("47.5%")}
-                                            duration={2000}
-                                            shimmerStyle={{
-                                                borderRadius: 5
-                                            }}
-                                            shimmerColors={[
-                                                "#cdcdcd", "#ececec"
-                                            ]}
-                                            LinearGradient={LinearGradient}
-                                        /> :
-                                        <TouchableOpacity
-                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", {image: item, viewProfile: this.props.viewProfile})}
-                                        >
-                                            <Image
-                                                source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
-                                                // resizeMode="contain"
-                                                style={{
-                                                    height: heightToDp("20%"), 
-                                                    marginBottom: heightToDp("0.5%"), 
-                                                    width: widthToDp("47.5%"), 
-                                                    borderRadius: 5,
-                                                }}
-                                                key={index}
-                                            />                                    
-                                        </TouchableOpacity>
-                                    }                                
-                                    {
-                                        (item && item.post_date && item.post_time) &&
-                                        <View
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: heightToDp("1.2%"),
-                                                left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
-                                            }}
-                                        >
-                                            <Text
-                                                style={{
-                                                    color: "#db472b",
-                                                    fontSize: widthToDp("3%")
-                                                }}
-                                            >{item.post_date + " " + item.post_time}</Text>
-                                        </View>
-                                    }
-                                    {
-                                        (this.state.userPosts.length > 0 && index % 2 === 0) &&
-                                        <View style={{width: widthToDp("1%")}}/>
-                                    }
-                                </>
-                            )}
-                        />  
-                    }
-                    {
-                        this.state.isShareFocused && !this.props.viewProfile &&
-                        <FlatList
-                            data={[
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                            ]}
-                            contentContainerStyle={{
-                                paddingHorizontal: widthToDp("2%")
-                            }}
-                            numColumns={2}
-                            keyExtractor={({item, index}) => index}
-                            ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
-                            renderItem={({item, index}) => (
-                                <>
-                                    <Image
-                                        source={item}
+                                        source={{uri: item.post_url.split("?src=")[1].split('&w=')[0]}}
                                         // resizeMode="contain"
                                         style={{
                                             height: heightToDp("20%"), 
@@ -325,7 +292,10 @@ export default class ProfileScreen extends React.Component {
                                             borderRadius: 5,
                                         }}
                                         key={index}
-                                    />
+                                    />                                    
+                                </TouchableOpacity>                              
+                                {
+                                    (item && item.post_date && item.post_time) &&
                                     <View
                                         style={{
                                             position: 'absolute',
@@ -338,18 +308,67 @@ export default class ProfileScreen extends React.Component {
                                                 color: "#db472b",
                                                 fontSize: widthToDp("3%")
                                             }}
-                                        >{"15/04/2021 3:40 pm"}</Text>
+                                        >{item.post_date + " " + item.post_time}</Text>
                                     </View>
-                                    {
-                                        index % 2 === 0 &&
-                                        <View style={{width: widthToDp("1%")}}/>
-                                    }
-                                </>
-                            )}
-                        />
-                    }
-                </View>
-            }
+                                }
+                                {
+                                    (this.state.userPosts.length > 0 && index % 2 === 0) &&
+                                    <View style={{width: widthToDp("1%")}}/>
+                                }
+                            </>
+                        )}
+                    />  
+                }
+                {
+                    this.state.isShareFocused && !this.props.viewProfile &&
+                    <FlatList
+                        data={[
+                            require("../../../assets/default_person.png"),
+                            require("../../../assets/default_person.png"),
+                            require("../../../assets/default_person.png"),
+                        ]}
+                        contentContainerStyle={{
+                            paddingHorizontal: widthToDp("2%")
+                        }}
+                        numColumns={2}
+                        keyExtractor={({item, index}) => index}
+                        ListFooterComponent={<View style={{height: heightToDp("7%")}}/>}
+                        renderItem={({item, index}) => (
+                            <>
+                                <Image
+                                    source={item}
+                                    // resizeMode="contain"
+                                    style={{
+                                        height: heightToDp("20%"), 
+                                        marginBottom: heightToDp("0.5%"), 
+                                        width: widthToDp("47.5%"), 
+                                        borderRadius: 5,
+                                    }}
+                                    key={index}
+                                />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: heightToDp("1.2%"),
+                                        left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: "#db472b",
+                                            fontSize: widthToDp("3%")
+                                        }}
+                                    >{"15/04/2021 3:40 pm"}</Text>
+                                </View>
+                                {
+                                    index % 2 === 0 &&
+                                    <View style={{width: widthToDp("1%")}}/>
+                                }
+                            </>
+                        )}
+                    />
+                }
+            </View>
             <RBSheet
                 ref={ref => {
                     this.RBSheet = ref;
