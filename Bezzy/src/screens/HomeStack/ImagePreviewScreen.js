@@ -18,57 +18,42 @@ export default class ImagePreviewScreen extends React.Component {
         isLoading: false,
         postCaption: "",
         captionEditable: false,
-        isUpdatingCaption: false
+        isUpdatingCaption: false,
+        postUrl: []
     }
 
     componentDidMount() {
         this.RBSheet.open();
-        if(this.props.route.params.type === "otherUserPost") {
-            this.setState({postCaption: this.props.route.params.image.post_content});
-        }
-        this.getPostLikedUsers();
-        this.getPostCommentedUsers();
-        this.RBSheet.close();        
+        this.getPostDetails()
     }
 
-    getPostCommentedUsers = async () => {
+    getPostDetails = async () => {
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.postCommentedUsers, {
-            "post_id" : this.props.route.params.image.post_id,
-            "loginuserID" : userId
-        });
+        let response =  await axios.get(
+            DataAccess.BaseUrl + DataAccess.getPostDetails + "/" + 
+            this.props.route.params.image.post_id + "/" + userId
+        );
         if(response.data.status === 'success') {
-            if(response.data.message === "No comment found") {
-                this.setState({numberOfComments: 0});
-            } else {
-                this.setState({
-                    numberOfComments: response.data.comment_list.Parent.length, 
-                })
+            if(response.data.post_details.log_user_like_status === "No") {
+                this.setState({isLiked: false});
+            } else if(response.data.post_details.log_user_like_status === "Yes") {
+                this.setState({isLiked: true});
             }
+            this.setState({
+                postUrl: response.data.post_details.post_img_video_live,
+                numberOfComments: response.data.post_details.number_of_comment, 
+                numberOfLikes: response.data.post_details.number_of_like, 
+                postCaption: response.data.post_details.post_content
+            })
         } else {
-            this.setState({numberOfComments: 0});
+            this.setState({
+                postUrl: [],
+                numberOfComments: 0, 
+                numberOfLikes: 0,  
+                postCaption: ""
+            })
         }
-    }
-
-    getPostLikedUsers = async () => {
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.postLikedUsers + "/" + this.props.route.params.image.post_id);
-        if(response.data.status === 'success') {
-            if(response.data.message === "No user found") {
-                this.setState({numberOfLikes: 0, isLiked: false});
-            } else {
-                response.data.userlist.map(element => {
-                    if(element.id == userId) {
-                        this.setState({isLiked: true});
-                    }
-                })
-                this.setState({
-                    numberOfLikes: response.data.userlist.length
-                })
-            }
-        } else {
-            this.setState({numberOfLikes: 0});
-        }
+        this.RBSheet.close();   
     }
 
     deleteImage = async () => {
@@ -163,13 +148,13 @@ export default class ImagePreviewScreen extends React.Component {
         <ScrollView style={{flex:1, backgroundColor: '#1b1b1b'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />            
             <LinearGradient
-                style={{paddingTop: heightToDp("4%")}}
+                style={{paddingTop: heightToDp(`${this.state.postUrl.length !== 0 ? 4 : 90}%`)}}
                 colors={['#fff', '#1b1b1b']}
             >
                 {
-                    (this.props.route.params.type === "otherUserPost" && this.props.route.params.image.post_img_video_live && this.props.route.params.image.post_img_video_live.length > 0) ?
+                    (this.state.postUrl && this.state.postUrl.length > 0) &&
                     <FlatList
-                        data={this.props.route.params.image.post_img_video_live}
+                        data={this.state.postUrl}
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                         ItemSeparatorComponent={() => <View style={{width: widthToDp("5%")}}/>}
@@ -180,11 +165,6 @@ export default class ImagePreviewScreen extends React.Component {
                                 source={{ uri: item.post_url}}
                             />
                         )}
-                    /> :
-                    <Image
-                        resizeMode="contain"
-                        source={{ uri : this.props.route.params.image.post_url.split("?src=")[1].split('&w=')[0] }}
-                        style={{ height: heightToDp("80%"), width: widthToDp("100%"), resizeMode: "contain"}}
                     />
                 }                
             </LinearGradient>   
@@ -209,123 +189,129 @@ export default class ImagePreviewScreen extends React.Component {
                     color="#fff"
                     size={20}                    
                 />  
-            </TouchableOpacity>            
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    backgroundColor: '#1b1b1b',
-                    paddingTop: heightToDp("2%"),
-                    paddingHorizontal: widthToDp("3%")
-                }}
-            >                
-                <TextInput
+            </TouchableOpacity> 
+            {
+                !(this.props.route && this.props.route.params && this.props.route.params.hideFunctionalities) &&
+                <View
                     style={{
-                        color: '#fff',
-                        fontSize: widthToDp("3.5%"),
-                        width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
-                        borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
-                        borderBottomColor: '#fff'
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: '#1b1b1b',
+                        paddingTop: heightToDp("2%"),
+                        paddingHorizontal: widthToDp("3%")
                     }}
-                    multiline
-                    defaultValue={this.state.postCaption}
-                    editable={this.state.captionEditable}
-                    onChangeText={text => this.setState({postCaption: text.trim()})}
-                />
-                {
-                    this.props.route.params.type !== "otherUserPost" &&
+                >                
+                    <TextInput
+                        style={{
+                            color: '#fff',
+                            fontSize: widthToDp("3.5%"),
+                            width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
+                            borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                            borderBottomColor: '#fff'
+                        }}
+                        multiline
+                        defaultValue={this.state.postCaption}
+                        editable={this.state.captionEditable}
+                        onChangeText={text => this.setState({postCaption: text.trim()})}
+                    />
+                    {
+                        this.props.route.params.type !== "otherUserPost" &&
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={{
+                                marginLeft: widthToDp("5%")
+                            }}
+                            disabled={this.state.isUpdatingCaption}
+                            onPress={this.updateCaption}
+                        >
+                            {
+                                this.state.isUpdatingCaption ? 
+                                <ActivityIndicator size="small" color="#fff"/>
+                                : <Icon
+                                    name={this.state.captionEditable ? "paper-plane" : "pen"}
+                                    color="#fff"
+                                    size={20}                    
+                                /> 
+                            } 
+                        </TouchableOpacity>  
+                    }                              
+                </View>  
+            }      
+            {
+                !(this.props.route && this.props.route.params && this.props.route.params.hideFunctionalities) &&
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#1b1b1b',
+                        alignSelf: 'flex-end',
+                        paddingHorizontal: widthToDp("3%"),
+                        paddingTop: heightToDp("2%"),
+                        paddingBottom: heightToDp("1%"),
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                >
                     <TouchableOpacity
                         activeOpacity={0.7}
-                        style={{
-                            marginLeft: widthToDp("5%")
-                        }}
-                        disabled={this.state.isUpdatingCaption}
-                        onPress={this.updateCaption}
+                        onPress={this.likeImage}
+                        disabled={this.state.isLoading || (this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost")}
                     >
                         {
-                            this.state.isUpdatingCaption ? 
-                            <ActivityIndicator size="small" color="#fff"/>
-                            : <Icon
-                                name={this.state.captionEditable ? "paper-plane" : "pen"}
-                                color="#fff"
-                                size={20}                    
-                            /> 
-                        } 
-                    </TouchableOpacity>  
-                }                              
-            </View>          
-            <View
-                style={{
-                    flex: 1,
-                    backgroundColor: '#1b1b1b',
-                    alignSelf: 'flex-end',
-                    paddingHorizontal: widthToDp("3%"),
-                    paddingTop: heightToDp("2%"),
-                    paddingBottom: heightToDp("1%"),
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                }}
-            >
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={this.likeImage}
-                    disabled={this.state.isLoading || (this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost")}
-                >
-                    {
-                        this.state.isLiked ?
-                        <Icon1
-                            name="heart"
-                            color={"#ff0000"}
-                            size={25}
-                        /> :
-                        <Icon
-                            name="heart"
-                            color={"#fff"}
-                            size={25}
-                        />
-                    }
-                </TouchableOpacity>
-                <Text
-                    style={{
-                        color: "#fff",
-                        fontSize: widthToDp("3.5%"),
-                        paddingLeft: widthToDp("2%")
-                    }}
-                >{this.state.numberOfLikes}</Text>
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={{paddingLeft: widthToDp("4%")}}
-                    onPress={() => this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image})}
-                    disabled={this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost"}
-                >
-                    <Icon
-                        name="comment"
-                        color="#fff"
-                        size={25}
-                    />
-                </TouchableOpacity>
-                <Text
-                    style={{
-                        color: "#fff",
-                        fontSize: widthToDp("3.5%"),
-                        paddingLeft: widthToDp("2%")
-                    }}
-                >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
-                {
-                    this.props.route.params.type !== "otherUserPost" &&
+                            this.state.isLiked ?
+                            <Icon1
+                                name="heart"
+                                color={"#ff0000"}
+                                size={25}
+                            /> :
+                            <Icon
+                                name="heart"
+                                color={"#fff"}
+                                size={25}
+                            />
+                        }
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontSize: widthToDp("3.5%"),
+                            paddingLeft: widthToDp("2%")
+                        }}
+                    >{this.state.numberOfLikes}</Text>
                     <TouchableOpacity
+                        activeOpacity={0.7}
                         style={{paddingLeft: widthToDp("4%")}}
-                        onPress={this.deleteImage}
+                        onPress={() => this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image})}
+                        disabled={this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost"}
                     >
                         <Icon
-                            name="trash-alt"
+                            name="comment"
                             color="#fff"
                             size={25}
                         />
                     </TouchableOpacity>
-                }                
-            </View> 
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontSize: widthToDp("3.5%"),
+                            paddingLeft: widthToDp("2%")
+                        }}
+                    >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
+                    {
+                        this.props.route.params.type !== "otherUserPost" &&
+                        <TouchableOpacity
+                            style={{paddingLeft: widthToDp("4%")}}
+                            onPress={this.deleteImage}
+                        >
+                            <Icon
+                                name="trash-alt"
+                                color="#fff"
+                                size={25}
+                            />
+                        </TouchableOpacity>
+                    }                
+                </View> 
+            }
              
             <RBSheet
                 ref={ref => {

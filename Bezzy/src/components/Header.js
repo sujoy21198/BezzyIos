@@ -2,6 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Alert, BackHandler, Image, Modal, Platform, SafeAreaView, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from './Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon1 from 'react-native-vector-icons/Ionicons';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -145,10 +146,10 @@ export default class Header extends React.Component {
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("NotificationScreen")}
                             >
-                                <Image
-                                    source={require("../../assets/notification.png")}
-                                    resizeMode="contain"
-                                    style={{ height: heightToDp("4%"), width: widthToDp("4%") }}
+                                <Icon1
+                                    name={Platform.OS==='android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
+                                    color={"#777"}
+                                    size={22}
                                 />
                             </TouchableOpacity>
                         }
