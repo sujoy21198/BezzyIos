@@ -12,10 +12,16 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
 export default class CommentScreen extends React.Component {
-    state = {
-        comments: [],
-        commentText: "",
-        isSendingComment: false
+    
+    constructor(props){
+        super(props)
+        this.state = {
+            comments: [],
+            commentText: "",
+            isSendingComment: false,
+            post_id:''
+        }
+        this.state.post_id = this.props.route.params.post.post_id
     }
 
     componentDidMount = async () => {
@@ -36,6 +42,7 @@ export default class CommentScreen extends React.Component {
                 this.setState({
                     comments: response.data.comment_list.Parent, 
                 })
+                console.log(this.state.comments)
             }
         } else {
             this.setState({comments: []});
@@ -82,6 +89,16 @@ export default class CommentScreen extends React.Component {
         }
     }
 
+    threadComment = async(id) => {
+        this.props.navigation.navigate({
+            name: 'ThreadCommentScreen',
+            params: {
+                comment_id : id,
+                post_id : this.state.post_id
+            }
+        })
+    }
+
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
@@ -93,6 +110,7 @@ export default class CommentScreen extends React.Component {
                     this.state.comments.length > 0 &&
                     <FlatList
                     data={this.state.comments}
+                    keyExtractor={item => item.comment_id}
                     ItemSeparatorComponent={() => <View style={{height: heightToDp("3%")}}/>}
                     ListFooterComponent={<View style={{height: heightToDp("2%")}}/>}
                     ListHeaderComponent={<View style={{height: heightToDp("3%")}}/>}
@@ -190,6 +208,7 @@ export default class CommentScreen extends React.Component {
                                         color="#69abff"
                                         size={15}
                                         style={{paddingLeft: widthToDp("4%")}}
+                                        onPress={() => this.threadComment(item.comment_id)}
                                     />
                                     <Text
                                         style={{
