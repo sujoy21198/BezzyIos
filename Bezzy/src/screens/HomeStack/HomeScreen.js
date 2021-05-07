@@ -155,7 +155,7 @@ export default class HomeScreen extends React.Component {
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
-                                onPress={() => this.props.navigation.navigate("MessageScreen")}
+                                onPress={() => this.props.navigation.navigate("InboxScreen")}
                                 style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.5}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
