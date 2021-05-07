@@ -11,9 +11,9 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		589D3F5A6295965ABBFA1D50 /* Pods_BezzyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90E2262C049BAAC5A63741D0 /* Pods_BezzyTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		93B1C2314F21EFCCA56A168D /* libPods-Bezzy-BezzyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B8FBEEF96F5B0E5C5CC6FA7 /* libPods-Bezzy-BezzyTests.a */; };
-		D8EEF8796591756F680B15B7 /* libPods-Bezzy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6512EACFE156AF53FCC5C0D5 /* libPods-Bezzy.a */; };
+		F8B6416085A7842DF62AE981 /* Pods_Bezzy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19D6FBCD66231C0FB8CF7554 /* Pods_Bezzy.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,14 +36,16 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Bezzy/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Bezzy/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Bezzy/main.m; sourceTree = "<group>"; };
-		2282AFFA3740319C83603B49 /* Pods-Bezzy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy.debug.xcconfig"; path = "Target Support Files/Pods-Bezzy/Pods-Bezzy.debug.xcconfig"; sourceTree = "<group>"; };
-		6512EACFE156AF53FCC5C0D5 /* libPods-Bezzy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bezzy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7656751730E923563F4B2C58 /* Pods-Bezzy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy.release.xcconfig"; path = "Target Support Files/Pods-Bezzy/Pods-Bezzy.release.xcconfig"; sourceTree = "<group>"; };
-		817225D9B7E61524F7FB09F2 /* Pods-Bezzy-BezzyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy-BezzyTests.release.xcconfig"; path = "Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests.release.xcconfig"; sourceTree = "<group>"; };
+		19D6FBCD66231C0FB8CF7554 /* Pods_Bezzy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bezzy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D5D6425641E207E68D376D2 /* Pods-Bezzy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy.release.xcconfig"; path = "Target Support Files/Pods-Bezzy/Pods-Bezzy.release.xcconfig"; sourceTree = "<group>"; };
+		31B73D6CAA8B71F62ECE8B55 /* Pods-BezzyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BezzyTests.release.xcconfig"; path = "Target Support Files/Pods-BezzyTests/Pods-BezzyTests.release.xcconfig"; sourceTree = "<group>"; };
+		56A190439CB98A88FC02501C /* Pods-Bezzy-BezzyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy-BezzyTests.debug.xcconfig"; path = "Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7AF2FB57C55E962F48E67489 /* Pods-Bezzy-BezzyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy-BezzyTests.release.xcconfig"; path = "Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Bezzy/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8B8FBEEF96F5B0E5C5CC6FA7 /* libPods-Bezzy-BezzyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bezzy-BezzyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		90E2262C049BAAC5A63741D0 /* Pods_BezzyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BezzyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA8DF2C60C7DC1B50C0EF2A7 /* Pods-Bezzy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy.debug.xcconfig"; path = "Target Support Files/Pods-Bezzy/Pods-Bezzy.debug.xcconfig"; sourceTree = "<group>"; };
+		DD5D459E25C9CCDFD596F952 /* Pods-BezzyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BezzyTests.debug.xcconfig"; path = "Target Support Files/Pods-BezzyTests/Pods-BezzyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F609197E8B2464CD431001E9 /* Pods-Bezzy-BezzyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy-BezzyTests.debug.xcconfig"; path = "Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93B1C2314F21EFCCA56A168D /* libPods-Bezzy-BezzyTests.a in Frameworks */,
+				589D3F5A6295965ABBFA1D50 /* Pods_BezzyTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8EEF8796591756F680B15B7 /* libPods-Bezzy.a in Frameworks */,
+				F8B6416085A7842DF62AE981 /* Pods_Bezzy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,8 +102,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				6512EACFE156AF53FCC5C0D5 /* libPods-Bezzy.a */,
-				8B8FBEEF96F5B0E5C5CC6FA7 /* libPods-Bezzy-BezzyTests.a */,
+				19D6FBCD66231C0FB8CF7554 /* Pods_Bezzy.framework */,
+				90E2262C049BAAC5A63741D0 /* Pods_BezzyTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -140,10 +142,12 @@
 		93B737E9846D34C188017292 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2282AFFA3740319C83603B49 /* Pods-Bezzy.debug.xcconfig */,
-				7656751730E923563F4B2C58 /* Pods-Bezzy.release.xcconfig */,
-				F609197E8B2464CD431001E9 /* Pods-Bezzy-BezzyTests.debug.xcconfig */,
-				817225D9B7E61524F7FB09F2 /* Pods-Bezzy-BezzyTests.release.xcconfig */,
+				AA8DF2C60C7DC1B50C0EF2A7 /* Pods-Bezzy.debug.xcconfig */,
+				1D5D6425641E207E68D376D2 /* Pods-Bezzy.release.xcconfig */,
+				56A190439CB98A88FC02501C /* Pods-Bezzy-BezzyTests.debug.xcconfig */,
+				7AF2FB57C55E962F48E67489 /* Pods-Bezzy-BezzyTests.release.xcconfig */,
+				DD5D459E25C9CCDFD596F952 /* Pods-BezzyTests.debug.xcconfig */,
+				31B73D6CAA8B71F62ECE8B55 /* Pods-BezzyTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -155,12 +159,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BezzyTests" */;
 			buildPhases = (
-				D4609DED813C7CC26E64C746 /* [CP] Check Pods Manifest.lock */,
+				187DA16B9E1BFA74E009234C /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				1B99D0D00FFC8294022CAAEE /* [CP] Embed Pods Frameworks */,
-				03C61685737CEA962DC60473 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -176,14 +178,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Bezzy" */;
 			buildPhases = (
-				28092AA79C344C28B7B645B1 /* [CP] Check Pods Manifest.lock */,
+				8B8B6C1C392A1177AB5BCBD7 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				C64811BD2CA8DE980C777177 /* [CP] Embed Pods Frameworks */,
-				AFA4D82F40DB317812E4FFF2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -264,41 +264,29 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		03C61685737CEA962DC60473 /* [CP] Copy Pods Resources */ = {
+		187DA16B9E1BFA74E009234C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Copy Pods Resources";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BezzyTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1B99D0D00FFC8294022CAAEE /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bezzy-BezzyTests/Pods-Bezzy-BezzyTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		28092AA79C344C28B7B645B1 /* [CP] Check Pods Manifest.lock */ = {
+		8B8B6C1C392A1177AB5BCBD7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -314,62 +302,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Bezzy-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AFA4D82F40DB317812E4FFF2 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C64811BD2CA8DE980C777177 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Bezzy/Pods-Bezzy-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D4609DED813C7CC26E64C746 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bezzy-BezzyTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -428,7 +360,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F609197E8B2464CD431001E9 /* Pods-Bezzy-BezzyTests.debug.xcconfig */;
+			baseConfigurationReference = DD5D459E25C9CCDFD596F952 /* Pods-BezzyTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -455,7 +387,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 817225D9B7E61524F7FB09F2 /* Pods-Bezzy-BezzyTests.release.xcconfig */;
+			baseConfigurationReference = 31B73D6CAA8B71F62ECE8B55 /* Pods-BezzyTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -479,7 +411,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2282AFFA3740319C83603B49 /* Pods-Bezzy.debug.xcconfig */;
+			baseConfigurationReference = AA8DF2C60C7DC1B50C0EF2A7 /* Pods-Bezzy.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -506,7 +438,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7656751730E923563F4B2C58 /* Pods-Bezzy.release.xcconfig */;
+			baseConfigurationReference = 1D5D6425641E207E68D376D2 /* Pods-Bezzy.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -517,6 +449,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -562,6 +495,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=*]" = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
