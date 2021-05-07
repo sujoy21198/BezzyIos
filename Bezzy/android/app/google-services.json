@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "331428830824",
+    "project_id": "bezzy-5b3e4",
+    "storage_bucket": "bezzy-5b3e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331428830824:android:06e0c9fcf1a79f86afe5dd",
+        "android_client_info": {
+          "package_name": "com.bezzy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331428830824-kavuvqeevqq1mfbngi4uhvh5na704da2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bezzy",
+            "certificate_hash": "a3ac854fcac5ca8ea7d9363366d291b06de7ef23"
+          }
+        },
+        {
+          "client_id": "331428830824-dcrequrcra8o8de2mhhe9vtdfeu7hobo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHfmIskSn9ZodrbHxze1LYRTkYudSva_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331428830824-dcrequrcra8o8de2mhhe9vtdfeu7hobo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

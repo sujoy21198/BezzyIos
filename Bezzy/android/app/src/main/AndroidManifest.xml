@@ -20,6 +20,15 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:host="bezzy.page.link" android:scheme="https"/>
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
       </activity>
     </application>
 </manifest>
