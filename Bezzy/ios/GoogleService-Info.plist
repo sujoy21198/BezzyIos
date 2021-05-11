@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>331428830824-4g9aojgan4q6re3p4uhkqeh9if1sbii4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.331428830824-4g9aojgan4q6re3p4uhkqeh9if1sbii4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>331428830824-kavuvqeevqq1mfbngi4uhvh5na704da2.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDYgnZwa1SYHXD-d1hxZ28KVHDocV82gWE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>331428830824</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.Bezzy</string>
+	<key>PROJECT_ID</key>
+	<string>bezzy-5b3e4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bezzy-5b3e4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:331428830824:ios:cfdb4de0e805aba1afe5dd</string>
+</dict>
+</plist>
