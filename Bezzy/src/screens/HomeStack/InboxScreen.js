@@ -42,6 +42,7 @@ export default class InboxScreen extends Component {
   componentDidMount() {
     this.getUserId()
     setInterval(() => this.getInboxChats(), 7000)
+    
   }
 
   getUserId = async () => {
