@@ -26,19 +26,22 @@ export default class HomeScreen extends React.Component {
             followingList: [],
             expand: false,
             postDetails: [],
-            isRefreshing: false
+            isRefreshing: false,
+            userId:''
         }
     }
 
     componentDidMount() {
         this.RBSheet1.open();
         this.fetchHomeListing();
+        this.userId()
     }
 
-    // userId = async() => {
-    //     let user_id = await AsyncStorage.getItem('userId')
-    //     alert(user_id)
-    // }
+    userId = async() => {
+        let user_id = await AsyncStorage.getItem('userId')
+        this.setState({userId : user_id})
+        //alert(this.state.userId)
+    }
 
     fetchHomeListing = async (type) => {
         if(type === "pullRefresh") {this.setState({userList: [], followingList: []})}
@@ -155,7 +158,7 @@ export default class HomeScreen extends React.Component {
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
-                                onPress={() => this.props.navigation.navigate("InboxScreen")}
+                                onPress={() => this.props.navigation.navigate("InboxScreen",{friendId: section.friend_id})}
                                 style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days!=="" ? 1 :  section.have_post=== "No" ? 3.2 : 2.5}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}

@@ -45,7 +45,14 @@ const DataAccess = {
 
     //notification api's
     fetchNotifications: 'Notificationlist',
-    clearNotification: 'ClearNotificationlist'
+    clearNotification: 'ClearNotificationlist',
+
+
+    //chat api
+    //chat list for inbox
+    chatList:'chat-list/',
+    //sendMessage
+    addChatData:'add-chat-data'
 }
 
 export default DataAccess
