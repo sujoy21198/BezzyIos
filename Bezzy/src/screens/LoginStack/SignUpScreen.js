@@ -377,7 +377,6 @@ export default class SignUpScreen extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 onChangeText={(text) => this.setState({ name: text.trim() })}
                                 onFocus={() => this.setState({ isNameFocused: true, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
@@ -412,7 +411,6 @@ export default class SignUpScreen extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
@@ -465,7 +463,6 @@ export default class SignUpScreen extends React.Component {
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
                                         marginLeft: widthToDp("-1%"),
-                                        fontFamily: 'Oswald-Medium'
                                     }}
                                     secureTextEntry={!this.state.showPassword}
                                     onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -525,7 +522,6 @@ export default class SignUpScreen extends React.Component {
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
                                         marginLeft: widthToDp("-1%"),
-                                        fontFamily: 'Oswald-Medium'
                                     }}
                                     secureTextEntry={!this.state.showConfirmPassword}
                                     onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
@@ -578,7 +574,6 @@ export default class SignUpScreen extends React.Component {
                                 color: this.state.dob === ""  ? '#808080' : "#1b1b1b",
                                 fontSize: widthToDp("3.4%"),
                                 paddingBottom: heightToDp("1%"),
-                                fontFamily: 'Oswald-Medium',
                                 width: widthToDp("87%")
                             }}
                         >

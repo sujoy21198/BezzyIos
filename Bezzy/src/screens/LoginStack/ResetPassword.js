@@ -150,7 +150,6 @@ export default class ResetPassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 secureTextEntry={!this.state.showPassword}
                                 onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -209,8 +208,7 @@ export default class ResetPassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
+                                    marginLeft: widthToDp("-1%")
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}

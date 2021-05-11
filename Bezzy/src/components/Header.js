@@ -186,7 +186,6 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-                                                fontFamily: 'Oswald-Medium',
                                             }}
                                         >Block List</Text>
                                     </TouchableOpacity>
@@ -197,7 +196,7 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-                                                fontFamily: 'Oswald-Medium',
+                                                
                                             }}
                                         >Change Password</Text>
                                     </TouchableOpacity>
@@ -206,7 +205,6 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-                                                fontFamily: 'Oswald-Medium',
                                             }}
                                         >Logout</Text>
                                     </TouchableOpacity>

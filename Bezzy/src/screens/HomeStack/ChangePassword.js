@@ -167,7 +167,6 @@ export default class ChangePassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 secureTextEntry={!this.state.showOldPassword}
                                 onChangeText={(text) => this.setState({ currentPassword: text.trim() })}
@@ -218,7 +217,6 @@ export default class ChangePassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 secureTextEntry={!this.state.showNewPassword}
                                 onChangeText={(text) => this.setState({ newPassword: text.trim() })}
@@ -278,7 +276,6 @@ export default class ChangePassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
-                                    fontFamily: 'Oswald-Medium'
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}

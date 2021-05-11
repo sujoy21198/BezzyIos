@@ -334,7 +334,6 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            fontFamily: 'Oswald-Medium',
                             width: widthToDp("95%")
                         }}
                         defaultValue={this.state.name}
@@ -356,7 +355,6 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            fontFamily: 'Oswald-Medium',
                             width: widthToDp("95%")
                         }}
                         defaultValue={this.state.email}
@@ -391,7 +389,6 @@ export default class EditProfileScreen extends React.Component {
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
                             paddingBottom: heightToDp("2%"),
-                            fontFamily: 'Oswald-Medium',
                             width: widthToDp("87%")
                         }}
                     >
@@ -445,7 +442,6 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            fontFamily: 'Oswald-Medium',
                             width: widthToDp("95%")
                         }}
                         defaultValue={this.state.bio}
