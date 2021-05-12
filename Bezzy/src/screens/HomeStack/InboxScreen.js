@@ -8,6 +8,7 @@ import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import EmojiBoard from 'react-native-emoji-board'
 
 
 
@@ -35,7 +36,8 @@ export default class InboxScreen extends Component {
       friendsId: '',
       userId: '',
       message: [],
-      tempId: 0
+      tempId: 0,
+      show:false
     }
     this.state.friendsId = this.props.route.params.friendId
   }
@@ -79,6 +81,15 @@ export default class InboxScreen extends Component {
     this.getInboxChats()
   }
 
+  startEmoji = () => {
+    this.state.show = true
+  }
+
+  endEmoji = (value) => {
+    alert(value)
+    this.state.show = false
+
+  }
   render() {
     return (
       <View style={{
@@ -108,10 +119,11 @@ export default class InboxScreen extends Component {
           <Icon2
             name="emoji-happy"
             size={25}
-
+            onPress={() => this.startEmoji()}
           />
+          <EmojiBoard showBoard={this.state.show} onClick={(value) =>this.endEmoji(value)} />
           <Icon2
-            name="emoji-happy"
+            name="image"
             size={25}
 
           />
