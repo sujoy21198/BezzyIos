@@ -69,6 +69,24 @@
 		<string>Foundation.ttf</string>
 		<string>Ionicons.ttf</string>
 		<string>MaterialIcons.ttf</string>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
+		<string>Oswald-Bold.tff</string>
+		<string>Oswald-ExtraLight.ttf</string>
+		<string>Oswald-Light.ttf</string>
+		<string>Oswald-Medium.ttf</string>
+		<string>Oswald-SemiBold.ttf</string>
+		<string>Oswald-VariableFont_wgh.ttf</string>
 	</array>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>YOUR TEXT</string>

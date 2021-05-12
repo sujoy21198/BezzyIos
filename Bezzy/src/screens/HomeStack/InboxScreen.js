@@ -3,6 +3,7 @@ import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput } from 
 import { Bubble, GiftedChat, Send, QuickReplies } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icon2 from 'react-native-vector-icons/Entypo'
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,7 +43,7 @@ export default class InboxScreen extends Component {
   componentDidMount() {
     this.getUserId()
     setInterval(() => this.getInboxChats(), 7000)
-    
+
   }
 
   getUserId = async () => {
@@ -90,32 +91,45 @@ export default class InboxScreen extends Component {
           keyExtractor={item => item.id}
           inverted={true}
           renderItem={({ item }) =>
-            
-              <View>
-                {
-                  item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end' }}>
-                    <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
-                  </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
-                    <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
-                  </View>
-                }
-              </View>
-            
+
+            <View>
+              {
+                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end' }}>
+                  <Text style={{ marginLeft: widthToDp("2%"), color: 'white' }}>{item.chat_message}</Text>
+                </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
+                  <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
+                </View>
+              }
+            </View>
+
           }
         />
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-          <TextInput
-            placeholder={'Type your message'}
-            placeholderTextColor={'#000'}
-            style={{ borderColor: '#000', borderRadius: 10, borderWidth: 1, marginBottom: heightToDp("2%"), width: widthToDp("80%") }}
-            onChangeText={(text) => this.setState({ myMessage: text })}
+          <Icon2
+            name="emoji-happy"
+            size={25}
+
           />
-          <Icon
-            name="send"
-            size={30}
-            style={{ marginTop: heightToDp("1%") }}
-            onPress={() => this.sendMessage()}
+          <Icon2
+            name="emoji-happy"
+            size={25}
+
           />
+          <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1 }}>
+            <TextInput
+              placeholder={'Type your message'}
+              placeholderTextColor={'#000'}
+              style={{ borderColor: '#000', marginBottom: heightToDp("2%"), width: widthToDp("80%"), color: '#000' }}
+              onChangeText={(text) => this.setState({ myMessage: text })}
+            />
+            <Icon
+              name="send"
+              size={25}
+              style={{ marginTop: heightToDp("0.2%") }}
+              onPress={() => this.sendMessage()}
+            />
+          </View>
+
         </View>
 
       </View>
