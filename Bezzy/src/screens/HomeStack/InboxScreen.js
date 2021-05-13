@@ -86,8 +86,8 @@ export default class InboxScreen extends Component {
   }
 
   endEmoji = (value) => {
-    alert(value)
-    this.state.show = false
+    this.state.myMessage = value
+    this.setState({show:false})
 
   }
   render() {

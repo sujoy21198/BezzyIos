@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, SafeAreaView, ScrollView, StatusBar, FlatList, KeyboardAvoidingView, View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { RefreshControl,Image, SafeAreaView, ScrollView, StatusBar, FlatList, KeyboardAvoidingView, View, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import {
@@ -14,14 +14,31 @@ import {
     MessageText,
     TextSection,
 } from '../../../styles/MessageStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import DataAccess from '../../components/DataAccess';
+import { heightToDp, widthToDp } from '../../components/Responsive';
 
-const Messages = [
+// const Messages = [
     
-];
+// ];
 
 export default class ChatScreen extends React.Component {
     state = {
-        isRefreshing: false
+        isRefreshing: false,
+        Messages:[]
+    }
+
+    componentDidMount(){
+        this.getChatList()
+    }
+
+
+    getChatList = async() => {
+        let value = await AsyncStorage.getItem('userId')
+        let response = await axios.get(DataAccess.BaseUrl+DataAccess.chatList+"/"+value)
+        this.setState({Messages : response.data.chat_notification_list})
+        console.log(response.data.chat_notification_list)
     }
 
     render = () => (
@@ -29,20 +46,23 @@ export default class ChatScreen extends React.Component {
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isMessageScreen headerText="Messages" />
             <FlatList
-                data={Messages}
+                data={this.state.Messages}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Card onPress={() => this.props.navigation.navigate('InboxScreen', { userName: item.userName })}>
+                    <Card onPress={() => this.props.navigation.navigate('InboxScreen', { friendsId: item.friendID })}>
                         <UserInfo>
-                            <UserImgWrapper>
-                                
-                            </UserImgWrapper>
+                            <View>
+                                <Image
+                                source={{uri:item.userimage}}
+                                style={{height:heightToDp("10%"),width:widthToDp("20%"),marginLeft:widthToDp("5%")}}
+                                />
+                            </View>
                             <TextSection>
                                 <UserInfoText>
-                                    <UserName>{item.userName}</UserName>
-                                    <PostTime>{item.messageTime}</PostTime>
+                                    <UserName>{item.username}</UserName>
+                                    <PostTime>{item.chat_date_time}</PostTime>
                                 </UserInfoText>
-                                <MessageText>{item.messageText}</MessageText>
+                                <MessageText>{item.chat_message}</MessageText>
                             </TextSection>
                         </UserInfo>
                     </Card>

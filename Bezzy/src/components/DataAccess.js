@@ -52,7 +52,9 @@ const DataAccess = {
     //chat list for inbox
     chatList:'chat-list/',
     //sendMessage
-    addChatData:'add-chat-data'
+    addChatData:'add-chat-data',
+    //get chat list
+    chatList:'chat-notification-list'
 }
 
 export default DataAccess
