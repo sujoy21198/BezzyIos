@@ -196,7 +196,7 @@ export default class BottomTab extends React.Component {
                                 this.props.navigation.reset({
                                     index: 3,
                                     routes: [
-                                        { name: "ProfileScreen" }
+                                        { name: "ProfileScreen" , params: { profile_id : ''}}
                                     ]
                                 })
                             }

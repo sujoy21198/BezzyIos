@@ -50,7 +50,7 @@ const DataAccess = {
 
     //chat api
     //chat list for inbox
-    chatList:'chat-list/',
+    chatListInbox:'chat-list/',
     //sendMessage
     addChatData:'add-chat-data',
     //get chat list

@@ -44,7 +44,7 @@ export default class InboxScreen extends Component {
 
   componentDidMount() {
     this.getUserId()
-    setInterval(() => this.getInboxChats(), 7000)
+    //setInterval(() => this.getInboxChats(), 5000)
 
   }
 
@@ -56,7 +56,7 @@ export default class InboxScreen extends Component {
 
   getInboxChats = async () => {
     var messages = []
-    await axios.get(DataAccess.BaseUrl + DataAccess.chatList + this.state.userId + "/" + this.state.friendsId + "/1")
+    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
       .then(function (response) {
         messages = response.data.chat_history_list
         console.log(response.data.chat_history_list)
@@ -82,11 +82,13 @@ export default class InboxScreen extends Component {
   }
 
   startEmoji = () => {
-    this.state.show = true
+    //alert("ji")
+    this.setState({show: true})
   }
 
   endEmoji = (value) => {
-    this.state.myMessage = value
+    console.log(value.code,"fuck me")
+    this.setState({myMessage : value.code})
     this.setState({show:false})
 
   }
@@ -101,6 +103,7 @@ export default class InboxScreen extends Component {
           data={this.state.message}
           keyExtractor={item => item.id}
           inverted={true}
+          style={{backgroundColor:'#000',height:heightToDp("100%")}}
           renderItem={({ item }) =>
 
             <View>
@@ -120,24 +123,26 @@ export default class InboxScreen extends Component {
             name="emoji-happy"
             size={25}
             onPress={() => this.startEmoji()}
+            style={{color:'blue'}}
           />
           <EmojiBoard showBoard={this.state.show} onClick={(value) =>this.endEmoji(value)} />
           <Icon2
             name="image"
             size={25}
-
+            style={{color:'blue'}}
           />
           <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1 }}>
             <TextInput
               placeholder={'Type your message'}
+              value={this.state.myMessage}
               placeholderTextColor={'#000'}
-              style={{ borderColor: '#000', marginBottom: heightToDp("2%"), width: widthToDp("80%"), color: '#000' }}
+              style={{ borderColor: 'blue',borderRadius:2, marginBottom: heightToDp("2%"), width: widthToDp("70%"), color: '#000',height:heightToDp("5%") }}
               onChangeText={(text) => this.setState({ myMessage: text })}
             />
             <Icon
               name="send"
               size={25}
-              style={{ marginTop: heightToDp("0.2%") }}
+              style={{ marginTop: heightToDp("0.2%") ,color:'blue'}}
               onPress={() => this.sendMessage()}
             />
           </View>
