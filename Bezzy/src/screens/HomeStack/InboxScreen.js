@@ -37,7 +37,9 @@ export default class InboxScreen extends Component {
       userId: '',
       message: [],
       tempId: 0,
-      show:false
+      show:false,
+      isFetching:false,
+      page: 1
     }
     this.state.friendsId = this.props.route.params.friendId
   }
@@ -56,14 +58,15 @@ export default class InboxScreen extends Component {
 
   getInboxChats = async () => {
     var messages = []
-    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
+    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/"+this.state.page)
       .then(function (response) {
         messages = response.data.chat_history_list
         console.log(response.data.chat_history_list)
       }).catch(function (error) {
         console.log(error)
       })
-    this.setState({ message: messages })
+    this.setState({ message: this.state.message.concat(messages) })
+    this.setState({isFetching : false})
     console.log(this.state.myMessage, "kO")
   }
 
@@ -79,6 +82,7 @@ export default class InboxScreen extends Component {
       console.log(error)
     })
     this.getInboxChats()
+    this.state.myMessage=""
   }
 
   startEmoji = () => {
@@ -92,30 +96,46 @@ export default class InboxScreen extends Component {
     this.setState({show:false})
 
   }
+  // onRefresh = () => {
+  //   this.setState({ isFetching: true }, function () { this.getInboxChats() });
+  // }
+  handleLoadMore = () => {
+    this.setState({page : this.state.page +1}, this.getInboxChats)
+  }
+
+  // renderFooter = () => {
+  //   return()
+  // }
   render() {
     return (
       <View style={{
         position: 'absolute',
         bottom: 0,
         width: widthToDp("100%"),
+        marginBottom:heightToDp("2%")
       }}>
         <FlatList
           data={this.state.message}
           keyExtractor={item => item.id}
           inverted={true}
-          style={{backgroundColor:'#000',height:heightToDp("100%")}}
+          style={{backgroundColor:'#fff',height:heightToDp("70%")}}
+          // onRefresh={() => this.onRefresh()}
+          // refreshing={this.state.isFetching}
+          onEndReached={this.handleLoadMore}
+          onEndReachedThreshold={0}
+          //ListFooterComponent={this.renderFooter}
           renderItem={({ item }) =>
 
             <View>
               {
-                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end' }}>
+                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end',marginBottom:heightToDp("4%") }}>
                   <Text style={{ marginLeft: widthToDp("2%"), color: 'white' }}>{item.chat_message}</Text>
                 </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
                   <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
                 </View>
               }
             </View>
-
+            
           }
         />
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
@@ -123,15 +143,15 @@ export default class InboxScreen extends Component {
             name="emoji-happy"
             size={25}
             onPress={() => this.startEmoji()}
-            style={{color:'blue'}}
+            style={{color:'blue',marginRight:widthToDp("2%")}}
           />
           <EmojiBoard showBoard={this.state.show} onClick={(value) =>this.endEmoji(value)} />
           <Icon2
             name="image"
             size={25}
-            style={{color:'blue'}}
+            style={{color:'blue',marginRight:widthToDp("2%")}}
           />
-          <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1 }}>
+          <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1,height:heightToDp("5%") }}>
             <TextInput
               placeholder={'Type your message'}
               value={this.state.myMessage}
@@ -142,7 +162,7 @@ export default class InboxScreen extends Component {
             <Icon
               name="send"
               size={25}
-              style={{ marginTop: heightToDp("0.2%") ,color:'blue'}}
+              style={{ marginTop: heightToDp("0.8%") ,color:'blue',marginRight:widthToDp("2%")}}
               onPress={() => this.sendMessage()}
             />
           </View>

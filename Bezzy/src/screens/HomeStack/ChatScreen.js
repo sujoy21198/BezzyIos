@@ -54,7 +54,7 @@ export default class ChatScreen extends React.Component {
                             <View>
                                 <Image
                                 source={{uri:item.userimage}}
-                                style={{height:heightToDp("10%"),width:widthToDp("20%"),marginLeft:widthToDp("5%")}}
+                                style={{height:heightToDp("10%"),width:widthToDp("20%"),marginLeft:widthToDp("5%"),borderRadius:300}}
                                 />
                             </View>
                             <TextSection>
