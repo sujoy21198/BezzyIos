@@ -49,7 +49,7 @@ export default class ChatScreen extends React.Component {
                 data={this.state.Messages}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Card onPress={() => this.props.navigation.navigate('InboxScreen', { friendId: item.friendID })}>
+                    <Card onPress={() => this.props.navigation.navigate('InboxScreen', { friendId: item.friendID , friendImage : item.userimage , friendName: item.username })}>
                         <UserInfo>
                             <View>
                                 <Image

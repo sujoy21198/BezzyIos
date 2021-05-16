@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput } from 'react-native';
+import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput, Image } from 'react-native';
 import { Bubble, GiftedChat, Send, QuickReplies } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,9 +25,14 @@ export default class InboxScreen extends Component {
       show: false,
       isFetching: false,
       page: 1,
-      imagePath: ''
+      imagePath: '',
+      friendImage: '',
+      friendName: ''
     }
     this.state.friendsId = this.props.route.params.friendId
+    this.state.friendImage = this.props.route.params.friendImage
+    this.state.friendName = this.props.route.params.friendName
+    //alert(this.state.friendName)
   }
 
   componentDidMount() {
@@ -133,11 +138,19 @@ export default class InboxScreen extends Component {
         width: widthToDp("100%"),
         marginBottom: heightToDp("2%")
       }}>
+        <View style={{flexDirection:'row'}}>
+          <Image
+            source={{ uri: this.state.friendImage }}
+            style={{ height: heightToDp("7%"), width: widthToDp("15%"), marginLeft: widthToDp("5%"), borderRadius: 300 }}
+          />
+          <Text style={{marginLeft:widthToDp("5%"),marginTop:heightToDp("2%")}}>{this.state.friendName}</Text>
+        </View>
+
         <FlatList
           data={this.state.message}
           keyExtractor={item => item.id}
           inverted={true}
-          style={{ backgroundColor: '#fff', height: heightToDp("70%") }}
+          style={{ backgroundColor: '#fff', height: heightToDp("85%") }}
           // onRefresh={() => this.onRefresh()}
           // refreshing={this.state.isFetching}
           onEndReached={this.handleLoadMore}
@@ -146,11 +159,14 @@ export default class InboxScreen extends Component {
           renderItem={({ item }) =>
 
             <View>
+
               {
                 item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
                   <Text style={{ marginLeft: widthToDp("2%"), color: 'white' }}>{item.chat_message}</Text>
+                  <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
                 </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
                   <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
+                  <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
                 </View>
               }
             </View>
@@ -162,13 +178,13 @@ export default class InboxScreen extends Component {
             name="emoji-happy"
             size={25}
             onPress={() => this.startEmoji()}
-            style={{ color: 'blue', marginRight: widthToDp("2%") }}
+            style={{ color: 'blue', marginRight: widthToDp("2%"), marginTop: heightToDp("1%") }}
           />
           <EmojiBoard showBoard={this.state.show} onClick={(value) => this.endEmoji(value)} />
           <Icon2
             name="image"
             size={25}
-            style={{ color: 'blue', marginRight: widthToDp("2%") }}
+            style={{ color: 'blue', marginRight: widthToDp("2%"), marginTop: heightToDp("1%") }}
             onPress={() => this.openImageSelection()}
           />
           <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1, height: heightToDp("5%") }}>
