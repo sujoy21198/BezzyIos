@@ -11,6 +11,7 @@ import axios from 'axios';
 import DataAccess from '../../components/DataAccess'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'native-base';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default class SearchScreen extends React.Component {
     constructor(props) {
@@ -25,10 +26,10 @@ export default class SearchScreen extends React.Component {
         this.searchUsers("")
     }
     searchUsers = async (text, type) => {
-        if(type === "pullRefresh") {this.setState({userList: []})}
+        if (type === "pullRefresh") { this.setState({ userList: [] }) }
         var user = [], response;
         let userId = await AsyncStorage.getItem("userId");
-        if(text !== "") {
+        if (text !== "") {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
                 searchval: text,
                 loguser_id: userId
@@ -38,8 +39,8 @@ export default class SearchScreen extends React.Component {
                 log_userID: userId
             })
         }
-        if(response.data.resp === "success") {
-            if(text !== "") {
+        if (response.data.resp === "success") {
+            if (text !== "") {
                 user = response.data.search_result;
             } else {
                 user = response.data.all_user_list;
@@ -54,20 +55,20 @@ export default class SearchScreen extends React.Component {
     followUser = async (item, index) => {
         this.RBSheet.open();
         let userId = await AsyncStorage.getItem("userId"), response;
-        if(item.user_is_flollowers==="No") {
+        if (item.user_is_flollowers === "No") {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
                 "user_one_id": userId,
                 "user_two_id": item.user_id
             });
         } else {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
-                "login_userID" : userId,
-                "userID" : item.user_id
+                "login_userID": userId,
+                "userID": item.user_id
             });
         }
         if (response.data.status === "success") {
             Toast.show({
-                text: item.user_is_flollowers==="No" ? "Follow successful" : response.data.message,
+                text: item.user_is_flollowers === "No" ? "Follow successful" : response.data.message,
                 type: "success",
                 duration: 2000
             })
@@ -75,11 +76,11 @@ export default class SearchScreen extends React.Component {
                 index: 0,
                 routes: [
                     { name: "HomeScreen" }
-                ]   
+                ]
             });
         } else {
             Toast.show({
-                text:  response.data.message,
+                text: response.data.message,
                 type: "warning",
                 duration: 2000
             })
@@ -95,7 +96,7 @@ export default class SearchScreen extends React.Component {
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
-                        <Text style={{ fontSize: widthToDp("4.5%"),color:'#007dfe',fontWeight: 'bold' }}>Search for friends</Text>
+                        <Text style={{ fontSize: widthToDp("4.5%"), color: '#007dfe', fontWeight: 'bold' }}>Search for friends</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}
@@ -146,7 +147,7 @@ export default class SearchScreen extends React.Component {
                         padding: widthToDp("2%")
                     }}
                     refreshing={this.state.isRefreshing}
-                    onRefresh={() => this.setState({isRefreshing: true}, () => this.searchUsers("", "pullRefresh"))}
+                    onRefresh={() => this.setState({ isRefreshing: true }, () => this.searchUsers("", "pullRefresh"))}
                     ListFooterComponent={<View style={{ height: heightToDp("10%") }} />}
                     renderItem={({ item, index }) => (
                         <View
@@ -160,10 +161,12 @@ export default class SearchScreen extends React.Component {
                             }}
                             key={index}
                         >
-                            <Image
-                                source={{uri:item.image}}
-                                style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-                            />
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileScreen', { profile_id: item.user_id })}>
+                                <Image
+                                    source={{ uri: item.image }}
+                                    style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+                                />
+                            </TouchableOpacity>
                             <Text
                                 style={{
                                     textAlign: "center",
@@ -172,16 +175,19 @@ export default class SearchScreen extends React.Component {
                             >{item.name}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.7}
-                                style={{
-                                    backgroundColor: "#69abff",
-                                    borderRadius: 10,
-                                    alignItems: "center",
-                                    padding: 5,
-                                    marginHorizontal: 5
-                                }}
                                 onPress={() => this.followUser(item, index)}
                             >
-                                <Text style={{ color: "#fff" }}>{item.user_is_flollowers==="No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                <LinearGradient
+                                    colors={["#007dfe", "#10c0ff"]}
+                                    start={{ x: 0.15, y: 0.8 }}
+                                    style={{borderRadius: 10,
+                                        alignItems: "center",
+                                        padding: 5,
+                                        marginHorizontal: 5}}
+                                >
+                                    <Text style={{ color: "#fff" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                </LinearGradient>
+
                             </TouchableOpacity>
                             <RBSheet1
                                 ref={ref => {

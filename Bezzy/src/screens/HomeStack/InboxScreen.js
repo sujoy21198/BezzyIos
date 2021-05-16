@@ -9,23 +9,8 @@ import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import EmojiBoard from 'react-native-emoji-board'
-
-
-
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
+import ImagePicker from 'react-native-image-crop-picker';
+import ImgToBase64 from 'react-native-image-base64';
 
 export default class InboxScreen extends Component {
   constructor(props) {
@@ -37,15 +22,17 @@ export default class InboxScreen extends Component {
       userId: '',
       message: [],
       tempId: 0,
-      show:false,
-      isFetching:false,
-      page: 1
+      show: false,
+      isFetching: false,
+      page: 1,
+      imagePath: ''
     }
     this.state.friendsId = this.props.route.params.friendId
   }
 
   componentDidMount() {
     this.getUserId()
+    //this.imageToBase64Converter()
     //setInterval(() => this.getInboxChats(), 5000)
 
   }
@@ -58,7 +45,7 @@ export default class InboxScreen extends Component {
 
   getInboxChats = async () => {
     var messages = []
-    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/"+this.state.page)
+    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
       .then(function (response) {
         messages = response.data.chat_history_list
         console.log(response.data.chat_history_list)
@@ -66,7 +53,7 @@ export default class InboxScreen extends Component {
         console.log(error)
       })
     this.setState({ message: this.state.message.concat(messages) })
-    this.setState({isFetching : false})
+    this.setState({ isFetching: false })
     console.log(this.state.myMessage, "kO")
   }
 
@@ -82,43 +69,75 @@ export default class InboxScreen extends Component {
       console.log(error)
     })
     this.getInboxChats()
-    this.state.myMessage=""
+    this.state.myMessage = ""
   }
 
   startEmoji = () => {
     //alert("ji")
-    this.setState({show: true})
+    this.setState({ show: true })
   }
 
   endEmoji = (value) => {
-    console.log(value.code,"fuck me")
-    this.setState({myMessage : value.code})
-    this.setState({show:false})
+    console.log(value.code, "fuck me")
+    this.setState({ myMessage: value.code })
+    this.setState({ show: false })
 
   }
   // onRefresh = () => {
   //   this.setState({ isFetching: true }, function () { this.getInboxChats() });
   // }
   handleLoadMore = () => {
-    this.setState({page : this.state.page +1}, this.getInboxChats)
+    this.setState({ page: this.state.page + 1 }, this.getInboxChats)
   }
 
   // renderFooter = () => {
   //   return()
   // }
+
+
+  openImageSelection = () => {
+
+    ImagePicker.openPicker({
+      width: 300,
+      height: 200,
+      cropping: true,
+      multiple: true
+    })
+      .then(images => {
+        this.state.imagePath = images[0].path
+        console.log(this.state.imagePath)
+        ImgToBase64.getBase64String(images[0].path)
+          .then(base64String => console.log(base64String))
+          .catch(err => console.log(err));
+        //this.setState({imagePath : images[0].path}) 
+      })
+      .catch(err => {
+        console.log(' Error fetching images from gallery ', err);
+      });
+    //console.log(this.state.imagePath)
+  }
+
+  // imageToBase64Converter = () => {
+  //   console.log("hulo khulo")
+  //   ImgToBase64.getBase64String(' file:///data/user/0/com.bezzy/cache/react-native-image-crop-picker/IMG-20210516-WA0002.jpg')
+  //     .then(base64String => console.log(base64String))
+  //     .catch(err => console.log(err));
+  // }
+
+
   render() {
     return (
       <View style={{
         position: 'absolute',
         bottom: 0,
         width: widthToDp("100%"),
-        marginBottom:heightToDp("2%")
+        marginBottom: heightToDp("2%")
       }}>
         <FlatList
           data={this.state.message}
           keyExtractor={item => item.id}
           inverted={true}
-          style={{backgroundColor:'#fff',height:heightToDp("70%")}}
+          style={{ backgroundColor: '#fff', height: heightToDp("70%") }}
           // onRefresh={() => this.onRefresh()}
           // refreshing={this.state.isFetching}
           onEndReached={this.handleLoadMore}
@@ -128,14 +147,14 @@ export default class InboxScreen extends Component {
 
             <View>
               {
-                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end',marginBottom:heightToDp("4%") }}>
+                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
                   <Text style={{ marginLeft: widthToDp("2%"), color: 'white' }}>{item.chat_message}</Text>
                 </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
                   <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
                 </View>
               }
             </View>
-            
+
           }
         />
         <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
@@ -143,26 +162,27 @@ export default class InboxScreen extends Component {
             name="emoji-happy"
             size={25}
             onPress={() => this.startEmoji()}
-            style={{color:'blue',marginRight:widthToDp("2%")}}
+            style={{ color: 'blue', marginRight: widthToDp("2%") }}
           />
-          <EmojiBoard showBoard={this.state.show} onClick={(value) =>this.endEmoji(value)} />
+          <EmojiBoard showBoard={this.state.show} onClick={(value) => this.endEmoji(value)} />
           <Icon2
             name="image"
             size={25}
-            style={{color:'blue',marginRight:widthToDp("2%")}}
+            style={{ color: 'blue', marginRight: widthToDp("2%") }}
+            onPress={() => this.openImageSelection()}
           />
-          <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1,height:heightToDp("5%") }}>
+          <View style={{ flexDirection: 'row', borderRadius: 10, borderWidth: 1, height: heightToDp("5%") }}>
             <TextInput
               placeholder={'Type your message'}
               value={this.state.myMessage}
               placeholderTextColor={'#000'}
-              style={{ borderColor: 'blue',borderRadius:2, marginBottom: heightToDp("2%"), width: widthToDp("70%"), color: '#000',height:heightToDp("5%") }}
+              style={{ borderColor: 'blue', borderRadius: 2, marginBottom: heightToDp("2%"), width: widthToDp("70%"), color: '#000', height: heightToDp("5%") }}
               onChangeText={(text) => this.setState({ myMessage: text })}
             />
             <Icon
               name="send"
               size={25}
-              style={{ marginTop: heightToDp("0.8%") ,color:'blue',marginRight:widthToDp("2%")}}
+              style={{ marginTop: heightToDp("0.8%"), color: 'blue', marginRight: widthToDp("2%") }}
               onPress={() => this.sendMessage()}
             />
           </View>

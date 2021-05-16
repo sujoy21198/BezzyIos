@@ -157,8 +157,8 @@ export default class PostScreen extends React.Component {
     postImage = async () => {
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
-            if (this.state.imagesArray.length <= 0 || this.state.caption === '') {
-                alert('please enter image and caption')
+            if (this.state.imagesArray.length <= 0 ) {
+                //alert('please enter image and caption')
             } else {
                 var filePaths = this.state.imagesArray.map((i) => i.path)
                 var formData = new FormData()
