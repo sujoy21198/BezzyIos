@@ -54,7 +54,9 @@ const DataAccess = {
     //sendMessage
     addChatData:'add-chat-data',
     //get chat list
-    chatList:'chat-notification-list'
+    chatList:'chat-notification-list',
+    //post image to chat
+    addChatDataImage:'add-chat-data-image'
 }
 
 export default DataAccess

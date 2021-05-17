@@ -27,7 +27,8 @@ export default class InboxScreen extends Component {
       page: 1,
       imagePath: '',
       friendImage: '',
-      friendName: ''
+      friendName: '',
+      imagesArray: []
     }
     this.state.friendsId = this.props.route.params.friendId
     this.state.friendImage = this.props.route.params.friendImage
@@ -38,7 +39,7 @@ export default class InboxScreen extends Component {
   componentDidMount() {
     this.getUserId()
     //this.imageToBase64Converter()
-    //setInterval(() => this.getInboxChats(), 5000)
+    setInterval(() => this.getInboxChats(), 5000)
 
   }
 
@@ -106,20 +107,48 @@ export default class InboxScreen extends Component {
       width: 300,
       height: 200,
       cropping: true,
-      multiple: true
+      multiple: true,
+      maxFiles: 5
     })
       .then(images => {
-        this.state.imagePath = images[0].path
-        console.log(this.state.imagePath)
-        ImgToBase64.getBase64String(images[0].path)
-          .then(base64String => console.log(base64String))
-          .catch(err => console.log(err));
-        //this.setState({imagePath : images[0].path}) 
+        this.state.imagePath = images.path
+        this.setState({ isImagePathPresent: true })
+        this.setState({ imagesArray: images })
+        this.postImageToChat()
+        console.log(this.state.imagesArray)
       })
       .catch(err => {
         console.log(' Error fetching images from gallery ', err);
       });
     //console.log(this.state.imagePath)
+    
+  }
+
+  postImageToChat = async () => {
+    if (this.state.imagesArray.length <= 0) {
+      //alert('please enter image and caption')
+    } else {
+      var filePaths = this.state.imagesArray.map((i) => i.path)
+      var formData = new FormData()
+      filePaths.forEach((element, i) => {
+        formData.append('chat_image[]', {
+          uri: element,
+          name: `userProfile${i}.jpg`,
+          type: 'image/jpg'
+        })
+        formData.append('from_userID', this.state.userId)
+        formData.append('to_userID', this.state.friendsId)
+      })
+      await axios.post(DataAccess.BaseUrl + DataAccess.addChatDataImage, formData)
+        .then(function (response) {
+          console.log(response.data,"HOHOHO HAHAHAHAHAHA")
+        }).catch(function (error) {
+          console.log(error)
+        })
+
+
+      this.getInboxChats()
+    }
   }
 
   // imageToBase64Converter = () => {
@@ -138,17 +167,17 @@ export default class InboxScreen extends Component {
         width: widthToDp("100%"),
         marginBottom: heightToDp("2%")
       }}>
-        <View style={{flexDirection:'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={{ uri: this.state.friendImage }}
             style={{ height: heightToDp("7%"), width: widthToDp("15%"), marginLeft: widthToDp("5%"), borderRadius: 300 }}
           />
-          <Text style={{marginLeft:widthToDp("5%"),marginTop:heightToDp("2%")}}>{this.state.friendName}</Text>
+          <Text style={{ marginLeft: widthToDp("5%"), marginTop: heightToDp("2%") }}>{this.state.friendName}</Text>
         </View>
 
         <FlatList
           data={this.state.message}
-          keyExtractor={item => item.id}
+          keyExtractor={(item,index) => String(index)}
           inverted={true}
           style={{ backgroundColor: '#fff', height: heightToDp("85%") }}
           // onRefresh={() => this.onRefresh()}
@@ -161,13 +190,26 @@ export default class InboxScreen extends Component {
             <View>
 
               {
-                item.message_by === 'self' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
+                item.message_by === 'self' && item.type === 'text' ? <View style={{ backgroundColor: 'blue', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
                   <Text style={{ marginLeft: widthToDp("2%"), color: 'white' }}>{item.chat_message}</Text>
                   <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
-                </View> : <View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
-                  <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
-                  <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
-                </View>
+                </View> : ((item.message_by === 'self' && item.type === 'image') ?
+                  <View style={{ backgroundColor: 'blue', height: heightToDp("22%"), width: widthToDp("50%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
+                    <Image
+                      source={{ uri: item.chat_message }}
+                      style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
+                    />
+                    <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
+                  </View> : ((item.message_by === 'other' && item.type === 'text') ? < View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
+                    <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
+                    <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
+                  </View> : (((item.message_by === 'other' && item.type === 'image') ? <View style={{ backgroundColor: 'white', height: heightToDp("22%"), width: widthToDp("50%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start', marginBottom: heightToDp("4%") }}>
+                    <Image
+                      source={{ uri: item.chat_message }}
+                      style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
+                    />
+                    <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end', marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
+                  </View> : null))))
               }
             </View>
 
