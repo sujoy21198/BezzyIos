@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput, Image, SafeAreaView } from 'react-native';
 import { Bubble, GiftedChat, Send, QuickReplies } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -161,7 +161,7 @@ export default class InboxScreen extends Component {
 
   render() {
     return (
-      <View style={{
+      <SafeAreaView style={{
         position: 'absolute',
         bottom: 0,
         width: widthToDp("100%"),
@@ -247,7 +247,7 @@ export default class InboxScreen extends Component {
 
         </View>
 
-      </View>
+      </SafeAreaView>
     )
   }
 }
