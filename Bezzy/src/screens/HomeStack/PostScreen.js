@@ -20,7 +20,9 @@ export default class PostScreen extends React.Component {
         isImagePathPresent: false,
         imagesArray: [],
         caption: '',
-        thumbnail: ''
+        thumbnail: '',
+        fromCamera: false,
+        cameraImagePath: ''
     }
 
     uploadButtonFunction = async () => {
@@ -75,10 +77,10 @@ export default class PostScreen extends React.Component {
             url: filepath,
             timeStamp: 10000
         })
-            .then(response => {imageForVideo = response.path})
+            .then(response => { imageForVideo = response.path })
             .catch(err => console.log({ err }))
 
-            console.log(imageForVideo)
+        console.log(imageForVideo)
     }
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
@@ -98,13 +100,9 @@ export default class PostScreen extends React.Component {
                 cropping: true,
             })
                 .then(image => {
-                    //let imageData = [image];
-                    // if (imageData.length > 0) {
-                    //     this.navigateToViewPhotos(imageData);
-                    // }
-                    this.state.imagePath = image.path
-                    this.setState({ isImagePathPresent: true })
-                    console.log(image.path)
+                    this.state.cameraImagePath = image.path
+                    this.setState({ fromCamera: true })
+                    alert(this.state.cameraImagePath)
                 })
                 .catch(err => {
                     console.log('Error fetching image from Camera roll', err);
@@ -157,32 +155,60 @@ export default class PostScreen extends React.Component {
     postImage = async () => {
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
-            if (this.state.imagesArray.length <= 0 ) {
-                //alert('please enter image and caption')
-            } else {
-                var filePaths = this.state.imagesArray.map((i) => i.path)
-                var formData = new FormData()
-                filePaths.forEach((element, i) => {
-                    formData.append('post_image[]', {
-                        uri: element,
-                        name: `userProfile${i}.jpg`,
-                        type: 'image/jpg'
+            if (this.state.fromCamera === false) {
+                if (this.state.imagesArray.length <= 0) {
+                    alert('please add image ')
+                } else {
+                    var filePaths = this.state.imagesArray.map((i) => i.path)
+                    var formData = new FormData()
+                    filePaths.forEach((element, i) => {
+                        formData.append('post_image[]', {
+                            uri: element,
+                            name: `userProfile${i}.jpg`,
+                            type: 'image/jpg'
+                        })
+                        formData.append('userID', userID)
+                        formData.append('post_content', this.state.caption)
                     })
-                    formData.append('userID', userID)
-                    formData.append('post_content', this.state.caption)
-                })
 
-                // formData.append('post_image[]',{
-                //     uri: 'file:///data/user/0/com.bezzy/cache/react-native-image-crop-picker/20210418_051123.jpg',
-                //     name: 'userProfile.jpg',
-                //     type: 'image/jpg'
-                // })
-                // formData.append('userID', '232')
-                // formData.append('post_content', this.state.caption)
-                // console.log(formData._parts)
-                await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formData)
+                    // formData.append('post_image[]',{
+                    //     uri: 'file:///data/user/0/com.bezzy/cache/react-native-image-crop-picker/20210418_051123.jpg',
+                    //     name: 'userProfile.jpg',
+                    //     type: 'image/jpg'
+                    // })
+                    // formData.append('userID', '232')
+                    // formData.append('post_content', this.state.caption)
+                    // console.log(formData._parts)
+                    await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formData)
+                        .then(function (response) {
+                            console.log(response.data)
+                        }).catch(function (error) {
+                            console.log(error)
+                        })
+
+
+                    this.props.navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: "HomeScreen" }
+                        ]
+                    });
+                }
+            } else if (this.state.fromCamera === true) {
+                
+                var formDataCamera = new FormData()
+                formDataCamera.append('post_image[]', {
+                    uri: this.state.cameraImagePath,
+                    name: 'userProfile.jpg',
+                    type: 'image/jpg'
+                })
+                formDataCamera.append('userID', userID)
+                formDataCamera.append('post_content', this.state.caption)
+                console.log(formDataCamera._parts)
+
+                await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formDataCamera)
                     .then(function (response) {
-                        console.log(response.data)
+                        console.log(response.data,"CAMERA")
                     }).catch(function (error) {
                         console.log(error)
                     })
@@ -195,8 +221,6 @@ export default class PostScreen extends React.Component {
                     ]
                 });
             }
-        } else {
-
         }
     }
 
@@ -204,7 +228,7 @@ export default class PostScreen extends React.Component {
         var imagesArray = []
         imagesArray = this.state.imagesArray
         return (
-            <SafeAreaView style={{ flex: 1 }}>       
+            <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <Header isHomeStackInnerPage isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
 
@@ -280,25 +304,30 @@ export default class PostScreen extends React.Component {
                     </View>
                 </View>
                 {
-                    this.state.focusedTab === 'photo' ? 
-                    <FlatList
-                        data={imagesArray}
-                        numColumns={2}
-                        ItemSeparatorComponent={() => <View style={{width: widthToDp("0.5%")}}/>}
-                        renderItem={({ index, item }) => (
-                            <View style={{ paddingHorizontal: widthToDp("1%"), paddingVertical: heightToDp("0.5%") }}>
-                                <Image
-                                    source={{ uri: item.path }}
-                                    style={{ width: widthToDp("48%"), height: heightToDp("30%"), alignSelf: 'center', borderRadius: 10 }}
-                                />
-                            </View>
-                        )}
-                    /> : <View>
-                        <Image
-                            source={{ uri: this.state.thumbnail}}
-                            style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center' }}
-                        />
-                    </View>
+                    this.state.focusedTab === 'photo' && this.state.fromCamera === true ?
+                        <View>
+                            <Image
+                                source={{ uri: this.state.cameraImagePath }}
+                                style={{ width: widthToDp("48%"), height: heightToDp("30%"), alignSelf: 'center', borderRadius: 10 }}
+                            />
+                        </View> : ((this.state.focusedTab === 'photo' && this.state.fromCamera === false) ? <FlatList
+                            data={imagesArray}
+                            numColumns={2}
+                            ItemSeparatorComponent={() => <View style={{ width: widthToDp("0.5%") }} />}
+                            renderItem={({ index, item }) => (
+                                <View style={{ paddingHorizontal: widthToDp("1%"), paddingVertical: heightToDp("0.5%") }}>
+                                    <Image
+                                        source={{ uri: item.path }}
+                                        style={{ width: widthToDp("48%"), height: heightToDp("30%"), alignSelf: 'center', borderRadius: 10 }}
+                                    />
+                                </View>
+                            )}
+                        /> : <View>
+                            <Image
+                                source={{ uri: this.state.thumbnail }}
+                                style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center' }}
+                            />
+                        </View>)
                 }
                 <View
                     style={{

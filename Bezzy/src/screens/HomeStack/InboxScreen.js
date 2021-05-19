@@ -39,28 +39,46 @@ export default class InboxScreen extends Component {
   componentDidMount() {
     this.getUserId()
     //this.imageToBase64Converter()
-    setInterval(() => this.getInboxChats(), 5000)
+    setInterval(() => this.getInboxChats("0"), 4000)
 
   }
 
   getUserId = async () => {
     let value = await AsyncStorage.getItem('userId')
     this.setState({ userId: value })
-    this.getInboxChats()
+    this.getInboxChats("0")
   }
 
-  getInboxChats = async () => {
+  getInboxChats = async (value) => {
+    if (value === '0') {
+      var messages = []
+      await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
+        .then(function (response) {
+          messages = response.data.chat_history_list
+          console.log(response.data.chat_history_list)
+        }).catch(function (error) {
+          console.log(error)
+        })
+      this.setState({ message: messages })
+      //this.setState({ message: this.state.message.concat(messages) })
+      //this.state.message = this.state.message.concat(messages)
+      this.setState({ isFetching: false })
+    }
+  }
+
+  pagination = async() => {
     var messages = []
-    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
-      .then(function (response) {
-        messages = response.data.chat_history_list
-        console.log(response.data.chat_history_list)
-      }).catch(function (error) {
-        console.log(error)
-      })
-    this.setState({ message: this.state.message.concat(messages) })
-    this.setState({ isFetching: false })
-    console.log(this.state.myMessage, "kO")
+      await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
+        .then(function (response) {
+          messages = response.data.chat_history_list
+          console.log(response.data.chat_history_list)
+        }).catch(function (error) {
+          console.log(error)
+        })
+      //this.setState({ message: messages })
+      this.setState({ message: this.state.message.concat(messages) })
+      //this.state.message = this.state.message.concat(messages)
+      this.setState({ isFetching: false })
   }
 
   sendMessage = async () => {
@@ -74,7 +92,7 @@ export default class InboxScreen extends Component {
     }).catch(function (error) {
       console.log(error)
     })
-    this.getInboxChats()
+    this.getInboxChats("0")
     this.state.myMessage = ""
   }
 
@@ -93,7 +111,7 @@ export default class InboxScreen extends Component {
   //   this.setState({ isFetching: true }, function () { this.getInboxChats() });
   // }
   handleLoadMore = () => {
-    this.setState({ page: this.state.page + 1 }, this.getInboxChats)
+    this.setState({ page: this.state.page + 1 }, this.pagination)
   }
 
   // renderFooter = () => {
@@ -121,7 +139,7 @@ export default class InboxScreen extends Component {
         console.log(' Error fetching images from gallery ', err);
       });
     //console.log(this.state.imagePath)
-    
+
   }
 
   postImageToChat = async () => {
@@ -141,13 +159,13 @@ export default class InboxScreen extends Component {
       })
       await axios.post(DataAccess.BaseUrl + DataAccess.addChatDataImage, formData)
         .then(function (response) {
-          console.log(response.data,"HOHOHO HAHAHAHAHAHA")
+          console.log(response.data, "HOHOHO HAHAHAHAHAHA")
         }).catch(function (error) {
           console.log(error)
         })
 
 
-      this.getInboxChats()
+      this.getInboxChats("0")
     }
   }
 
@@ -177,7 +195,7 @@ export default class InboxScreen extends Component {
 
         <FlatList
           data={this.state.message}
-          keyExtractor={(item,index) => String(index)}
+          keyExtractor={(item, index) => String(index)}
           inverted={true}
           style={{ backgroundColor: '#fff', height: heightToDp("85%") }}
           // onRefresh={() => this.onRefresh()}
