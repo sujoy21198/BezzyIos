@@ -78,10 +78,10 @@ export default class PostScreen extends React.Component {
             url: filepath,
             timeStamp: 10000
         })
-            .then(response => { imageForVideo = response.path })
+            .then(response => this.setState({imageForVideo: {...response, filepath}}))
             .catch(err => console.log({ err }))
 
-        console.log(imageForVideo)
+        
     }
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
@@ -227,7 +227,11 @@ export default class PostScreen extends React.Component {
 
     render() {
         var imagesArray = []
-        imagesArray = this.state.imagesArray
+        if(this.state.focusedTab === 'photo') {
+            imagesArray = this.state.imagesArray
+        } else if(typeof this.state.imageForVideo === "object"){
+            imagesArray.push(this.state.imageForVideo)
+        }
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
@@ -311,7 +315,8 @@ export default class PostScreen extends React.Component {
                                 source={{ uri: this.state.cameraImagePath }}
                                 style={{ width: widthToDp("48%"), height: heightToDp("30%"), alignSelf: 'center', borderRadius: 10 }}
                             />
-                        </View> : ((this.state.focusedTab === 'photo' && this.state.fromCamera === false) ? <FlatList
+                        </View> : ((this.state.focusedTab === 'photo' && this.state.fromCamera === false) ? 
+                        <FlatList
                             data={imagesArray}
                             numColumns={2}
                             ItemSeparatorComponent={() => <View style={{ width: widthToDp("0.5%") }} />}
@@ -323,16 +328,26 @@ export default class PostScreen extends React.Component {
                                     />
                                 </View>
                             )}
-                        /> : ((this.state.focusedTab === 'video') ? <View>
-                        <Video
-                        source ={{uri : this.state.thumbnail}}
-                        style={{
-                            height:heightToDp("20%"),
-                            width:widthToDp("70%"),
-                            alignSelf:'center'
-                        }}
-                        />
-                    </View>:null))
+                        /> : ((this.state.focusedTab === 'video' && imagesArray.length > 0) ? 
+                        <FlatList
+                            data={imagesArray}
+                            numColumns={2}
+                            ItemSeparatorComponent={() => <View style={{ width: widthToDp("0.5%") }} />}
+                            renderItem={({ index, item }) => (
+                                <View style={{ paddingHorizontal: widthToDp("1%"), paddingVertical: heightToDp("0.5%") }}>
+                                    <Video
+                                        source ={{uri : imagesArray[0].filepath}}
+                                        controls
+                                        style={{
+                                            height:heightToDp("50%"),
+                                            width:widthToDp("95%"),
+                                            alignSelf:'center'
+                                        }}
+                                    />
+                                </View>
+                            )}
+                        />                        
+                    :null))
                 }
                 <View
                     style={{
