@@ -11,15 +11,22 @@ import { Toast } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class ImagePreviewScreen extends React.Component {
-    state = {
-        numberOfLikes: 0,
-        numberOfComments: 0,
-        isLiked: false,
-        isLoading: false,
-        postCaption: "",
-        captionEditable: false,
-        isUpdatingCaption: false,
-        postUrl: []
+    
+    constructor(props){
+        super(props)
+        this.state = {
+            numberOfLikes: 0,
+            numberOfComments: 0,
+            isLiked: false,
+            isLoading: false,
+            postCaption: "",
+            captionEditable: false,
+            isUpdatingCaption: false,
+            postUrl: [],
+            otherProfile:false
+        }
+        this.state.otherProfile = this.props.route.params.otherProfile
+        //alert(this.state.otherProfile)
     }
 
     componentDidMount() {
@@ -226,13 +233,11 @@ export default class ImagePreviewScreen extends React.Component {
                             onPress={this.updateCaption}
                         >
                             {
-                                this.state.isUpdatingCaption ? 
-                                <ActivityIndicator size="small" color="#fff"/>
-                                : <Icon
-                                    name={this.state.captionEditable ? "paper-plane" : "pen"}
-                                    color="#fff"
-                                    size={20}                    
-                                /> 
+                                this.state.otherProfile === false ? ((this.state.isUpdatingCaption) ? <ActivityIndicator size="small" color="#fff"/> :<Icon
+                                name={this.state.captionEditable ? "paper-plane" : "pen"}
+                                color="#fff"
+                                size={20}                    
+                            />):null
                             } 
                         </TouchableOpacity>  
                     }                              
@@ -297,19 +302,19 @@ export default class ImagePreviewScreen extends React.Component {
                             paddingLeft: widthToDp("2%")
                         }}
                     >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
+                    
                     {
-                        this.props.route.params.type !== "otherUserPost" &&
-                        <TouchableOpacity
-                            style={{paddingLeft: widthToDp("4%")}}
-                            onPress={this.deleteImage}
-                        >
-                            <Icon
-                                name="trash-alt"
-                                color="#fff"
-                                size={25}
-                            />
-                        </TouchableOpacity>
-                    }                
+                        this.state.otherProfile === false ? ((this.props.route.params.type !== "otherUserPost") ? <TouchableOpacity
+                        style={{paddingLeft: widthToDp("4%")}}
+                        onPress={this.deleteImage}
+                    >
+                        <Icon
+                            name="trash-alt"
+                            color="#fff"
+                            size={25}
+                        />
+                    </TouchableOpacity> : null):null
+                    }            
                 </View> 
             }
              

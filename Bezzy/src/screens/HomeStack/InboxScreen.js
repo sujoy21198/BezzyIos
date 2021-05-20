@@ -185,7 +185,7 @@ export default class InboxScreen extends Component {
         width: widthToDp("100%"),
         marginBottom: heightToDp("2%")
       }}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row' ,marginTop:heightToDp("2%"),marginBottom:heightToDp("1%")}}>
           <Image
             source={{ uri: this.state.friendImage }}
             style={{ height: heightToDp("7%"), width: widthToDp("15%"), marginLeft: widthToDp("5%"), borderRadius: 300 }}
@@ -197,7 +197,7 @@ export default class InboxScreen extends Component {
           data={this.state.message}
           keyExtractor={(item, index) => String(index)}
           inverted={true}
-          style={{ backgroundColor: '#fff', height: heightToDp("85%") }}
+          style={{ backgroundColor: '#fff', height: heightToDp("80%") }}
           // onRefresh={() => this.onRefresh()}
           // refreshing={this.state.isFetching}
           onEndReached={this.handleLoadMore}

@@ -15,6 +15,7 @@ import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatGrid } from 'react-native-super-grid'
 import { element } from 'prop-types';
+import Share from 'react-native-share'
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -316,6 +317,7 @@ export default class HomeScreen extends React.Component {
                                                     color="#69abff"
                                                     size={25}
                                                     style={{ paddingLeft: widthToDp("4%") }}
+                                                    onPress={() => this.sharePostMethod()}
                                                 />
                                             </View>
                                             {
@@ -355,6 +357,18 @@ export default class HomeScreen extends React.Component {
         }
 
     };
+
+    sharePostMethod = async() =>{
+        const ShareOptions = {
+            message : "this is demo message"
+        }
+
+        try{
+            const ShareResponse = await Share.open(ShareOptions)
+        }catch(error){
+            console.log(error)
+        }
+    }
 
     friendsBlockDetails = async (id) => {
         this.setState({ isLoading: true });

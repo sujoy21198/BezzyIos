@@ -279,7 +279,7 @@ export default class ProfileScreen extends React.Component {
                                                 LinearGradient={LinearGradient}
                                             /> :
                                             <TouchableOpacity
-                                                onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item })}
+                                                onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item , otherProfile: this.state.otherProfile })}
                                             >
                                                 <Image
                                                     source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}

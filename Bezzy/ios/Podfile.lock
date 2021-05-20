@@ -477,6 +477,8 @@ PODS:
     - React-Core
   - RNScreens (3.1.0):
     - React-Core
+  - RNShare (6.0.1):
+    - React-Core
   - RNVectorIcons (8.1.0):
     - React-Core
   - TOCropViewController (2.6.0)
@@ -568,6 +570,7 @@ DEPENDENCIES:
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -720,6 +723,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-permissions"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -808,6 +813,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: e641bf83ac47324994cac139bde74635ec52c17c
   RNPermissions: eb94f9fdc0a8ecd02fcce0676d56ffb1395d41e1
   RNScreens: 3ba2198ca3179f77f6158425fc31ba3c90a0d49f
+  RNShare: 755de6bac084428f8fd8fb54c376f126f40e560c
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
