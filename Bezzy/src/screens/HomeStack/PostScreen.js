@@ -11,6 +11,7 @@ import { FlatGrid } from 'react-native-super-grid'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
+import Video from 'react-native-video'
 
 export default class PostScreen extends React.Component {
     state = {
@@ -54,7 +55,7 @@ export default class PostScreen extends React.Component {
             })
                 .then(images => {
                     this.createThumbnailVIdeo(images.path)
-                    //console.log(videoPath)
+                    alert(images.path)
                 })
                 .catch(err => {
                     console.log(' Error fetching images from gallery ', err);
@@ -322,12 +323,16 @@ export default class PostScreen extends React.Component {
                                     />
                                 </View>
                             )}
-                        /> : <View>
-                            <Image
-                                source={{ uri: this.state.thumbnail }}
-                                style={{ width: widthToDp("40%"), height: heightToDp("20%"), alignSelf: 'center' }}
-                            />
-                        </View>)
+                        /> : ((this.state.focusedTab === 'video') ? <View>
+                        <Video
+                        source ={{uri : this.state.thumbnail}}
+                        style={{
+                            height:heightToDp("20%"),
+                            width:widthToDp("70%"),
+                            alignSelf:'center'
+                        }}
+                        />
+                    </View>:null))
                 }
                 <View
                     style={{
