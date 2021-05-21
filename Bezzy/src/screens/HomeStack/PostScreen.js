@@ -26,6 +26,8 @@ export default class PostScreen extends React.Component {
         cameraImagePath: ''
     }
 
+
+
     uploadButtonFunction = async () => {
         if (this.state.buttonText === 'UPLOAD PHOTO') {
             const buttons = ['Camera', 'Photo Library', 'Cancel'];
@@ -54,7 +56,7 @@ export default class PostScreen extends React.Component {
                 mediaType: 'video'
             })
                 .then(images => {
-                    this.createThumbnailVIdeo(images.path)
+                    this.setState({ thumbnail: images.path })
                     alert(images.path)
                 })
                 .catch(err => {
@@ -72,17 +74,17 @@ export default class PostScreen extends React.Component {
     }
 
     //setThumbnail for video 
-    createThumbnailVIdeo = (filepath) => {
-        var imageForVideo
-        createThumbnail({
-            url: filepath,
-            timeStamp: 10000
-        })
-            .then(response => { imageForVideo = response.path })
-            .catch(err => console.log({ err }))
+    // createThumbnailVIdeo = (filepath) => {
+    //     var imageForVideo
+    //     createThumbnail({
+    //         url: filepath,
+    //         timeStamp: 10000
+    //     })
+    //         .then(response => { imageForVideo = response.path })
+    //         .catch(err => console.log({ err }))
 
-        console.log(imageForVideo)
-    }
+    //     console.log(imageForVideo)
+    // }
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
     takePhotoFromCamera = async () => {
@@ -196,7 +198,7 @@ export default class PostScreen extends React.Component {
                     });
                 }
             } else if (this.state.fromCamera === true) {
-                
+
                 var formDataCamera = new FormData()
                 formDataCamera.append('post_image[]', {
                     uri: this.state.cameraImagePath,
@@ -209,7 +211,7 @@ export default class PostScreen extends React.Component {
 
                 await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formDataCamera)
                     .then(function (response) {
-                        console.log(response.data,"CAMERA")
+                        console.log(response.data, "CAMERA")
                     }).catch(function (error) {
                         console.log(error)
                     })
@@ -222,6 +224,29 @@ export default class PostScreen extends React.Component {
                     ]
                 });
             }
+        } else if (this.state.focusedTab === 'video') {
+            var fromDataVideo = new FormData()
+            fromDataVideo.append('post_video', {
+                name: 'name.mp4',
+                uri: this.state.thumbnail,
+                type: 'video/mp4'
+            })
+            fromDataVideo.append('post_content', this.state.caption)
+            fromDataVideo.append('userID', userID)
+
+            await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostVideo', fromDataVideo)
+                .then(function (response) {
+                    console.log(response.data, "VIDEO")
+                }).catch(function (error) {
+                    console.log(error)
+                })
+
+            this.props.navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "HomeScreen" }
+                ]
+            });
         }
     }
 
@@ -324,15 +349,22 @@ export default class PostScreen extends React.Component {
                                 </View>
                             )}
                         /> : ((this.state.focusedTab === 'video') ? <View>
-                        <Video
-                        source ={{uri : this.state.thumbnail}}
-                        style={{
-                            height:heightToDp("20%"),
-                            width:widthToDp("70%"),
-                            alignSelf:'center'
-                        }}
-                        />
-                    </View>:null))
+                            <Video
+                                source={{ uri: this.state.thumbnail }}
+                                ref={(ref) => {
+                                    this.player = ref
+                                }}
+                                onBuffer={this.onBuffer}
+                                onError={this.videoError}
+                                controls={true}
+                                style={{
+                                    height: heightToDp("20%"),
+                                    width: widthToDp("70%"),
+                                    alignSelf: 'center'
+                                }}
+
+                            />
+                        </View> : null))
                 }
                 <View
                     style={{

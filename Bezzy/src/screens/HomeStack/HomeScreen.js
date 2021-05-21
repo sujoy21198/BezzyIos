@@ -360,7 +360,7 @@ export default class HomeScreen extends React.Component {
 
     sharePostMethod = async() =>{
         const ShareOptions = {
-            message : "this is demo message"
+            message : "hi check this from link : https://bezzyapp.page.link/appadmin"
         }
 
         try{
