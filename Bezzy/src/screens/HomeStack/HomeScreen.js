@@ -4,6 +4,7 @@ import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Ionicons';
+import ShareIcon from 'react-native-vector-icons/EvilIcons'
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -11,6 +12,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import axios from 'axios';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import RBSheet1 from 'react-native-raw-bottom-sheet';
+import RBSheet2 from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatGrid } from 'react-native-super-grid'
@@ -28,7 +30,8 @@ export default class HomeScreen extends React.Component {
             expand: false,
             postDetails: [],
             isRefreshing: false,
-            userId: ''
+            userId: '',
+            sharepostID:''
         }
     }
 
@@ -133,7 +136,7 @@ export default class HomeScreen extends React.Component {
             <View >
                 <Card style={{ paddingVertical: heightToDp("1.5%"), paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileScreen',{profile_id : section.friend_id})}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileScreen', { profile_id: section.friend_id })}>
                             <Image
                                 source={{ uri: section.friend_photo }}
                                 style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
@@ -162,7 +165,7 @@ export default class HomeScreen extends React.Component {
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
-                                onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage : section.friend_photo , friendName: section.friend_name })}
+                                onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
                                 style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days !== "" ? 1 : section.have_post === "No" ? 3.2 : 2.5}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
@@ -317,7 +320,7 @@ export default class HomeScreen extends React.Component {
                                                     color="#69abff"
                                                     size={25}
                                                     style={{ paddingLeft: widthToDp("4%") }}
-                                                    onPress={() => this.sharePostMethod()}
+                                                    onPress={() => this.sharePostMethod(i.post_id)}
                                                 />
                                             </View>
                                             {
@@ -358,16 +361,18 @@ export default class HomeScreen extends React.Component {
 
     };
 
-    sharePostMethod = async() =>{
-        const ShareOptions = {
-            message : "hi check this from link : https://bezzyapp.page.link/appadmin"
-        }
+    sharePostMethod = async (value) => {
+        this.setState({sharepostID : value})
+        // const ShareOptions = {
+        //     message : "hi check this from link : https://bezzyapp.page.link/appadmin"
+        // }
 
-        try{
-            const ShareResponse = await Share.open(ShareOptions)
-        }catch(error){
-            console.log(error)
-        }
+        // try{
+        //     const ShareResponse = await Share.open(ShareOptions)
+        // }catch(error){
+        //     console.log(error)
+        // }
+        this.RBSheet2.open()
     }
 
     friendsBlockDetails = async (id) => {
@@ -388,6 +393,30 @@ export default class HomeScreen extends React.Component {
             this.setState({ expand: true })
         } else {
             this.setState({ expand: false })
+        }
+    }
+
+    shareImageInternally = async() => {
+        this.RBSheet2.close()
+        let value = await AsyncStorage.getItem('userId')
+        await axios.get(DataAccess.BaseUrl+DataAccess.sharePostInternally +"/" +this.state.sharepostID+"/"+value+"/1")
+        .then(function(response){
+            console.log(response.data,"KPKPKPKPKP")
+        }).catch(function(error){
+            console.log(error)
+        })
+    }
+
+    shareImageExternally = () => {
+        this.RBSheet2.close()
+        const ShareOptions = {
+            message : "hi check this from link : https://bezzyapp.page.link/appadmin"
+        }
+
+        try{
+            const ShareResponse = await Share.open(ShareOptions)
+        }catch(error){
+            console.log(error)
         }
     }
 
@@ -526,6 +555,41 @@ export default class HomeScreen extends React.Component {
                         color="#69abff"
                     />
                 </RBSheet1>
+                <RBSheet2
+                    ref={ref => {
+                        this.RBSheet2 = ref;
+                    }}
+                    height={100}
+                    //openDuration={250}
+                    customStyles={{
+                        container: {
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }
+                    }}
+                >
+                    <TouchableOpacity onPress={() => this.shareImageInternally()}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <ShareIcon
+                                name={'share-apple'}
+                                size={25}
+                                style={{ marginRight: widthToDp("7%") }}
+                            />
+                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Internally</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.shareImageExternally()}> 
+                        <View style={{ flexDirection: 'row' }}>
+                            <ShareIcon
+                                name={'share-google'}
+                                size={25}
+                                style={{ marginRight: widthToDp("7%") }}
+                            />
+                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Externally</Text>
+                        </View>
+                    </TouchableOpacity>
+                </RBSheet2>
                 <BottomTab isHomeFocused navigation={this.props.navigation} />
             </SafeAreaView>
         )

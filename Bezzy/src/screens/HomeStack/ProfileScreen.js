@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList, Image, Platform, RefreshControl, SafeAreaV
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import PlayIcon from 'react-native-vector-icons/AntDesign'
 import BottomTab from '../../components/BottomTab';
 import ButtonComponent from '../../components/ButtonComponent';
 import DataAccess from '../../components/DataAccess';
@@ -27,7 +28,8 @@ export default class ProfileScreen extends React.Component {
             userPosts: [],
             userDetails: {},
             otherProfile: false,
-            friendsProfileId: ''
+            friendsProfileId: '',
+            sharePost:[]
         }
         this.state.friendsProfileId = this.props.route.params.profile_id
         if (this.state.friendsProfileId != '') {
@@ -42,12 +44,42 @@ export default class ProfileScreen extends React.Component {
 
     onShareTabPress = () => (
         this.setState({ isShareFocused: true, isPostsFocused: false })
+        
     )
 
     componentDidMount() {
         this.RBSheet.open();
         this.setState({ isLoading: true })
         this.getProfileData();
+        this.getSharedMediaData()
+    }
+
+    getSharedMediaData = async() =>{
+        let value = await AsyncStorage.getItem('userId')
+        var sharedMedia = []
+        if(this.state.otherProfile === false){
+            await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
+                "profile_id": value
+            }).then(function (response){
+                sharedMedia = response.data.user_all_posts
+                console.log(response.data,"SHAREEEEEE")
+            }).catch(function(error){
+                console.log(error)
+            })
+
+            this.setState({sharePost : sharedMedia})
+        }else{
+            await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
+                "profile_id": this.state.friendsProfileId
+            }).then(function (response){
+                sharedMedia = response.data.user_all_posts
+                console.log(response.data,"SHAREEEEEE")
+            }).catch(function(error){
+                console.log(error)
+            })
+
+            this.setState({sharePost : sharedMedia})
+        }
     }
 
     getProfileData = async () => {
@@ -69,6 +101,7 @@ export default class ProfileScreen extends React.Component {
             await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
                 "profile_id": userId
             }).then(res => {
+                //console.log(res.data)
                 userDetails = res.data.usedetails;
                 res.data.user_all_posts.map((item, key) => {
                     userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
@@ -198,11 +231,11 @@ export default class ProfileScreen extends React.Component {
                     >
                         {
                             this.state.otherProfile === true ? null : <ButtonComponent
-                            onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
-                            buttonText={"Edit Profile"}
-                            editProfile={true}
-                            disabled={Object.keys(this.state.userDetails).length == 0}
-                        />
+                                onPressButton={() => this.props.navigation.navigate("EditProfileScreen")}
+                                buttonText={"Edit Profile"}
+                                editProfile={true}
+                                disabled={Object.keys(this.state.userDetails).length == 0}
+                            />
                         }
                     </View>
                     <View
@@ -265,35 +298,39 @@ export default class ProfileScreen extends React.Component {
                             renderItem={({ item, index }) => (
                                 <>
                                     {
-                                        !(item && item.post_url) ?
-                                            <ShimmerPlaceHolder
-                                                height={heightToDp("20%")}
-                                                width={widthToDp("47.5%")}
-                                                duration={2000}
-                                                shimmerStyle={{
-                                                    borderRadius: 5
+                                        item.post_type === 'video' ? <View>
+                                            <Image
+                                                source={{ uri: item.post_url }}
+                                                style={{
+                                                    height: heightToDp("20%"),
+                                                    marginBottom: heightToDp("0.5%"),
+                                                    width: widthToDp("47.5%"),
+                                                    borderRadius: 5,
                                                 }}
-                                                shimmerColors={[
-                                                    "#cdcdcd", "#ececec"
-                                                ]}
-                                                LinearGradient={LinearGradient}
-                                            /> :
-                                            <TouchableOpacity
-                                                onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item , otherProfile: this.state.otherProfile })}
-                                            >
-                                                <Image
-                                                    source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}
-                                                    // resizeMode="contain"
-                                                    style={{
-                                                        height: heightToDp("20%"),
-                                                        marginBottom: heightToDp("0.5%"),
-                                                        width: widthToDp("47.5%"),
-                                                        borderRadius: 5,
-                                                    }}
-                                                    key={index}
-                                                />
-                                            </TouchableOpacity>
+                                                key={index}
+                                            />
+                                            <PlayIcon
+                                            name = {'playcircleo'}
+                                            size={25}
+                                            style={{ position: 'absolute', top: heightToDp("8%"), alignSelf:'center' }}
+                                            />
+                                        </View> : <TouchableOpacity
+                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item, otherProfile: this.state.otherProfile })}
+                                        >
+                                            <Image
+                                                source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}
+                                                // resizeMode="contain"
+                                                style={{
+                                                    height: heightToDp("20%"),
+                                                    marginBottom: heightToDp("0.5%"),
+                                                    width: widthToDp("47.5%"),
+                                                    borderRadius: 5,
+                                                }}
+                                                key={index}
+                                            />
+                                        </TouchableOpacity>
                                     }
+
                                     {
                                         (item && item.post_date && item.post_time) &&
                                         <View
@@ -322,11 +359,7 @@ export default class ProfileScreen extends React.Component {
                     {
                         this.state.isShareFocused &&
                         <FlatList
-                            data={[
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                                require("../../../assets/default_person.png"),
-                            ]}
+                            data={this.state.sharePost}
                             contentContainerStyle={{
                                 paddingHorizontal: widthToDp("2%")
                             }}
@@ -336,7 +369,7 @@ export default class ProfileScreen extends React.Component {
                             renderItem={({ item, index }) => (
                                 <>
                                     <Image
-                                        source={item}
+                                        source={{uri : item.post_url}}
                                         // resizeMode="contain"
                                         style={{
                                             height: heightToDp("20%"),

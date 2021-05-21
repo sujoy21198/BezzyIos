@@ -56,7 +56,11 @@ const DataAccess = {
     //get chat list
     chatList:'chat-notification-list',
     //post image to chat
-    addChatDataImage:'add-chat-data-image'
+    addChatDataImage:'add-chat-data-image',
+    //share post view
+    getSharePostData: 'getshare-postdata',
+    //share post internally
+    sharePostInternally: 'share_post_internally'
 }
 
 export default DataAccess
