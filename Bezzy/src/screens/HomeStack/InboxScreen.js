@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput, Image } from 'react-native';
+import { View, ScrollView, Text, Button, StyleSheet, FlatList, TextInput, Image, TouchableOpacity } from 'react-native';
 import { Bubble, GiftedChat, Send, QuickReplies } from 'react-native-gifted-chat';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -11,6 +11,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import EmojiBoard from 'react-native-emoji-board'
 import ImagePicker from 'react-native-image-crop-picker';
 import ImgToBase64 from 'react-native-image-base64';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class InboxScreen extends Component {
   constructor(props) {
@@ -66,19 +67,19 @@ export default class InboxScreen extends Component {
     }
   }
 
-  pagination = async() => {
+  pagination = async () => {
     var messages = []
-      await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
-        .then(function (response) {
-          messages = response.data.chat_history_list
-          console.log(response.data.chat_history_list)
-        }).catch(function (error) {
-          console.log(error)
-        })
-      //this.setState({ message: messages })
-      this.setState({ message: this.state.message.concat(messages) })
-      //this.state.message = this.state.message.concat(messages)
-      this.setState({ isFetching: false })
+    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
+      .then(function (response) {
+        messages = response.data.chat_history_list
+        console.log(response.data.chat_history_list)
+      }).catch(function (error) {
+        console.log(error)
+      })
+    //this.setState({ message: messages })
+    this.setState({ message: this.state.message.concat(messages) })
+    //this.state.message = this.state.message.concat(messages)
+    this.setState({ isFetching: false })
   }
 
   sendMessage = async () => {
@@ -179,13 +180,13 @@ export default class InboxScreen extends Component {
 
   render() {
     return (
-      <View style={{
+      <KeyboardAwareScrollView style={{
         position: 'absolute',
         bottom: 0,
         width: widthToDp("100%"),
         marginBottom: heightToDp("2%")
       }}>
-        <View style={{ flexDirection: 'row' ,marginTop:heightToDp("2%"),marginBottom:heightToDp("1%")}}>
+        <View style={{ flexDirection: 'row', marginTop: heightToDp("2%"), marginBottom: heightToDp("1%") }}>
           <Image
             source={{ uri: this.state.friendImage }}
             style={{ height: heightToDp("7%"), width: widthToDp("15%"), marginLeft: widthToDp("5%"), borderRadius: 300 }}
@@ -213,19 +214,25 @@ export default class InboxScreen extends Component {
                   <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
                 </View> : ((item.message_by === 'self' && item.type === 'image') ?
                   <View style={{ backgroundColor: 'blue', height: heightToDp("22%"), width: widthToDp("50%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-end', marginBottom: heightToDp("4%") }}>
-                    <Image
-                      source={{ uri: item.chat_message }}
-                      style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
-                    />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
+                      <Image
+                        source={{ uri: item.chat_message }}
+                        style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
+                      />
+                    </TouchableOpacity>
+
                     <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
                   </View> : ((item.message_by === 'other' && item.type === 'text') ? < View style={{ backgroundColor: 'white', height: heightToDp("5%"), width: widthToDp("40%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start' }}>
                     <Text style={{ marginLeft: widthToDp("2%") }}>{item.chat_message}</Text>
                     <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end' }}>{item.chat_msg_time}</Text>
                   </View> : (((item.message_by === 'other' && item.type === 'image') ? <View style={{ backgroundColor: 'white', height: heightToDp("22%"), width: widthToDp("50%"), borderRadius: 20, marginBottom: heightToDp("2%"), alignSelf: 'flex-start', marginBottom: heightToDp("4%") }}>
-                    <Image
-                      source={{ uri: item.chat_message }}
-                      style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
-                    />
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
+                      <Image
+                        source={{ uri: item.chat_message }}
+                        style={{ height: heightToDp("16%"), width: widthToDp("45%"), marginLeft: widthToDp("4%"), borderRadius: 10, marginTop: heightToDp("2%") }}
+                      />
+                    </TouchableOpacity>
+
                     <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-end', marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
                   </View> : null))))
               }
@@ -265,7 +272,7 @@ export default class InboxScreen extends Component {
 
         </View>
 
-      </View>
+      </KeyboardAwareScrollView>
     )
   }
 }
