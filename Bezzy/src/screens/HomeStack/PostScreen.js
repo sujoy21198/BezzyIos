@@ -57,7 +57,7 @@ export default class PostScreen extends React.Component {
             })
                 .then(images => {
                     this.setState({ thumbnail: images.path })
-                    alert(images.path)
+                    //alert(images.path)
                 })
                 .catch(err => {
                     console.log(' Error fetching images from gallery ', err);

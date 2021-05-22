@@ -407,7 +407,7 @@ export default class HomeScreen extends React.Component {
         })
     }
 
-    shareImageExternally = () => {
+    shareImageExternally = async() => {
         this.RBSheet2.close()
         const ShareOptions = {
             message : "hi check this from link : https://bezzyapp.page.link/appadmin"
