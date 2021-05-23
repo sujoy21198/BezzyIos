@@ -226,7 +226,7 @@ export default class HomeScreen extends React.Component {
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{ fontFamily: 'Oswald-Bold' }}>{section.friend_name}</Text>
+                                                        <Text style={{  }}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
                                                         <Text style={{ color: '#69abff' }}>{i.post_time}</Text>

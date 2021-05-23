@@ -299,6 +299,7 @@ export default class ProfileScreen extends React.Component {
                                 <>
                                     {
                                         item.post_type === 'video' ? <View>
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate('VideoPlayerScreen',{postID : item.post_id, ID: item.id , type:item.post_type})}>
                                             <Image
                                                 source={{ uri: item.post_url }}
                                                 style={{
@@ -314,6 +315,7 @@ export default class ProfileScreen extends React.Component {
                                             size={25}
                                             style={{ position: 'absolute', top: heightToDp("8%"), alignSelf:'center' }}
                                             />
+                                            </TouchableOpacity>
                                         </View> : <TouchableOpacity
                                             onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item, otherProfile: this.state.otherProfile })}
                                         >

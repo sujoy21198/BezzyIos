@@ -60,7 +60,9 @@ const DataAccess = {
     //share post view
     getSharePostData: 'getshare-postdata',
     //share post internally
-    sharePostInternally: 'share_post_internally'
+    sharePostInternally: 'share_post_internally',
+    //get video details
+    GetVideoDetails : 'postimagevideodetails'
 }
 
 export default DataAccess
