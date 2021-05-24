@@ -225,6 +225,7 @@ export default class InboxScreen extends Component {
               data={this.state.message}
               keyExtractor={(item, index) => String(index)}
               inverted={true}
+              ListFooterComponent={<View style={{height: heightToDp("5%")}}/>}
               style={{ backgroundColor: '#fff', height: heightToDp("80%"), padding: widthToDp("2%") }}
               // onRefresh={() => this.onRefresh()}
               // refreshing={this.state.isFetching}
