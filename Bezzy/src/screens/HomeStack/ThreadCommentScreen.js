@@ -75,7 +75,7 @@ export default class ThreadCommentScreen extends Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={this.props.route.params.type !== "otherUserPost" ? this.state.comments.length : undefined} />
+                
                 <View style={{ flex: 1 }}>
                     {
                         this.state.comments.length > 0 &&
