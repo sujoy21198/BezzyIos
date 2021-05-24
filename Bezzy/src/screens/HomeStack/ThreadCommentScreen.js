@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, SafeAreaView, StatusBar, FlatList, TextInput,TouchableOpacity, ActivityIndicator,Image } from 'react-native'
+import { Text, View, SafeAreaView, StatusBar, FlatList, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -15,9 +15,9 @@ export default class ThreadCommentScreen extends Component {
         super(props)
         this.state = {
             comment_id: '',
-            comments:[],
-            commentText:'',
-            post_id:'',
+            comments: [],
+            commentText: '',
+            post_id: '',
             isSendingComment: false
         }
         this.state.comment_id = this.props.route.params.comment_id
@@ -34,37 +34,37 @@ export default class ThreadCommentScreen extends Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.commentReplyList, {
             "comment_id": this.state.comment_id
         });
-        if(response.data.status === 'success') {
-            if(response.data.message === "No comment found") {
-                this.setState({comments: []});
+        if (response.data.status === 'success') {
+            if (response.data.message === "No comment found") {
+                this.setState({ comments: [] });
             } else {
                 this.setState({
-                    comments: response.data.comment_list.Parent, 
+                    comments: response.data.comment_list.Parent,
                 })
                 console.log(this.state.comments)
             }
         } else {
-            this.setState({comments: []});
+            this.setState({ comments: [] });
         }
         this.RBSheet.close()
     }
 
     sendComment = async () => {
         this.RBSheet.open()
-        this.setState({isSendingComment: true})
+        this.setState({ isSendingComment: true })
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.postComment, {
-            "userID" : userId,
-            "PostId" : this.state.post_id,
-            "commentParentId" : this.state.comment_id,
-            "tag_user_id" : null,
-            "commentText" : this.state.commentText.trim()
+            "userID": userId,
+            "PostId": this.state.post_id,
+            "commentParentId": this.state.comment_id,
+            "tag_user_id": null,
+            "commentText": this.state.commentText.trim()
         });
         //console.log(response.data)
-        this.setState({isSendingComment: false})
-        if(response.data.status === "success") {
+        this.setState({ isSendingComment: false })
+        if (response.data.status === "success") {
             this.getCommentReplyList();
-            this.setState({commentText: ""})
+            this.setState({ commentText: "" })
             this.refChatField.clear();
         } else {
             //
@@ -75,7 +75,16 @@ export default class ThreadCommentScreen extends Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                
+                <View style={{ backgroundColor: '#fff',flexDirection:'row' , height:heightToDp("3.5%") }}>
+                    <Icon
+                        name="chevron-left"
+                        size={20}
+                        color={"#69abff"}
+                        style={{marginTop:heightToDp("0.5%")}}
+                        onPress={() => this.props.navigation.goBack()}
+                    />
+                    <Text style={{color:'#69abff',marginLeft:widthToDp("4%") , fontWeight:'bold' , marginTop:heightToDp("1%")}}>Comments</Text>
+                </View>
                 <View style={{ flex: 1 }}>
                     {
                         this.state.comments.length > 0 &&
@@ -149,7 +158,7 @@ export default class ThreadCommentScreen extends Component {
                                                 alignItems: 'center'
                                             }}
                                         >
-                                            
+
                                         </View>
                                     </View>
                                 </>
@@ -204,31 +213,31 @@ export default class ThreadCommentScreen extends Component {
                     </View>
                 </View>
                 <RBSheet
-                ref={ref => {
-                    this.RBSheet = ref;
-                }}
-                height={heightToDp("6%")}
-                closeOnPressMask={false}
-                closeOnPressBack={false}
-                // openDuration={250}
-                customStyles={{
-                    container: {
-                        width: widthToDp("15%"),
-                        position: 'absolute',
-                        top: heightToDp("45%"),
-                        left: widthToDp("40%"),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#fff',
-                        borderRadius: 10
-                    },
-                }}
-            >
-                <ActivityIndicator
-                    size="large"
-                    color="#69abff"
-                />
-            </RBSheet>
+                    ref={ref => {
+                        this.RBSheet = ref;
+                    }}
+                    height={heightToDp("6%")}
+                    closeOnPressMask={false}
+                    closeOnPressBack={false}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            width: widthToDp("15%"),
+                            position: 'absolute',
+                            top: heightToDp("45%"),
+                            left: widthToDp("40%"),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            borderRadius: 10
+                        },
+                    }}
+                >
+                    <ActivityIndicator
+                        size="large"
+                        color="#69abff"
+                    />
+                </RBSheet>
             </SafeAreaView>
         )
     }
