@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { View ,TouchableOpacity,ActivityIndicator,TextInput,Text} from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, TextInput, Text,Alert } from 'react-native'
+import {Toast} from 'native-base'
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Video from 'react-native-video'
@@ -18,19 +19,145 @@ export default class VideoPlayerScreen extends Component {
             postID: '',
             ID: '',
             type: '',
-            videoUrl: ''
+            videoUrl: '',
+            isLiked: false,
+            otherProfile: '',
+            numberOfLikes: 0,
+            numberOfComments: 0,
+            postCaption:''
         }
         this.state.postID = this.props.route.params.postID
         this.state.ID = this.props.route.params.ID
         this.state.type = this.props.route.params.type
+        this.state.otherProfile = this.props.route.params.otherProfile
 
-        // alert(this.state.postID)
+        //alert(this.state.otherProfile)
         // alert(this.state.ID)
         // alert(this.state.type)
     }
 
     componentDidMount() {
         this.getVideoData()
+        this.getPostDetails()
+    }
+
+
+    getPostDetails = async () => {
+        let userId = await AsyncStorage.getItem("userId");
+        let response =  await axios.get(
+            DataAccess.BaseUrl + DataAccess.getPostDetails + "/" + 
+            this.state.postID + "/" + userId
+        );
+        if(response.data.status === 'success') {
+            if(response.data.post_details.log_user_like_status === "No") {
+                this.setState({isLiked: false});
+            } else if(response.data.post_details.log_user_like_status === "Yes") {
+                this.setState({isLiked: true});
+            }
+            this.setState({
+                postUrl: response.data.post_details.post_img_video_live,
+                numberOfComments: response.data.post_details.number_of_comment, 
+                numberOfLikes: response.data.post_details.number_of_like, 
+                postCaption: response.data.post_details.post_content
+            })
+        } else {
+            this.setState({
+                postUrl: [],
+                numberOfComments: 0, 
+                numberOfLikes: 0,  
+                postCaption: ""
+            })
+        }
+        this.RBSheet.close();   
+    }
+
+    updateCaption = async() => {
+        if(!this.state.captionEditable) {
+            this.setState({captionEditable: true});
+        } else if(this.state.captionEditable && this.state.postCaption !== ""){
+            this.setState({isUpdatingCaption: true})
+            let response = await axios.post(DataAccess.BaseUrl + DataAccess.updatePostCaption, {
+                "post_id" : this.state.postID,
+                "post_type" : 'video',
+                "post_caption_text" : this.state.postCaption
+            });
+            this.setState({isUpdatingCaption: false})
+            if(response.data.resp === "success") {
+                this.setState({captionEditable: false})
+            } else {
+                //
+            }
+        } else {
+            //
+        }        
+    }
+
+    deleteImage = async () => {
+        Alert.alert(
+            "Delete", 
+            "Are you sure to delete this image?",
+            [
+                {
+                    text: "No",
+                    onPress: () => undefined,
+                    style:  'cancel'
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        this.RBSheet.open();
+                        let response = await axios.post(DataAccess.BaseUrl + DataAccess.deleteVideo, {
+                            "imgvideoID" : this.state.ID,
+                            "post_type" : 'video'
+                        });
+                        if(response.data.status === "success") {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data.message,
+                                type: "success",
+                                duration: 2000
+                            })
+                            this.props.navigation.reset({
+                                index: 3,
+                                routes: [
+                                    { name: "HomeScreen" }
+                                ]
+                            })
+                        } else {
+                            this.RBSheet.close();
+                            Toast.show({
+                                text: response.data,
+                                type: "danger",
+                                duration: 2000
+                            })
+                        }
+                    }
+                }
+            ]
+        )
+    }
+
+
+    likeImage = async () => {
+        this.setState({isLoading: true})
+        let userId = await AsyncStorage.getItem("userId");
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.likePost + "/" + userId + "/" + this.state.postID);
+        if(response.data.status === "success") {
+            if(this.state.isLiked) {
+                this.setState({
+                    numberOfLikes: this.state.numberOfLikes - 1,
+                    isLiked: false
+                })
+            } else {
+                this.setState({
+                    numberOfLikes: this.state.numberOfLikes + 1,
+                    isLiked: true
+                })
+            }
+        } else {
+            //
+        }
+        this.setState({isLoading: false})
     }
 
     getVideoData = async () => {
@@ -42,13 +169,13 @@ export default class VideoPlayerScreen extends Component {
                 videoUrl = response.data.post_details.url
             })
         this.setState({ videoUrl: videoUrl })
-        alert(videoUrl)
+        //alert(videoUrl)
     }
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: '#1b1b1b' }}>
                 <LinearGradient
-                    style={{ paddingTop: heightToDp("10%") }}
+                    style={{ paddingTop: heightToDp("20%") }}
                     colors={['#fff', '#1b1b1b']}
                 >
                     <Video
@@ -60,7 +187,7 @@ export default class VideoPlayerScreen extends Component {
                         onError={this.videoError}
                         controls={true}
                         style={{
-                            height: heightToDp("30%"),
+                            height: heightToDp("45%"),
                             width: widthToDp("70%"),
                             alignSelf: 'center'
                         }}
@@ -209,7 +336,6 @@ export default class VideoPlayerScreen extends Component {
                         }
                     </View>
                 }
-
                 <RBSheet
                     ref={ref => {
                         this.RBSheet = ref;

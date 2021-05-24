@@ -131,6 +131,7 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     updateCaption = async() => {
+        alert(this.props.route.params.image.post_type)
         if(!this.state.captionEditable) {
             this.setState({captionEditable: true});
         } else if(this.state.captionEditable && this.state.postCaption !== ""){
