@@ -61,8 +61,7 @@ export default class ProfileScreen extends React.Component {
             await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
                 "profile_id": value
             }).then(function (response){
-                sharedMedia = response.data.user_all_posts
-                console.log(response.data,"SHAREEEEEE")
+                sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function(error){
                 console.log(error)
             })
@@ -72,8 +71,7 @@ export default class ProfileScreen extends React.Component {
             await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
                 "profile_id": this.state.friendsProfileId
             }).then(function (response){
-                sharedMedia = response.data.user_all_posts
-                console.log(response.data,"SHAREEEEEE")
+                sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function(error){
                 console.log(error)
             })
@@ -90,9 +88,7 @@ export default class ProfileScreen extends React.Component {
                 "profile_id": this.state.friendsProfileId
             }).then(res => {
                 userDetails = res.data.usedetails;
-                res.data.user_all_posts.map((item, key) => {
-                    userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
-                })
+                userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             }).catch(err => console.log(err))
             this.setState({ userDetails, userPosts })
             this.setState({ isLoading: false, isRefreshing: false })
@@ -103,9 +99,7 @@ export default class ProfileScreen extends React.Component {
             }).then(res => {
                 //console.log(res.data)
                 userDetails = res.data.usedetails;
-                res.data.user_all_posts.map((item, key) => {
-                    userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
-                })
+                userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             }).catch(err => console.log(err))
             this.setState({ userDetails, userPosts })
             this.setState({ isLoading: false, isRefreshing: false })
@@ -370,33 +364,40 @@ export default class ProfileScreen extends React.Component {
                             ListFooterComponent={<View style={{ height: heightToDp("7%") }} />}
                             renderItem={({ item, index }) => (
                                 <>
-                                    <Image
-                                        source={{uri : item.post_url}}
-                                        // resizeMode="contain"
-                                        style={{
-                                            height: heightToDp("20%"),
-                                            marginBottom: heightToDp("0.5%"),
-                                            width: widthToDp("47.5%"),
-                                            borderRadius: 5,
-                                        }}
-                                        key={index}
-                                    />
-                                    <View
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: heightToDp("1.2%"),
-                                            left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
-                                        }}
+                                    <TouchableOpacity
+                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: item.post_id } })}
                                     >
-                                        <Text
+                                        <Image
+                                            source={{uri : item.post_url.split("?src=")[1].split('&w=')[0]}}
+                                            // resizeMode="contain"
                                             style={{
-                                                color: "#db472b",
-                                                fontSize: widthToDp("3%")
+                                                height: heightToDp("20%"),
+                                                marginBottom: heightToDp("0.5%"),
+                                                width: widthToDp("47.5%"),
+                                                borderRadius: 5,
                                             }}
-                                        >{"15/04/2021 3:40 pm"}</Text>
-                                    </View>
+                                            key={index}
+                                        />           
+                                    </TouchableOpacity>                                                            
                                     {
-                                        index % 2 === 0 &&
+                                        (item && item.post_date && item.post_time) &&
+                                        <View
+                                            style={{
+                                                position: 'absolute',
+                                                bottom: heightToDp("1.2%"),
+                                                left: widthToDp(`${index % 2 === 0 ? 1.5 : 49}%`)
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: "#db472b",
+                                                    fontSize: widthToDp("3%")
+                                                }}
+                                            >{item.post_date + " " + item.post_time}</Text>
+                                        </View>
+                                    }
+                                    {
+                                        (this.state.sharePost.length > 0 && index % 2 === 0) &&
                                         <View style={{ width: widthToDp("1%") }} />
                                     }
                                 </>
