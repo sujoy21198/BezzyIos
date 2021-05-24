@@ -120,7 +120,9 @@ export default class VideoPlayerScreen extends Component {
                             this.props.navigation.reset({
                                 index: 3,
                                 routes: [
-                                    { name: "HomeScreen" }
+                                    { name: "ProfileScreen",params: {
+                                        profile_id : ''
+                                    } }
                                 ]
                             })
                         } else {

@@ -91,7 +91,9 @@ export default class ImagePreviewScreen extends React.Component {
                             this.props.navigation.reset({
                                 index: 3,
                                 routes: [
-                                    { name: "ProfileScreen" }
+                                    { name: "ProfileScreen",params: {
+                                        profile_id : ''
+                                    } }
                                 ]
                             })
                         } else {
