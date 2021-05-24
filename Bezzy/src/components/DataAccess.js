@@ -64,7 +64,8 @@ const DataAccess = {
     //get video details
     GetVideoDetails : 'postimagevideodetails',
     //delete video
-    deleteVideo : 'deletepostimagevideo'
+    deleteVideo : 'deletepostimagevideo',
+    //some api
 }
 
 export default DataAccess
