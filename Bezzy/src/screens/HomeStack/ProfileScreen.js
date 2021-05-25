@@ -18,8 +18,8 @@ export default class ProfileScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isPostsFocused: this.props.route.params.imageDeleted ? false : true,
-            isShareFocused: this.props.route.params.imageDeleted ? true : false,
+            isPostsFocused: (this.props.route.params && this.props.route.params.imageDeleted) ? false : true,
+            isShareFocused: (this.props.route.params && this.props.route.params.imageDeleted) ? true : false,
             numberOfFollowers: 0,
             numberOfFollowings: 1,
             numberOfPosts: 6,
@@ -31,7 +31,7 @@ export default class ProfileScreen extends React.Component {
             friendsProfileId: '',
             sharePost: []
         }
-        this.state.friendsProfileId = this.props.route.params.profile_id
+        this.state.friendsProfileId = this.props.route.params ? this.props.route.params.profile_id : ''
         if (this.state.friendsProfileId != '') {
             this.state.otherProfile = true
         }
