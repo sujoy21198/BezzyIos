@@ -29,7 +29,7 @@ export default class ProfileScreen extends React.Component {
             userDetails: {},
             otherProfile: false,
             friendsProfileId: '',
-            sharePost:[]
+            sharePost: []
         }
         this.state.friendsProfileId = this.props.route.params.profile_id
         if (this.state.friendsProfileId != '') {
@@ -44,7 +44,7 @@ export default class ProfileScreen extends React.Component {
 
     onShareTabPress = () => (
         this.setState({ isShareFocused: true, isPostsFocused: false })
-        
+
     )
 
     componentDidMount() {
@@ -54,29 +54,29 @@ export default class ProfileScreen extends React.Component {
         this.getSharedMediaData()
     }
 
-    getSharedMediaData = async() =>{
+    getSharedMediaData = async () => {
         let value = await AsyncStorage.getItem('userId')
         var sharedMedia = []
-        if(this.state.otherProfile === false){
-            await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
+        if (this.state.otherProfile === false) {
+            await axios.post(DataAccess.BaseUrl + DataAccess.getSharePostData, {
                 "profile_id": value
-            }).then(function (response){
+            }).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
-            }).catch(function(error){
+            }).catch(function (error) {
                 console.log(error)
             })
 
-            this.setState({sharePost : sharedMedia})
-        }else{
-            await axios.post(DataAccess.BaseUrl+ DataAccess.getSharePostData, {
+            this.setState({ sharePost: sharedMedia })
+        } else {
+            await axios.post(DataAccess.BaseUrl + DataAccess.getSharePostData, {
                 "profile_id": this.state.friendsProfileId
-            }).then(function (response){
+            }).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
-            }).catch(function(error){
+            }).catch(function (error) {
                 console.log(error)
             })
 
-            this.setState({sharePost : sharedMedia})
+            this.setState({ sharePost: sharedMedia })
         }
     }
 
@@ -164,58 +164,102 @@ export default class ProfileScreen extends React.Component {
                         }
 
                     </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            paddingHorizontal: widthToDp("10%"),
-                            paddingVertical: heightToDp("0.5%")
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                alignItems: 'center',
-                            }}
-                            activeOpacity={0.7}
-                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0}
-                            onPress={() => this.props.navigation.navigate("FollowingScreen", { user: this.state.userDetails.get_name })}
-                        >
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
-                            <Text
+                    {
+                        this.state.otherProfile === false ?
+                            <View
                                 style={{
-                                    fontSize: widthToDp("3.8%")
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingHorizontal: widthToDp("10%"),
+                                    paddingVertical: heightToDp("0.5%")
                                 }}
-                            >Following</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{
-                                alignItems: 'center',
-                            }}
-                            activeOpacity={0.7}
-                            disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0}
-                            onPress={() => this.props.navigation.navigate("FollowerScreen", { user: this.state.userDetails.get_name })}
-                        >
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
-                            <Text
+                            >
+                                <TouchableOpacity
+                                    style={{
+                                        alignItems: 'center',
+                                    }}
+                                    activeOpacity={0.7}
+                                    disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0}
+                                    onPress={() => this.props.navigation.navigate("FollowingScreen", { user: this.state.userDetails.get_name })}
+                                >
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Following</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        alignItems: 'center',
+                                    }}
+                                    activeOpacity={0.7}
+                                    disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0}
+                                    onPress={() => this.props.navigation.navigate("FollowerScreen", { user: this.state.userDetails.get_name })}
+                                >
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Followers</Text>
+                                </TouchableOpacity>
+                                <View
+                                    style={{
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Posts</Text>
+                                </View>
+                            </View> : <View
                                 style={{
-                                    fontSize: widthToDp("3.8%")
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingHorizontal: widthToDp("10%"),
+                                    paddingVertical: heightToDp("0.5%")
                                 }}
-                            >Followers</Text>
-                        </TouchableOpacity>
-                        <View
-                            style={{
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
-                            <Text
-                                style={{
-                                    fontSize: widthToDp("3.8%")
-                                }}
-                            >Posts</Text>
-                        </View>
-                    </View>
+                            >
+                                <View style={{
+                                    alignItems: 'center',
+                                }}>
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Following</Text>
+                                </View>
+                                <View style={{
+                                    alignItems: 'center',
+                                }}>
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Followers</Text>
+                                </View>
+                                <View
+                                    style={{
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%")
+                                        }}
+                                    >Posts</Text>
+                                </View>
+                            </View>
+                    }
                     <View
                         style={{
                             justifyContent: 'center',
@@ -293,22 +337,22 @@ export default class ProfileScreen extends React.Component {
                                 <>
                                     {
                                         item.post_type === 'video' ? <View>
-                                            <TouchableOpacity onPress={() => this.props.navigation.navigate('VideoPlayerScreen',{postID : item.post_id, ID: item.id , type:item.post_type, otherProfile: this.state.otherProfile})}>
-                                            <Image
-                                                source={{ uri: item.post_url }}
-                                                style={{
-                                                    height: heightToDp("20%"),
-                                                    marginBottom: heightToDp("0.5%"),
-                                                    width: widthToDp("47.5%"),
-                                                    borderRadius: 5,
-                                                }}
-                                                key={index}
-                                            />
-                                            <PlayIcon
-                                            name = {'playcircleo'}
-                                            size={25}
-                                            style={{ position: 'absolute', top: heightToDp("8%"), alignSelf:'center' }}
-                                            />
+                                            <TouchableOpacity onPress={() => this.props.navigation.navigate('VideoPlayerScreen', { postID: item.post_id, ID: item.id, type: item.post_type, otherProfile: this.state.otherProfile })}>
+                                                <Image
+                                                    source={{ uri: item.post_url }}
+                                                    style={{
+                                                        height: heightToDp("20%"),
+                                                        marginBottom: heightToDp("0.5%"),
+                                                        width: widthToDp("47.5%"),
+                                                        borderRadius: 5,
+                                                    }}
+                                                    key={index}
+                                                />
+                                                <PlayIcon
+                                                    name={'playcircleo'}
+                                                    size={25}
+                                                    style={{ position: 'absolute', top: heightToDp("8%"), alignSelf: 'center' }}
+                                                />
                                             </TouchableOpacity>
                                         </View> : <TouchableOpacity
                                             onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { image: item, otherProfile: this.state.otherProfile })}
@@ -368,7 +412,7 @@ export default class ProfileScreen extends React.Component {
                                         onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: item.post_id } })}
                                     >
                                         <Image
-                                            source={{uri : item.post_url.split("?src=")[1].split('&w=')[0]}}
+                                            source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}
                                             // resizeMode="contain"
                                             style={{
                                                 height: heightToDp("20%"),
@@ -377,8 +421,8 @@ export default class ProfileScreen extends React.Component {
                                                 borderRadius: 5,
                                             }}
                                             key={index}
-                                        />           
-                                    </TouchableOpacity>                                                            
+                                        />
+                                    </TouchableOpacity>
                                     {
                                         (item && item.post_date && item.post_time) &&
                                         <View
