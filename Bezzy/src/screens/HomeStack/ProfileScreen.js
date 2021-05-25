@@ -409,7 +409,7 @@ export default class ProfileScreen extends React.Component {
                             renderItem={({ item, index }) => (
                                 <>
                                     <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: item.post_id } })}
+                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { otherProfile: this.state.otherProfile === true ? true : false, noEditCaption: true, image: { ...item, post_id: item.post_id } })}
                                     >
                                         <Image
                                             source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}

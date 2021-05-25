@@ -133,7 +133,6 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     updateCaption = async() => {
-        alert(this.props.route.params.image.post_type)
         if(!this.state.captionEditable) {
             this.setState({captionEditable: true});
         } else if(this.state.captionEditable && this.state.postCaption !== ""){
@@ -216,7 +215,7 @@ export default class ImagePreviewScreen extends React.Component {
                         style={{
                             color: '#fff',
                             fontSize: widthToDp("3.5%"),
-                            width: widthToDp(this.props.route.params.type === "otherUserPost" ? "88%" : "83%"),
+                            width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
                             borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
                             borderBottomColor: '#fff'
                         }}
@@ -226,7 +225,7 @@ export default class ImagePreviewScreen extends React.Component {
                         onChangeText={text => this.setState({postCaption: text.trim()})}
                     />
                     {
-                        this.props.route.params.type !== "otherUserPost" &&
+                        this.props.route.params.type !== "otherUserPost" && !this.props.route.params.noEditCaption &&
                         <TouchableOpacity
                             activeOpacity={0.7}
                             style={{
