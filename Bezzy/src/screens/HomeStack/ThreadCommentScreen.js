@@ -75,17 +75,75 @@ export default class ThreadCommentScreen extends Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <View style={{ backgroundColor: '#fff',flexDirection:'row' , height:heightToDp("3.5%") }}>
-                    <Icon
-                        name="chevron-left"
-                        size={20}
-                        color={"#69abff"}
-                        style={{marginTop:heightToDp("0.5%")}}
-                        onPress={() => this.props.navigation.goBack()}
-                    />
-                    <Text style={{color:'#69abff',marginLeft:widthToDp("4%") , fontWeight:'bold' , marginTop:heightToDp("1%")}}>Comments</Text>
-                </View>
+                <Header isBackButton threadCommentReload isHomeStackInnerPage headerText={"Replies"} navigation={this.props.navigation} post={{post_id: this.props.route.params.post_id}} />
                 <View style={{ flex: 1 }}>
+                    <View style={{paddingVertical: heightToDp('2%')}}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingHorizontal: widthToDp("2%")
+                            }}
+                        >
+                            <Image
+                                source={{ uri: this.props.route.params.userimage }}
+                                style={{ height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 25 }}
+                            />
+                            <View
+                                style={{
+                                    marginLeft: widthToDp("3%"),
+                                    padding: widthToDp("2%"),
+                                    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                    borderRadius: 10,
+                                    width: widthToDp("82.5%")
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        width: widthToDp("100%"),
+                                        color: '#1b1b1b',
+                                        fontWeight: 'bold',
+                                        fontSize: widthToDp("3.5%")
+                                    }}
+                                >{this.props.route.params.username}</Text>
+                                <Text
+                                    style={{
+                                        color: '#1b1b1b',
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%")
+                                    }}
+                                >{this.props.route.params.commentText}</Text>
+                            </View>
+                        </View>
+                        <View
+                            style={{
+                                marginLeft: widthToDp("15%"),
+                                marginTop: heightToDp("0.8%"),
+                                width: widthToDp("82%"),
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: '#808080',
+                                    fontSize: widthToDp("3%")
+                                }}
+                            >{this.props.route.params.postcomment_time}</Text>
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    top: heightToDp("0%"),
+                                    right: widthToDp("0%"),
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}
+                            >
+
+                            </View>
+                        </View>
+                    </View>
                     {
                         this.state.comments.length > 0 &&
                         <FlatList
@@ -93,9 +151,8 @@ export default class ThreadCommentScreen extends Component {
                             keyExtractor={item => item.comment_id}
                             ItemSeparatorComponent={() => <View style={{ height: heightToDp("3%") }} />}
                             ListFooterComponent={<View style={{ height: heightToDp("2%") }} />}
-                            ListHeaderComponent={<View style={{ height: heightToDp("3%") }} />}
                             renderItem={({ item, index }) => (
-                                <>
+                                <View style={{paddingLeft: widthToDp("10%")}}>
                                     <View
                                         style={{
                                             flexDirection: 'row',
@@ -113,12 +170,12 @@ export default class ThreadCommentScreen extends Component {
                                                 padding: widthToDp("2%"),
                                                 backgroundColor: 'rgba(0, 255, 255, 0.1)',
                                                 borderRadius: 10,
-                                                width: widthToDp("82.5%")
+                                                width: widthToDp("72.5%")
                                             }}
                                         >
                                             <Text
                                                 style={{
-                                                    width: widthToDp("100%"),
+                                                    width: widthToDp("90%"),
                                                     color: '#1b1b1b',
                                                     fontWeight: 'bold',
                                                     fontSize: widthToDp("3.5%")
@@ -161,7 +218,7 @@ export default class ThreadCommentScreen extends Component {
 
                                         </View>
                                     </View>
-                                </>
+                                </View>
                             )}
                         />
                     }
