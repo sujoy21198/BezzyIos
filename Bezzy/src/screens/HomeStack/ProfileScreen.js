@@ -18,8 +18,8 @@ export default class ProfileScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isPostsFocused: true,
-            isShareFocused: false,
+            isPostsFocused: this.props.route.params.imageDeleted ? false : true,
+            isShareFocused: this.props.route.params.imageDeleted ? true : false,
             numberOfFollowers: 0,
             numberOfFollowings: 1,
             numberOfPosts: 6,
@@ -409,7 +409,7 @@ export default class ProfileScreen extends React.Component {
                             renderItem={({ item, index }) => (
                                 <>
                                     <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { otherProfile: this.state.otherProfile === true ? true : false, noEditCaption: true, image: { ...item, post_id: item.post_id } })}
+                                        onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { otherProfile: this.state.otherProfile === true ? true : false, share: true, noEditCaption: true, image: { ...item, post_id: item.post_id } })}
                                     >
                                         <Image
                                             source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}

@@ -21,7 +21,7 @@ export default class CommentScreen extends React.Component {
             isSendingComment: false,
             post_id:''
         }
-        this.state.post_id = this.props.route.params.post.post_id
+        this.state.post_id = typeof this.props.route.post === "object" ? this.props.route.post.post_id : this.props.route.params.post.post_id
     }
 
     componentDidMount = async () => {
@@ -32,7 +32,7 @@ export default class CommentScreen extends React.Component {
         this.RBSheet.open()
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.postCommentedUsers, {
-            "post_id" : this.props.route.params.post.post_id,
+            "post_id" : this.state.post_id,
             "loginuserID" : userId
         });
         if(response.data.status === 'success') {
@@ -56,7 +56,7 @@ export default class CommentScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.postComment, {
             "userID" : userId,
-            "PostId" : this.props.route.params.post.post_id,
+            "PostId" : this.state.post_id,
             "commentParentId" : "0",
             "tag_user_id" : null,
             "commentText" : this.state.commentText.trim()
@@ -89,12 +89,12 @@ export default class CommentScreen extends React.Component {
         }
     }
 
-    threadComment = async(id) => {
+    threadComment = async(item) => {
         this.props.navigation.navigate({
             name: 'ThreadCommentScreen',
             params: {
-                comment_id : id,
-                post_id : this.state.post_id
+                ...item,
+                post_id : this.state.post_id,
             }
         })
     }
@@ -102,7 +102,7 @@ export default class CommentScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={this.props.route.params.type !== "otherUserPost" ? this.state.comments.length : undefined} />
+            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
             <View
                 style={{flex: 1}}
             >
@@ -208,7 +208,7 @@ export default class CommentScreen extends React.Component {
                                         color="#69abff"
                                         size={15}
                                         style={{paddingLeft: widthToDp("4%")}}
-                                        onPress={() => this.threadComment(item.comment_id)}
+                                        onPress={() => this.threadComment(item)}
                                     />
                                     <Text
                                         style={{

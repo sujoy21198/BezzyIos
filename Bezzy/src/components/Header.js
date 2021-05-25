@@ -224,7 +224,14 @@ export default class Header extends React.Component {
                                 this.props.navigation.navigate(
                                     "ImagePreviewScreen",
                                     {commentCount: this.props.commentCount}
-                                ) :
+                                ) : 
+                                this.props.threadCommentReload ? 
+                                this.props.navigation.reset({
+                                    index: 0,
+                                    routes: [
+                                        { name: "CommentScreen", post: {post_id: this.props.post.post_id} }
+                                    ]
+                                }):
                                 this.props.loginStack ? 
                                 this.props.navigation.goBack() :
                                 this.props.navigation.reset({

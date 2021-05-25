@@ -92,7 +92,8 @@ export default class ImagePreviewScreen extends React.Component {
                                 index: 3,
                                 routes: [
                                     { name: "ProfileScreen",params: {
-                                        profile_id : ''
+                                        profile_id : '',
+                                        imageDeleted: this.props.route.params.share
                                     } }
                                 ]
                             })
