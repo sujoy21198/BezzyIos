@@ -241,6 +241,12 @@ export default class PostScreen extends React.Component {
                     console.log(error)
                 })
 
+            Toast.show({
+                text: "video uploaded successfully",
+                type: "success",
+                duration: 3000
+            });
+
             this.props.navigation.reset({
                 index: 0,
                 routes: [

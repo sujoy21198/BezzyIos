@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatGrid } from 'react-native-super-grid'
 import { element } from 'prop-types';
 import Share from 'react-native-share'
+import Video from 'react-native-video'
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ export default class HomeScreen extends React.Component {
             postDetails: [],
             isRefreshing: false,
             userId: '',
-            sharepostID:''
+            sharepostID: ''
         }
     }
 
@@ -226,7 +227,7 @@ export default class HomeScreen extends React.Component {
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{  }}>{section.friend_name}</Text>
+                                                        <Text style={{}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
                                                         <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
@@ -240,29 +241,56 @@ export default class HomeScreen extends React.Component {
                                                 </View>
                                             }
                                             {
-                                                i.post_img_video_live.length > 0 &&
-                                                <FlatList
-                                                    data={i.post_img_video_live}
-                                                    horizontal={true}
-                                                    contentContainerStyle={{
-                                                        paddingHorizontal: widthToDp("4%")
-                                                    }}
-                                                    showsHorizontalScrollIndicator={false}
-                                                    ItemSeparatorComponent={() => <View style={{ width: widthToDp("2%") }} />}
-                                                    renderItem={({ item, index }) => (
-                                                        <TouchableOpacity
-                                                            activeOpacity={0.7}
-                                                            onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.post_id } })}
-                                                            style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
-                                                            key={index}
-                                                        >
-                                                            <Image
-                                                                style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
-                                                                source={{ uri: item.post_url }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                    )}
-                                                />
+                                                i.post_type === "video" ? <View>
+                                                    {
+                                                        i.post_img_video_live.length > 0 &&
+                                                        <FlatList
+                                                            renderItem={({ item, index }) => (
+                                                                <Video
+                                                                    source={{ uri: item.post_url }}
+                                                                    ref={(ref) => {
+                                                                        this.player = ref
+                                                                    }}
+                                                                    onBuffer={this.onBuffer}
+                                                                    onError={this.videoError}
+                                                                    controls={true}
+                                                                    style={{
+                                                                        height: heightToDp("20%"),
+                                                                        width: widthToDp("70%"),
+                                                                        alignSelf: 'center'
+                                                                    }}
+
+                                                                />
+                                                            )}
+                                                        />
+                                                    }
+                                                </View> : ((i.post_type === 'image') ? <View>
+                                                    {
+                                                        i.post_img_video_live.length > 0 &&
+                                                        <FlatList
+                                                            data={i.post_img_video_live}
+                                                            horizontal={true}
+                                                            contentContainerStyle={{
+                                                                paddingHorizontal: widthToDp("4%")
+                                                            }}
+                                                            showsHorizontalScrollIndicator={false}
+                                                            ItemSeparatorComponent={() => <View style={{ width: widthToDp("2%") }} />}
+                                                            renderItem={({ item, index }) => (
+                                                                <TouchableOpacity
+                                                                    activeOpacity={0.7}
+                                                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.post_id } })}
+                                                                    style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
+                                                                    key={index}
+                                                                >
+                                                                    <Image
+                                                                        style={{ height: heightToDp("30%"), width: widthToDp("85%"), borderRadius: 10 }}
+                                                                        source={{ uri: item.post_url }}
+                                                                    />
+                                                                </TouchableOpacity>
+                                                            )}
+                                                        />
+                                                    }
+                                                </View> : null)
                                             }
 
                                             <View
@@ -339,7 +367,7 @@ export default class HomeScreen extends React.Component {
                     })
                 } */}
 
-            </View>
+            </View >
         );
     };
 
@@ -362,7 +390,7 @@ export default class HomeScreen extends React.Component {
     };
 
     sharePostMethod = async (value) => {
-        this.setState({sharepostID : value})
+        this.setState({ sharepostID: value })
         // const ShareOptions = {
         //     message : "hi check this from link : https://bezzyapp.page.link/appadmin"
         // }
@@ -396,26 +424,37 @@ export default class HomeScreen extends React.Component {
         }
     }
 
-    shareImageInternally = async() => {
+    shareImageInternally = async () => {
         this.RBSheet2.close()
+        var resp , msg
         let value = await AsyncStorage.getItem('userId')
-        await axios.get(DataAccess.BaseUrl+DataAccess.sharePostInternally +"/" +this.state.sharepostID+"/"+value+"/1")
-        .then(function(response){
-            console.log(response.data,"KPKPKPKPKP")
-        }).catch(function(error){
-            console.log(error)
-        })
+        await axios.get(DataAccess.BaseUrl + DataAccess.sharePostInternally + "/" + this.state.sharepostID + "/" + value + "/1")
+            .then(function (response) {
+                resp = response.data.resp
+                msg = response.data.message
+                console.log(response.data, "KPKPKPKPKP")
+            }).catch(function (error) {
+                console.log(error)
+            })
+
+            if(resp === 'success'){
+                Toast.show({
+                    text: msg,
+                    type: "success",
+                    duration: 3000
+                });
+            }
     }
 
-    shareImageExternally = async() => {
+    shareImageExternally = async () => {
         this.RBSheet2.close()
         const ShareOptions = {
-            message : "hi check this from link : https://bezzyapp.page.link/appadmin"
+            message: "hi check this from link : https://bezzyapp.page.link/appadmin"
         }
 
-        try{
+        try {
             const ShareResponse = await Share.open(ShareOptions)
-        }catch(error){
+        } catch (error) {
             console.log(error)
         }
     }
@@ -579,7 +618,7 @@ export default class HomeScreen extends React.Component {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.shareImageExternally()}> 
+                    <TouchableOpacity onPress={() => this.shareImageExternally()}>
                         <View style={{ flexDirection: 'row' }}>
                             <ShareIcon
                                 name={'share-google'}

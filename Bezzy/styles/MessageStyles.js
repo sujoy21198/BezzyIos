@@ -33,7 +33,7 @@ export const TextSection = styled.View`
   justify-content: center;
   padding: 15px;
   padding-left: 0;
-  margin-left: 10px;
+  margin-left: 1px;
   width: 300px;
   border-bottom-width: 1px;
   border-bottom-color: #cccccc;
