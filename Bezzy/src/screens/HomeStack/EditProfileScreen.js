@@ -2,12 +2,11 @@ import React from 'react';
 import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DataAccess from '../../components/DataAccess';
 import axios from 'axios';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import RBSheet1 from 'react-native-raw-bottom-sheet';
 import { ActionSheet, Toast } from 'native-base';
 import NetInfo from '@react-native-community/netinfo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -15,6 +14,7 @@ import { checkMultiple, PERMISSIONS, requestMultiple, RESULTS } from 'react-nati
 import ImagePicker from 'react-native-image-crop-picker';
 import ImgToBase64 from 'react-native-image-base64';
 import ButtonComponent from '../../components/ButtonComponent';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -43,16 +43,24 @@ export default class EditProfileScreen extends React.Component {
 
     //SET THE DATE FUNCTION
     setDate = (date) => {
-        if (date.type === "set") {
-            let dateString = String(date.nativeEvent.timestamp);
-            let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            let day = dateString.split(" ")[2];
-            let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
-            let year = dateString.split(" ")[3];
-            this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
-        } else {
-            this.setState({ dob: this.state.dob, showDatePicker: false })
-        }
+        let dateObject = new Date(date);
+        let onlyDate = dateObject.getDate();
+        let onlyMonth = dateObject.getMonth();
+        let onlyYear = dateObject.getFullYear();
+        this.setState({
+            dob: onlyDate + "-" + onlyMonth + "-" + onlyYear, 
+            showDatePicker: false
+        })
+        // if (date.type === "set") {
+        //     let dateString = String(date.nativeEvent.timestamp);
+        //     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        //     let day = dateString.split(" ")[2];
+        //     let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
+        //     let year = dateString.split(" ")[3];
+        //     this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
+        // } else {
+        //     this.setState({ dob: this.state.dob, showDatePicker: false })
+        // }
     }
 
     componentDidMount() {
@@ -395,39 +403,39 @@ export default class EditProfileScreen extends React.Component {
                         {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
                     </Text>
                 </TouchableOpacity>
-                {
-                    this.state.showDatePicker &&
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={this.state.userDob!==null ? this.state.userDob : new Date()}
-                        mode="date"
-                        is24Hour={true}
-                        // display="default"
-                        onChange={this.setDate}
-                    />
-                }
-                <View
+                <DateTimePickerModal
+                    isVisible={this.state.showDatePicker}
+                    mode="date"
+                    onConfirm={this.setDate}
+                    onCancel={() => this.setState({showDatePicker: !this.state.showDatePicker})}
+                />
+                <TouchableOpacity
                     style={{
-                        marginTop: heightToDp("3%"),
+                        marginTop: heightToDp("5%"),
                         borderBottomWidth: 1,
                         borderBottomColor: '#a9a9a9',
                         alignItems: "flex-start",
+                        width: widthToDp("95%"),
                         marginHorizontal: widthToDp("3%")
                     }}
+                    activeOpacity={0.7}
+                    onPress={() => this.RBSheet1.open()}
                 >
-                    <Picker
+                    <Text
                         style={{
-                            width: widthToDp("95%"),
+                            color: "#808080",
+                            fontSize: widthToDp("3.4%"),
+                            paddingBottom: heightToDp("1%"),
+                            width: widthToDp("87%")
                         }}
-                        selectedValue={this.state.gender}
-                        mode="dropdown"
-                        onValueChange={(item, index) => this.setState({ gender: item })}
                     >
-                        <Picker.Item label="Select Your Gender" value="-1" color="#808080" style={{ fontSize: widthToDp("3.5%") }} />
-                        <Picker.Item label="Male" value="0" color="#808080" />
-                        <Picker.Item label="Female" value="1" color="#808080" />
-                    </Picker>
-                </View>
+                        {
+                            this.state.gender === "0" ? "Male" :
+                            this.state.gender === "1" ? "Female" :
+                            "Select Your Gender"
+                        }
+                    </Text>
+                </TouchableOpacity>
                 
                 <View
                     style={{
@@ -483,6 +491,50 @@ export default class EditProfileScreen extends React.Component {
                     />
                 </RBSheet> 
             </KeyboardAwareScrollView>
+            <RBSheet1
+                ref={ref => {
+                    this.RBSheet1 = ref;
+                }}
+                height={heightToDp("15%")}
+                // openDuration={250}
+                customStyles={{
+                    container: {
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                        paddingLeft: widthToDp("5%"),
+                        backgroundColor: '#fff',
+                        borderRadius: 30
+                    }
+                }}
+            >
+                <TouchableOpacity 
+                    onPress={() => {
+                        this.setState({ gender: "0" });
+                        this.RBSheet1.close()
+                    }}
+                    style={{width: '100%'}}
+                >
+                    <Text
+                        style={{
+                            fontSize: widthToDp("4.6%"),
+                        }}
+                    >Male</Text>
+                </TouchableOpacity>
+                <View style={{ height: heightToDp("1.3%") }} />
+                <TouchableOpacity
+                    style={{width: '100%'}}
+                    onPress={() => {
+                        this.setState({ gender: "1" })
+                        this.RBSheet1.close()
+                    }}>
+                    <Text
+                        style={{
+                            fontSize: widthToDp("4.6%"),
+                            
+                        }}
+                    >Female</Text>
+                </TouchableOpacity>
+            </RBSheet1>
             
         </SafeAreaView>
     )
