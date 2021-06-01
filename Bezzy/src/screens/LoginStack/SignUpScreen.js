@@ -4,16 +4,16 @@ import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Toast, ActionSheet, Input, Form, Item, Label } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import { check, PERMISSIONS, RESULTS, request, checkMultiple, requestMultiple } from 'react-native-permissions'
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import RBSheet1 from 'react-native-raw-bottom-sheet';
 import NetInfo from '@react-native-community/netinfo'
 import ButtonComponent from '../../components/ButtonComponent';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export default class SignUpScreen extends React.Component {
     state = {
@@ -44,16 +44,24 @@ export default class SignUpScreen extends React.Component {
 
     //SET THE DATE FUNCTION
     setDate = (date) => {
-        if (date.type === "set") {
-            let dateString = String(date.nativeEvent.timestamp);
-            let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            let day = dateString.split(" ")[2];
-            let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
-            let year = dateString.split(" ")[3];
-            this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
-        } else {
-            this.setState({ dob: this.state.dob, showDatePicker: false })
-        }
+        let dateObject = new Date(date);
+        let onlyDate = dateObject.getDate();
+        let onlyMonth = dateObject.getMonth();
+        let onlyYear = dateObject.getFullYear();
+        this.setState({
+            dob: onlyDate + "-" + onlyMonth + "-" + onlyYear, 
+            showDatePicker: false
+        })
+        // if (date.type === "set") {
+        //     let dateString = String(date.nativeEvent.timestamp);
+        //     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        //     let day = dateString.split(" ")[2];
+        //     let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
+        //     let year = dateString.split(" ")[3];
+        //     this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
+        // } else {
+        //     this.setState({ dob: this.state.dob, showDatePicker: false })
+        // }
     }
 
     //IMAGE UPLOAD FUNCTION
@@ -566,7 +574,6 @@ export default class SignUpScreen extends React.Component {
                             backgroundColor: "#fff",
                             alignItems: "flex-start"
                         }}
-                        activeOpacity={0.7}
                         onPress={() => this.setState({ showDatePicker: true, isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
                     >
                         <Text
@@ -580,38 +587,38 @@ export default class SignUpScreen extends React.Component {
                             {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
                         </Text>
                     </TouchableOpacity>
-                    {
-                        this.state.showDatePicker &&
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={new Date()}
-                            mode="date"
-                            is24Hour={true}
-                            // display="default"
-                            onChange={this.setDate}
-                        />
-                    }
-                    <View
+                    <DateTimePickerModal
+                        isVisible={this.state.showDatePicker}
+                        mode="date"
+                        onConfirm={this.setDate}
+                        onCancel={() => this.setState({showDatePicker: false})}
+                    />
+                    <TouchableOpacity
                         style={{
-                            marginTop: heightToDp("3%"),
+                            marginTop: heightToDp("5%"),
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
                             backgroundColor: "#fff",
                             alignItems: "flex-start"
                         }}
+                        activeOpacity={0.7}
+                        onPress={() => this.RBSheet1.open()}
                     >
-                        <Picker
+                        <Text
                             style={{
-                                width: widthToDp("95%"),
+                                color: this.state.dob === ""  ? '#808080' : "#1b1b1b",
+                                fontSize: widthToDp("3.4%"),
+                                paddingBottom: heightToDp("1%"),
+                                width: widthToDp("87%")
                             }}
-                            mode="dropdown"
-                            onValueChange={(item, index) => this.setState({ gender: item, isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
                         >
-                            <Picker.Item label="Select Your Gender" value="-1" color="#808080" style={{ fontSize: widthToDp("3.5%") }} />
-                            <Picker.Item label="Male" value="0" color="#1b1b1b" />
-                            <Picker.Item label="Female" value="1" color="#1b1b1b" />
-                        </Picker>
-                    </View>
+                            {
+                                this.state.gender === "0" ? "Male" :
+                                this.state.gender === "1" ? "Female" :
+                                "Select Your Gender"
+                            }
+                        </Text>
+                    </TouchableOpacity>
                     <View
                         style={{
                             flexDirection: 'row',
@@ -669,6 +676,50 @@ export default class SignUpScreen extends React.Component {
                         </> 
                     }
                 </View>
+                <RBSheet1
+                    ref={ref => {
+                        this.RBSheet1 = ref;
+                    }}
+                    height={heightToDp("15%")}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingLeft: widthToDp("5%"),
+                            backgroundColor: '#fff',
+                            borderRadius: 30
+                        }
+                    }}
+                >
+                    <TouchableOpacity 
+                        onPress={() => {
+                            this.setState({ gender: "0", isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false });
+                            this.RBSheet1.close()
+                        }}
+                        style={{width: '100%'}}
+                    >
+                        <Text
+                            style={{
+                                fontSize: widthToDp("4.6%"),
+                            }}
+                        >Male</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: heightToDp("1.3%") }} />
+                    <TouchableOpacity
+                        style={{width: '100%'}}
+                        onPress={() => {
+                            this.setState({ gender: "1", isNameFocused: false, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })
+                            this.RBSheet1.close()
+                        }}>
+                        <Text
+                            style={{
+                                fontSize: widthToDp("4.6%"),
+                                
+                            }}
+                        >Female</Text>
+                    </TouchableOpacity>
+                </RBSheet1>
             </KeyboardAwareScrollView>
         </SafeAreaView>
     )
