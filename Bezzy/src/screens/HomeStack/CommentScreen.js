@@ -103,7 +103,8 @@ export default class CommentScreen extends React.Component {
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
-            <View
+            <KeyboardAwareScrollView
+                keyboardShouldPersistTaps="handled"
                 style={{flex: 1}}
             >
                 {
@@ -223,7 +224,7 @@ export default class CommentScreen extends React.Component {
                     )}
                     />
                 }     
-            </View> 
+            </KeyboardAwareScrollView> 
             <View
                 style={{
                     backgroundColor: '#fff',
