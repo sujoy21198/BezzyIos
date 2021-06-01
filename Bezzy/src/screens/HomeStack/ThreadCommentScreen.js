@@ -9,6 +9,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class ThreadCommentScreen extends Component {
     constructor(props) {
@@ -144,84 +145,86 @@ export default class ThreadCommentScreen extends Component {
                             </View>
                         </View>
                     </View>
-                    {
-                        this.state.comments.length > 0 &&
-                        <FlatList
-                            data={this.state.comments}
-                            keyExtractor={item => item.comment_id}
-                            ItemSeparatorComponent={() => <View style={{ height: heightToDp("3%") }} />}
-                            ListFooterComponent={<View style={{ height: heightToDp("2%") }} />}
-                            renderItem={({ item, index }) => (
-                                <View style={{paddingLeft: widthToDp("10%")}}>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            alignItems: 'center',
-                                            paddingHorizontal: widthToDp("2%")
-                                        }}
-                                    >
-                                        <Image
-                                            source={{ uri: item.userimage }}
-                                            style={{ height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 25 }}
-                                        />
+                    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+                        {
+                            this.state.comments.length > 0 &&
+                            <FlatList
+                                data={this.state.comments}
+                                keyExtractor={item => item.comment_id}
+                                ItemSeparatorComponent={() => <View style={{ height: heightToDp("3%") }} />}
+                                ListFooterComponent={<View style={{ height: heightToDp("2%") }} />}
+                                renderItem={({ item, index }) => (
+                                    <View style={{paddingLeft: widthToDp("10%")}}>
                                         <View
                                             style={{
-                                                marginLeft: widthToDp("3%"),
-                                                padding: widthToDp("2%"),
-                                                backgroundColor: 'rgba(0, 255, 255, 0.1)',
-                                                borderRadius: 10,
-                                                width: widthToDp("72.5%")
+                                                flexDirection: 'row',
+                                                alignItems: 'center',
+                                                paddingHorizontal: widthToDp("2%")
                                             }}
                                         >
-                                            <Text
+                                            <Image
+                                                source={{ uri: item.userimage }}
+                                                style={{ height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 25 }}
+                                            />
+                                            <View
                                                 style={{
-                                                    width: widthToDp("90%"),
-                                                    color: '#1b1b1b',
-                                                    fontWeight: 'bold',
-                                                    fontSize: widthToDp("3.5%")
+                                                    marginLeft: widthToDp("3%"),
+                                                    padding: widthToDp("2%"),
+                                                    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                                    borderRadius: 10,
+                                                    width: widthToDp("72.5%")
                                                 }}
-                                            >{item.username}</Text>
-                                            <Text
-                                                style={{
-                                                    color: '#1b1b1b',
-                                                    fontSize: widthToDp("3%"),
-                                                    marginTop: heightToDp("1%")
-                                                }}
-                                            >{item.commentText}</Text>
+                                            >
+                                                <Text
+                                                    style={{
+                                                        width: widthToDp("90%"),
+                                                        color: '#1b1b1b',
+                                                        fontWeight: 'bold',
+                                                        fontSize: widthToDp("3.5%")
+                                                    }}
+                                                >{item.username}</Text>
+                                                <Text
+                                                    style={{
+                                                        color: '#1b1b1b',
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%")
+                                                    }}
+                                                >{item.commentText}</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                    <View
-                                        style={{
-                                            marginLeft: widthToDp("15%"),
-                                            marginTop: heightToDp("0.8%"),
-                                            width: widthToDp("82%"),
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                color: '#808080',
-                                                fontSize: widthToDp("3%")
-                                            }}
-                                        >{item.postcomment_time}</Text>
                                         <View
                                             style={{
-                                                position: 'absolute',
-                                                top: heightToDp("0%"),
-                                                right: widthToDp("0%"),
+                                                marginLeft: widthToDp("15%"),
+                                                marginTop: heightToDp("0.8%"),
+                                                width: widthToDp("82%"),
                                                 flexDirection: 'row',
+                                                justifyContent: 'space-between',
                                                 alignItems: 'center'
                                             }}
                                         >
+                                            <Text
+                                                style={{
+                                                    color: '#808080',
+                                                    fontSize: widthToDp("3%")
+                                                }}
+                                            >{item.postcomment_time}</Text>
+                                            <View
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: heightToDp("0%"),
+                                                    right: widthToDp("0%"),
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
 
+                                            </View>
                                         </View>
                                     </View>
-                                </View>
-                            )}
-                        />
-                    }
+                                )}
+                            />
+                        }
+                    </KeyboardAwareScrollView>
                 </View>
 
                 <View
