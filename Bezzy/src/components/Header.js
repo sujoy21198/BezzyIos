@@ -237,7 +237,7 @@ export default class Header extends React.Component {
                                 this.props.navigation.reset({
                                     index: this.props.backToProfile ? 3 : 0,
                                     routes: [
-                                        { name: this.props.backToProfile ? "ProfileScreen" : "HomeScreen" }
+                                        { name: this.props.backToProfile ? "ProfileScreen" : "HomeScreen"  }
                                     ]
                                 })
                         }

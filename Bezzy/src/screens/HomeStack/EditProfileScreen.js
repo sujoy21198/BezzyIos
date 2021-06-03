@@ -269,7 +269,7 @@ export default class EditProfileScreen extends React.Component {
             this.props.navigation.reset({
                 index: 3,
                 routes: [
-                    { name: "ProfileScreen" }
+                    { name: "ProfileScreen" , params:{profile_id : ''}}
                 ]
             })
         } else {
@@ -294,7 +294,7 @@ export default class EditProfileScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1}}>       
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
+            {/* <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/> */}
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"
             >

@@ -105,7 +105,7 @@ export default class PostScreen extends React.Component {
                 .then(image => {
                     this.state.cameraImagePath = image.path
                     this.setState({ fromCamera: true })
-                    alert(this.state.cameraImagePath)
+                    //alert(this.state.cameraImagePath)
                 })
                 .catch(err => {
                     console.log('Error fetching image from Camera roll', err);
@@ -240,6 +240,12 @@ export default class PostScreen extends React.Component {
                 }).catch(function (error) {
                     console.log(error)
                 })
+            this.props.navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "HomeScreen" }
+                ]
+            });
 
             Toast.show({
                 text: "video uploaded successfully",
@@ -247,12 +253,7 @@ export default class PostScreen extends React.Component {
                 duration: 3000
             });
 
-            this.props.navigation.reset({
-                index: 0,
-                routes: [
-                    { name: "HomeScreen" }
-                ]
-            });
+
         }
     }
 
