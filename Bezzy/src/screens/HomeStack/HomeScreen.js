@@ -245,6 +245,10 @@ export default class HomeScreen extends React.Component {
                                                     {
                                                         i.post_img_video_live.length > 0 &&
                                                         <FlatList
+                                                            data={i.post_img_video_live}
+                                                            style={{
+                                                                padding: widthToDp("2%")
+                                                            }}
                                                             renderItem={({ item, index }) => (
                                                                 <Video
                                                                     source={{ uri: item.post_url }}
@@ -255,11 +259,11 @@ export default class HomeScreen extends React.Component {
                                                                     onError={this.videoError}
                                                                     controls={true}
                                                                     style={{
-                                                                        height: heightToDp("20%"),
-                                                                        width: widthToDp("70%"),
-                                                                        alignSelf: 'center'
+                                                                        height: heightToDp("30%"),
+                                                                        width: widthToDp("80%"),
+                                                                        alignSelf: 'center',
                                                                     }}
-
+                                                                    resizeMode="contain"
                                                                 />
                                                             )}
                                                         />
