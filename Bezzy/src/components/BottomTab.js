@@ -1,6 +1,6 @@
 import Icon from 'react-native-vector-icons/Ionicons';
 import React from "react";
-import { Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View, Image } from "react-native";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import { heightToDp, widthToDp } from './Responsive';
 
@@ -9,8 +9,8 @@ export default class BottomTab extends React.Component {
         <SafeAreaView
             style={{
                 position: 'absolute',
-                bottom: 0,                
-                width: widthToDp("100%"),   
+                bottom: 0,
+                width: widthToDp("100%"),
             }}
         >
             <View
@@ -39,21 +39,21 @@ export default class BottomTab extends React.Component {
                         }}
                         activeOpacity={0.7}
                         onPress={
-                            () => 
-                                this.props.isHomeFocused ? 
-                                undefined : 
-                                this.props.navigation.reset({
-                                    index: 0,
-                                    routes: [
-                                        { name: "HomeScreen" }
-                                    ]
-                                })
-                            }
+                            () =>
+                                this.props.isHomeFocused ?
+                                    undefined :
+                                    this.props.navigation.reset({
+                                        index: 0,
+                                        routes: [
+                                            { name: "HomeScreen" }
+                                        ]
+                                    })
+                        }
                     >
-                        <Icon
-                            name={Platform.OS==='android' ? 'md-home-outline' : 'ios-home-outline'}
-                            size={23}
-                            color={this.props.isHomeFocused ? "#007dfe" : "#808080"}
+                        <Image
+                            source={require("../../assets/homeLogo.png")}
+                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            resizeMode="contain"
                         />
                         {
                             this.props.isHomeFocused &&
@@ -80,13 +80,13 @@ export default class BottomTab extends React.Component {
                         activeOpacity={0.7}
                         onPress={() => this.props.isChatFocused ? undefined : this.props.navigation.navigate("ChatScreen")}
                     >
-                        <Icon
-                            name={Platform.OS==='android' ? 'md-chatbubbles-outline' : 'ios-chatbubbles-outline'}
-                            size={23}
-                            color={this.props.isChatFocused ? "#007dfe" : "#808080"}
+                        <Image
+                            source={require("../../assets/chatLogo.png")}
+                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            resizeMode="contain"
                         />
                         {
-                            this.props.isChatFocused && 
+                            this.props.isChatFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
@@ -95,16 +95,16 @@ export default class BottomTab extends React.Component {
                             >Chat</Text>
                         }
                     </TouchableOpacity>
-                    <View 
+                    <View
                         style={{
-                            height: heightToDp("7.5%"), 
-                            width: widthToDp("14.8%"), 
+                            height: heightToDp("7.5%"),
+                            width: widthToDp("14.8%"),
                             backgroundColor: '#fff',
                             elevation: 10,
                             flex: 1
                         }}
                     >
-                        <View 
+                        <View
                             style={{
                                 height: heightToDp("7.5%"),
                                 flex: 1,
@@ -115,13 +115,13 @@ export default class BottomTab extends React.Component {
                                 backgroundColor: '#ececec'
                             }}
                         />
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={{
                                 position: 'absolute',
                                 bottom: heightToDp("4.9%"),
                                 left: widthToDp("1.4%"),
-                                height: 50, 
-                                width: 50, 
+                                height: 50,
+                                width: 50,
                                 borderRadius: 50 / 2,
                                 backgroundColor: "#007dfe",
                                 justifyContent: 'center',
@@ -132,12 +132,12 @@ export default class BottomTab extends React.Component {
                             onPress={() => this.props.navigation.navigate("PostScreen")}
                         >
                             <Icon
-                                name={Platform.OS==='android' ? 'md-add' : 'ios-add'}
+                                name={Platform.OS === 'android' ? 'md-add' : 'ios-add'}
                                 size={30}
                                 color="#fff"
                             />
                         </TouchableOpacity>
-                        <View style={{height: heightToDp("3.8%"), backgroundColor: '#fff'}}/>
+                        <View style={{ height: heightToDp("3.8%"), backgroundColor: '#fff' }} />
                     </View>
                     <TouchableOpacity
                         style={{
@@ -153,24 +153,24 @@ export default class BottomTab extends React.Component {
                         }}
                         activeOpacity={0.7}
                         onPress={
-                            () => 
-                                this.props.isSearchFocused ? 
-                                undefined : 
-                                this.props.navigation.reset({
-                                    index: 2,
-                                    routes: [
-                                        { name: "SearchScreen" }
-                                    ]
-                                })
-                            }
+                            () =>
+                                this.props.isSearchFocused ?
+                                    undefined :
+                                    this.props.navigation.reset({
+                                        index: 2,
+                                        routes: [
+                                            { name: "SearchScreen" }
+                                        ]
+                                    })
+                        }
                     >
-                        <Icon
-                            name={Platform.OS==='android' ? 'md-search-outline' : 'ios-search-outline'}
-                            size={23}
-                            color={this.props.isSearchFocused ? "#007dfe" : "#808080"}
+                        <Image
+                            source={require("../../assets/searchLogo.png")}
+                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            resizeMode="contain"
                         />
                         {
-                            this.props.isSearchFocused && 
+                            this.props.isSearchFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
@@ -190,24 +190,24 @@ export default class BottomTab extends React.Component {
                         }}
                         activeOpacity={0.7}
                         onPress={
-                            () => 
-                                this.props.isProfileFocused ? 
-                                undefined : 
-                                this.props.navigation.reset({
-                                    index: 3,
-                                    routes: [
-                                        { name: "ProfileScreen" , params: { profile_id : ''}}
-                                    ]
-                                })
-                            }
+                            () =>
+                                this.props.isProfileFocused ?
+                                    undefined :
+                                    this.props.navigation.reset({
+                                        index: 3,
+                                        routes: [
+                                            { name: "ProfileScreen", params: { profile_id: '' } }
+                                        ]
+                                    })
+                        }
                     >
-                        <Icon
-                            name={Platform.OS==='android' ? 'md-person-outline' : 'ios-person-outline'}
-                            size={23}
-                            color={this.props.isProfileFocused ? "#007dfe" : "#808080"}
+                        <Image
+                            source={require("../../assets/profileLogo.png")}
+                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            resizeMode="contain"
                         />
                         {
-                            this.props.isProfileFocused && 
+                            this.props.isProfileFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
