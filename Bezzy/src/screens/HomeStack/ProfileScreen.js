@@ -87,9 +87,10 @@ export default class ProfileScreen extends React.Component {
             await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
                 "profile_id": this.state.friendsProfileId
             }).then(res => {
+                console.warn(res);
                 userDetails = res.data.usedetails;
                 userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
-            }).catch(err => console.log(err))
+            }).catch(err => console.warn(err))
             this.setState({ userDetails, userPosts })
             this.setState({ isLoading: false, isRefreshing: false })
             this.RBSheet.close()
@@ -412,7 +413,7 @@ export default class ProfileScreen extends React.Component {
                                         onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { otherProfile: this.state.otherProfile === true ? true : false, share: true, noEditCaption: true, image: { ...item, post_id: item.post_id } })}
                                     >
                                         <Image
-                                            source={{ uri: item.post_url.split("?src=")[1].split('&w=')[0] }}
+                                            source={{ uri: item.post_url }}
                                             // resizeMode="contain"
                                             style={{
                                                 height: heightToDp("20%"),

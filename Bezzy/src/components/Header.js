@@ -218,6 +218,7 @@ export default class Header extends React.Component {
                             alignItems: 'center'
                         }}
                         activeOpacity={0.7}
+                        disabled={this.props.block}
                         onPress={                            
                             () => 
                                 typeof this.props.commentCount === 'number' ? 

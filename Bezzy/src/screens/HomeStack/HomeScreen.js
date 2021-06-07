@@ -54,31 +54,30 @@ export default class HomeScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId)
             .then(async function (response) {
-                console.log(response.data.total_feed_response)
-                if (response.data.status === "error") {
-                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
-                        "log_userID": userId
-                    })
-                        .then(function (responseUserList) {
-                            if (responseUserList.data.resp === "success") {
-                                responseUserList.data.all_user_list = responseUserList.data.all_user_list.filter(item => String(item.user_id) !== userId)
-                                userList = responseUserList.data.all_user_list;
-                                followingList = [];
-                            } else {
-                                userList = [];
-                                followingList = [];
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        })
-                } else {
+                // console.warn(response.data.total_feed_response)
+                if (response.data.status === "success") {
                     userList = [];
-                    followingList = response.data.total_feed_response.friend_list;
-                }
+                    followingList = response.data.total_feed_response.friend_list;                    
+                } 
             })
-            .catch(function (error) {
+            .catch(async function (error) {
                 console.log(error);
+                await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                    "log_userID": userId
+                })
+                    .then(function (responseUserList) {
+                        if (responseUserList.data.resp === "success") {
+                            responseUserList.data.all_user_list = responseUserList.data.all_user_list.filter(item => String(item.user_id) !== userId)
+                            userList = responseUserList.data.all_user_list;
+                            followingList = [];
+                        } else {
+                            userList = [];
+                            followingList = [];
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
             })
         let noPostUsers = [], postUsers = [];
         followingList.length > 0 &&

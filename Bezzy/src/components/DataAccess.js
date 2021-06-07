@@ -1,5 +1,5 @@
 const DataAccess = {
-    BaseUrl : 'http://161.35.122.165/bezzy.websteptech.co.uk/api/',
+    BaseUrl : 'http://bezzy-app.com/admin/api/',
 
     //login api's
     SignIn: 'login',

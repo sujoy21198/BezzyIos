@@ -107,7 +107,7 @@ export default class FollowerScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1}}>       
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isHomeStackInnerPage isBackButton backToProfile={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
+            <Header isHomeStackInnerPage block={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
             {
                 this.state.isLoading ?
                 <View 
