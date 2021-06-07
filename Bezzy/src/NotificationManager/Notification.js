@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {View,TouchableOpacity,Text} from 'react-native'
 import {notificationManager} from './NotificationManager'
-import { AppEnvironmentService } from '../Service/AppEnvironmentService';
 
 export default class Notification extends Component{
     constructor(props){
@@ -14,7 +13,6 @@ export default class Notification extends Component{
         notification.configure(this.onRegister,this.onNotification,this.onOpenNotification,senderID);
         notification.showNotification(
           1,
-          AppEnvironmentService.GetCurrentApp(),
           "Order taken thank you.",
           {},//data
           {},//options
