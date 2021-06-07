@@ -9,7 +9,7 @@ export default class Notification extends Component{
 
     onPressSendNotification = () =>  {
         var notification = notificationManager;
-        var senderID = "717896799169";
+        var senderID = "694046059233";
         notification.configure(this.onRegister,this.onNotification,this.onOpenNotification,senderID);
         notification.showNotification(
           1,
