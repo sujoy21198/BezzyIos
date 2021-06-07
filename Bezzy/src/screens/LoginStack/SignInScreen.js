@@ -72,8 +72,9 @@ export default class SignInScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
             "username": this.state.email.trim(),
             "password": this.state.password.trim(),
-            "device_token": null
+            "device_token": "123456"
         });
+        console.warn(response);
         if (response.data.resp === "true") {
             this.RBSheet.close()
             AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails));
