@@ -527,6 +527,8 @@ export default class HomeScreen extends React.Component {
                                             textAlign: "center",
                                             paddingVertical: heightToDp("0.8%"),
                                         }}
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"                                        
                                     >{item.name}</Text>
                                     <TouchableOpacity
                                         activeOpacity={0.7}

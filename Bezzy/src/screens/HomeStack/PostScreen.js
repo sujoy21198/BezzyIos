@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-video'
 import RBSheet from "react-native-raw-bottom-sheet"
+import DataAccess from '../../components/DataAccess';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -189,7 +190,7 @@ export default class PostScreen extends React.Component {
                     // formData.append('userID', '232')
                     // formData.append('post_content', this.state.caption)
                     // console.log(formData._parts)
-                    await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formData)
+                    await axios.post(DataAccess.BaseUrl + "PostImage", formData)
                         .then(function (response) {
                             console.log(response.data)
                         }).catch(function (error) {
@@ -217,7 +218,7 @@ export default class PostScreen extends React.Component {
                 formDataCamera.append('post_content', this.state.caption)
                 console.log(formDataCamera._parts)
 
-                await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostImage', formDataCamera)
+                await axios.post(DataAccess.BaseUrl + "PostImage", formDataCamera)
                     .then(function (response) {
                         console.log(response.data, "CAMERA")
                     }).catch(function (error) {
@@ -249,7 +250,7 @@ export default class PostScreen extends React.Component {
             fromDataVideo.append('post_content', this.state.caption)
             fromDataVideo.append('userID', userID)
 
-            await axios.post('http://161.35.122.165/bezzy.websteptech.co.uk/api/PostVideo', fromDataVideo)
+            await axios.post(DataAccess.BaseUrl + "PostVideo", fromDataVideo)
                 .then(function (response) {
                     console.log(response.data, "VIDEO")
                 }).catch(function (error) {
