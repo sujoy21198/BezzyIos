@@ -57,7 +57,7 @@ export default class InboxScreen extends Component {
       await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
         .then(function (response) {
           messages = response.data.chat_history_list
-          console.log(response.data.chat_history_list)
+          console.log(response.data.chat_history_list, "inbox screen")
         }).catch(function (error) {
           console.log(error)
         })

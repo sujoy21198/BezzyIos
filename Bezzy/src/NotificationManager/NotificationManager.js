@@ -17,13 +17,14 @@ class NotificationManager {
                 }
 
             },
-            senderID: "717896799169",
+            senderID: "694046059233",
         })
     }
 
     androidNotification = (id, title, message, data = {}, options = {}) => {
         return {
             id: id,
+            channelId: "1",
             autoCancel: true,
             bigText: message || '',
             subText: message || '',
@@ -34,8 +35,8 @@ class NotificationManager {
     showNotification = (id, title, message, data = {}, options = {}) => {
         PushNotification.localNotification({
             ...this.androidNotification(id, title, message, data, options),
-            title: title || "",
-            message: message || "",
+            title: title || "Default Header",
+            message: message || "Default Notification",
             userInteraction: false,
         })
     }

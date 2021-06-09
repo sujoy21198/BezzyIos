@@ -1,6 +1,6 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar } from 'react-native';
-import { ActionSheet } from 'native-base'
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator } from 'react-native';
+import { ActionSheet, Toast } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../components/Header';
@@ -12,6 +12,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-video'
+import RBSheet from "react-native-raw-bottom-sheet"
 
 export default class PostScreen extends React.Component {
     state = {
@@ -156,12 +157,18 @@ export default class PostScreen extends React.Component {
 
     //Upload photo and video function
     postImage = async () => {
+        if(this.state.caption.trim() === "") {
+            this.setState({isCaptionEmpty: true});
+            return;
+        }
+        this.setState({isCaptionEmpty: false});
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
             if (this.state.fromCamera === false) {
                 if (this.state.imagesArray.length <= 0) {
                     alert('please add image ')
                 } else {
+                    this.RBSheet.open();
                     var filePaths = this.state.imagesArray.map((i) => i.path)
                     var formData = new FormData()
                     filePaths.forEach((element, i) => {
@@ -188,8 +195,8 @@ export default class PostScreen extends React.Component {
                         }).catch(function (error) {
                             console.log(error)
                         })
-
-
+    
+                    this.RBSheet.close();
                     this.props.navigation.reset({
                         index: 0,
                         routes: [
@@ -198,7 +205,8 @@ export default class PostScreen extends React.Component {
                     });
                 }
             } else if (this.state.fromCamera === true) {
-
+                
+                this.RBSheet.open();
                 var formDataCamera = new FormData()
                 formDataCamera.append('post_image[]', {
                     uri: this.state.cameraImagePath,
@@ -216,7 +224,7 @@ export default class PostScreen extends React.Component {
                         console.log(error)
                     })
 
-
+                this.RBSheet.close();
                 this.props.navigation.reset({
                     index: 0,
                     routes: [
@@ -224,7 +232,14 @@ export default class PostScreen extends React.Component {
                     ]
                 });
             }
+
+            Toast.show({
+                text: "Image is uploaded successfully",
+                type: "success",
+                duration: 3000
+            });
         } else if (this.state.focusedTab === 'video') {
+            this.RBSheet.open();
             var fromDataVideo = new FormData()
             fromDataVideo.append('post_video', {
                 name: 'name.mp4',
@@ -240,6 +255,8 @@ export default class PostScreen extends React.Component {
                 }).catch(function (error) {
                     console.log(error)
                 })
+            
+            this.RBSheet.close();
             this.props.navigation.reset({
                 index: 0,
                 routes: [
@@ -248,7 +265,7 @@ export default class PostScreen extends React.Component {
             });
 
             Toast.show({
-                text: "video uploaded successfully",
+                text: "Video is uploaded successfully",
                 type: "success",
                 duration: 3000
             });
@@ -336,6 +353,20 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                
+                {
+                    this.state.isCaptionEmpty &&
+                    <Text
+                        style={{
+                            marginVertical: heightToDp("0.5%"),
+                            marginHorizontal: widthToDp("1%"),
+                            color: "#ff0000"
+                        }}
+                    >
+                        Caption field can't be empty
+                    </Text>
+                }
+
                 {
                     this.state.focusedTab === 'photo' && this.state.fromCamera === true ?
                         <View>
@@ -451,6 +482,34 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+
+                
+                <RBSheet
+                    ref={ref => {
+                        this.RBSheet = ref;
+                    }}
+                    height={heightToDp("6%")}
+                    closeOnPressMask={false}
+                    closeOnPressBack={false}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            width: widthToDp("15%"),
+                            position: 'absolute',
+                            top: heightToDp("45%"),
+                            left: widthToDp("40%"),
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#fff',
+                            borderRadius: 10
+                        },
+                    }}
+                >
+                    <ActivityIndicator
+                        size="large"
+                        color="#69abff"
+                    />
+                </RBSheet>
             </SafeAreaView>
         )
     }
