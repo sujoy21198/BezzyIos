@@ -74,7 +74,7 @@ export default class Header extends React.Component {
                                 this.props.isBackButton &&
                                 <Icon
                                     name="chevron-left"
-                                    size={20}
+                                    size={30}
                                     color={"#69abff"}
                                 />
                             }

@@ -52,7 +52,7 @@ export default class BottomTab extends React.Component {
                     >
                         <Image
                             source={require("../../assets/homeLogo.png")}
-                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
                             resizeMode="contain"
                         />
                         {
@@ -82,7 +82,7 @@ export default class BottomTab extends React.Component {
                     >
                         <Image
                             source={require("../../assets/chatLogo.png")}
-                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
                             resizeMode="contain"
                         />
                         {
@@ -166,7 +166,7 @@ export default class BottomTab extends React.Component {
                     >
                         <Image
                             source={require("../../assets/searchLogo.png")}
-                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
                             resizeMode="contain"
                         />
                         {
@@ -203,7 +203,7 @@ export default class BottomTab extends React.Component {
                     >
                         <Image
                             source={require("../../assets/profileLogo.png")}
-                            style={{ height: heightToDp("2.5%"), width: widthToDp("8%") }}
+                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
                             resizeMode="contain"
                         />
                         {

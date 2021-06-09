@@ -223,9 +223,9 @@ export default class CommentScreen extends React.Component {
                         </>
                     )}
                     />
+                    
                 }     
-            </KeyboardAwareScrollView> 
-            <View
+                <View
                 style={{
                     backgroundColor: '#fff',
                     padding: widthToDp("1%"),
@@ -270,6 +270,8 @@ export default class CommentScreen extends React.Component {
                     </TouchableOpacity>
                 </View>
             </View>
+            </KeyboardAwareScrollView> 
+            
             <RBSheet
                 ref={ref => {
                     this.RBSheet = ref;
