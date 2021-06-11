@@ -58,6 +58,23 @@ export default class HomeScreen extends React.Component {
                 if (response.data.status === "success") {
                     userList = [];
                     followingList = response.data.total_feed_response.friend_list;                    
+                } else if(response.data.status === "error") {
+                    await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
+                        "log_userID": userId
+                    })
+                        .then(function (responseUserList) {
+                            if (responseUserList.data.resp === "success") {
+                                responseUserList.data.all_user_list = responseUserList.data.all_user_list.filter(item => String(item.user_id) !== userId)
+                                userList = responseUserList.data.all_user_list;
+                                followingList = [];
+                            } else {
+                                userList = [];
+                                followingList = [];
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
                 } 
             })
             .catch(async function (error) {

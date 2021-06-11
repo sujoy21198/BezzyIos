@@ -164,7 +164,7 @@ export default class SearchScreen extends React.Component {
                             <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileScreen', { profile_id: item.user_id })}>
                                 <Image
                                     source={{ uri: item.image }}
-                                    style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+                                    style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius:10, borderBottomRightRadius:10 }}
                                 />
                             </TouchableOpacity>
                             <Text
@@ -172,6 +172,8 @@ export default class SearchScreen extends React.Component {
                                     textAlign: "center",
                                     paddingVertical: heightToDp("0.8%"),
                                 }}
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
                             >{item.name}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.7}
