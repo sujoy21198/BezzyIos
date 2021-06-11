@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class ThreadCommentScreen extends Component {
     constructor(props) {
@@ -306,6 +307,7 @@ export default class ThreadCommentScreen extends Component {
                         color="#69abff"
                     />
                 </RBSheet>
+                <PushNotificationController navigation={this.props.navigation}/>
             </SafeAreaView>
         )
     }

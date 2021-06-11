@@ -10,6 +10,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class CommentScreen extends React.Component {
     
@@ -312,6 +313,7 @@ export default class CommentScreen extends React.Component {
                     color="#69abff"
                 />
             </RBSheet>  
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }

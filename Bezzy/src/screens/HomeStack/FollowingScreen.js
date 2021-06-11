@@ -7,6 +7,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { Toast } from 'native-base';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class FollowingScreen extends React.Component {
     state = {
@@ -142,6 +143,7 @@ export default class FollowingScreen extends React.Component {
                     )}
                 />
             }
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }

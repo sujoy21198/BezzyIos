@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class ChatImagePreviewScreen extends Component {
 
@@ -26,6 +27,7 @@ export default class ChatImagePreviewScreen extends Component {
                         source={{ uri: this.state.imageUrl }}
                     />
                 </LinearGradient>
+                <PushNotificationController navigation={this.props.navigation}/>
             </View>
         );
     }

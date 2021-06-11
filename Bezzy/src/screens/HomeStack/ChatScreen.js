@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import PushNotificationController from '../../components/PushNotificationController';
 
 // const Messages = [
     
@@ -86,6 +87,7 @@ export default class ChatScreen extends React.Component {
                     </Card>
                 )}
             />
+            <PushNotificationController navigation={this.props.navigation}/>
             <BottomTab isChatFocused navigation={this.props.navigation} />
         </SafeAreaView>
     )

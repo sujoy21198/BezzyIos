@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, Touc
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
+import PushNotificationController from '../../components/PushNotificationController';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 
 export default class BlockList extends React.Component {
@@ -150,7 +151,8 @@ export default class BlockList extends React.Component {
                     size="large"
                     color="#69abff"
                 />
-            </RBSheet> 
+            </RBSheet>
+            <PushNotificationController navigation={this.props.navigation}/> 
         </SafeAreaView>
     )
 }

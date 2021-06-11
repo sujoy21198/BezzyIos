@@ -13,6 +13,7 @@ import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder'
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class ProfileScreen extends React.Component {
     constructor(props) {
@@ -487,7 +488,7 @@ export default class ProfileScreen extends React.Component {
                     color="#69abff"
                 />
             </RBSheet>
-
+            <PushNotificationController navigation={this.props.navigation}/>
             <BottomTab isProfileFocused navigation={this.props.navigation} />
         </SafeAreaView>
     )

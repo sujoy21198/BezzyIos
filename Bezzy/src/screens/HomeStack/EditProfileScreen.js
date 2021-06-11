@@ -15,6 +15,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ImgToBase64 from 'react-native-image-base64';
 import ButtonComponent from '../../components/ButtonComponent';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -158,7 +159,6 @@ export default class EditProfileScreen extends React.Component {
         }
         this.RBSheet.open();
         let userId = await AsyncStorage.getItem("userId");
-
         let response = await axios.post(DataAccess.BaseUrl+DataAccess.updateProfile, {
             "userID" : userId,
             "username" : null,
@@ -170,15 +170,30 @@ export default class EditProfileScreen extends React.Component {
         });
         if(response.data.resp === "success") {           
 
-            this.convertImage()
+            if(this.state.image.startsWith("http://")) {
+                Toast.show({
+                    text: "Profile has been updated successfully",
+                    type: "success",
+                    duration: 3000
+                });
+                this.props.navigation.reset({
+                    index: 3,
+                    routes: [
+                        { name: "ProfileScreen" , params:{profile_id : ''}}
+                    ]
+                })
+                this.RBSheet.close()
+            } else {
+                this.convertImage()
+            }            
         } else {
             Toast.show({
                 text: response.data.message,
                 type: "danger",
                 duration: 3000
             });
+            this.RBSheet.close()
         } 
-        this.RBSheet.close()
     }
 
     uploadPicture = async () => {
@@ -259,7 +274,6 @@ export default class EditProfileScreen extends React.Component {
             'userID' : userID,
             'profile_picture' : base64ImageName
         })
-        this.RBSheet.close()
         if(response.data.resp === "true") {
             Toast.show({
                 text: "Profile has been updated successfully",
@@ -272,12 +286,14 @@ export default class EditProfileScreen extends React.Component {
                     { name: "ProfileScreen" , params:{profile_id : ''}}
                 ]
             })
+            this.RBSheet.close()
         } else {
             Toast.show({
                 text: response.data.reg_msg,
                 type: "danger",
                 duration: 3000
             });
+            this.RBSheet.close()
         }
     }
 
@@ -405,7 +421,6 @@ export default class EditProfileScreen extends React.Component {
                             paddingBottom: heightToDp("2%"),
                             width: widthToDp("87%"),
                             fontFamily: "poppins_regular",
-                            marginTop: widthToDp("1%")
                         }}
                     >
                         {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
@@ -550,7 +565,7 @@ export default class EditProfileScreen extends React.Component {
                     >Female</Text>
                 </TouchableOpacity>
             </RBSheet1>
-            
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }

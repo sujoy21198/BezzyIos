@@ -14,6 +14,7 @@ import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-video'
 import RBSheet from "react-native-raw-bottom-sheet"
 import DataAccess from '../../components/DataAccess';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -158,11 +159,11 @@ export default class PostScreen extends React.Component {
 
     //Upload photo and video function
     postImage = async () => {
-        if(this.state.caption.trim() === "") {
-            this.setState({isCaptionEmpty: true});
-            return;
-        }
-        this.setState({isCaptionEmpty: false});
+        // if(this.state.caption.trim() === "") {
+        //     this.setState({isCaptionEmpty: true});
+        //     return;
+        // }
+        // this.setState({isCaptionEmpty: false});
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
             if (this.state.fromCamera === false) {
@@ -517,6 +518,7 @@ export default class PostScreen extends React.Component {
                         color="#69abff"
                     />
                 </RBSheet>
+                <PushNotificationController navigation={this.props.navigation}/>
             </SafeAreaView>
         )
     }

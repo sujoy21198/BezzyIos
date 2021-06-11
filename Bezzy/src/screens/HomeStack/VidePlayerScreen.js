@@ -10,6 +10,7 @@ import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class VideoPlayerScreen extends Component {
 
@@ -369,6 +370,7 @@ export default class VideoPlayerScreen extends Component {
                         color="#69abff"
                     />
                 </RBSheet>
+                <PushNotificationController navigation={this.props.navigation}/>
             </View>
         )
     }
