@@ -218,7 +218,8 @@ export default class ImagePreviewScreen extends React.Component {
                             fontSize: widthToDp("3.5%"),
                             width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
                             borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
-                            borderBottomColor: '#fff'
+                            borderBottomColor: '#fff',
+                            fontFamily: "poppins_regular"
                         }}
                         multiline
                         defaultValue={this.state.postCaption}
@@ -283,7 +284,9 @@ export default class ImagePreviewScreen extends React.Component {
                         style={{
                             color: "#fff",
                             fontSize: widthToDp("3.5%"),
-                            paddingLeft: widthToDp("2%")
+                            paddingLeft: widthToDp("2%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >{this.state.numberOfLikes}</Text>
                     <TouchableOpacity
@@ -302,7 +305,9 @@ export default class ImagePreviewScreen extends React.Component {
                         style={{
                             color: "#fff",
                             fontSize: widthToDp("3.5%"),
-                            paddingLeft: widthToDp("2%")
+                            paddingLeft: widthToDp("2%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
                     

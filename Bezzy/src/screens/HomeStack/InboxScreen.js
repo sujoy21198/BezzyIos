@@ -84,7 +84,7 @@ export default class InboxScreen extends Component {
   }
 
   sendMessage = async () => {
-    this.setState
+    if(this.state.myMessage.trim() === "") return;
     await axios.post(DataAccess.BaseUrl + DataAccess.addChatData, {
       "from_userID": this.state.userId,
       "to_userID": this.state.friendsId,
@@ -213,7 +213,8 @@ export default class InboxScreen extends Component {
           <Text
               style={{
                   marginLeft: widthToDp("2%"),
-                  fontSize: widthToDp("3.6%")
+                  fontSize: widthToDp("3.6%"),
+                  fontFamily: "proxima_nova_black"
               }}
           >
             {this.state.friendName}
@@ -249,8 +250,8 @@ export default class InboxScreen extends Component {
                       alignSelf: 'flex-end', 
                       marginBottom: heightToDp("2%") 
                     }}>
-                      <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%") }}>{item.chat_message}</Text>
-                      <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
+                      <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "poppins_regular" }}>{item.chat_message}</Text>
+                      <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "poppins_regular" }}>{item.chat_msg_time}</Text>
                       <Ionicons
                       name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
                       size={15}
@@ -286,7 +287,8 @@ export default class InboxScreen extends Component {
                           position: 'absolute',
                           bottom: 20,
                           right: 5,
-                          color: 'white', 
+                          color: 'white',
+                          fontFamily: "poppins_regular" 
                         }}>{item.chat_msg_time}</Text>
                         <Ionicons
                         name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
@@ -311,8 +313,8 @@ export default class InboxScreen extends Component {
                           marginBottom: heightToDp("2%"), 
                           alignSelf: 'flex-start' 
                         }}>
-                        <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%") }}>{item.chat_message}</Text>
-                        <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%") }}>{item.chat_msg_time}</Text>
+                        <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "poppins_regular" }}>{item.chat_message}</Text>
+                        <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "poppins_regular" }}>{item.chat_msg_time}</Text>
                         <Ionicons
                         name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
                         size={15}
@@ -345,6 +347,7 @@ export default class InboxScreen extends Component {
                           bottom: 20,
                           left: 5,
                           color: 'white', 
+                          fontFamily: "poppins_regular"
                         }}>{item.chat_msg_time}</Text>
                         <Ionicons
                         name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
@@ -409,7 +412,8 @@ export default class InboxScreen extends Component {
                       padding: widthToDp("1%"),
                       fontSize: widthToDp("3.5%"),
                       width: widthToDp("75%"),
-                      color: '#777'
+                      color: '#777',
+                      fontFamily: "poppins_regular"
                   }}
                   onChangeText={(text) => this.setState({ myMessage: text })}
                   multiline

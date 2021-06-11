@@ -54,7 +54,7 @@ export default class NotificationScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1}}>       
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isHomeStackInnerPage isBackButton notification={this.state.notificationList.length > 0 ? true : false} clearNotifications={this.clearNotifications} headerText={"Notifications"} navigation={this.props.navigation}/>
+            <Header isHomeStackInnerPage isBackButton marginTop={"0.5%"} notification={this.state.notificationList.length > 0 ? true : false} clearNotifications={this.clearNotifications} headerText={"Notifications"} navigation={this.props.navigation}/>
             {
                 this.state.isLoading ?
                 <View
@@ -122,7 +122,8 @@ export default class NotificationScreen extends React.Component {
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
-                                        fontSize: widthToDp("3%")
+                                        fontSize: widthToDp("3%"),
+                                        fontFamily: "poppins_regular",
                                     }}
                                 >{item.activity_message}</Text>
                             </View>

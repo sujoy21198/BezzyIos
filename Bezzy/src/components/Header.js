@@ -88,8 +88,8 @@ export default class Header extends React.Component {
                                     <Text style={{
                                         color: !this.props.headerText ? '#fff' : '#007dfe',
                                         fontSize: widthToDp("4.5%"),
-                                        fontWeight: 'bold',
-                                        marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
+                                        marginLeft: this.props.isBackButton ? widthToDp("2%") : 0,
+                                        fontFamily: "proxima_nova_black"
                                     }}>
                                         {this.props.headerText}
                                     </Text>
@@ -182,29 +182,32 @@ export default class Header extends React.Component {
                                         }
                                     }}
                                 >
-                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("block")}>
+                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("block")} style={{width: "90%"}}>
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
+                                                fontFamily: "poppins_regular"
                                             }}
                                         >Block List</Text>
                                     </TouchableOpacity>
                                     <View style={{ height: heightToDp("3%") }} />
                                     <TouchableOpacity
                                         activeOpacity={0.7}
-                                        onPress={() => this.navigateToOtherScreen("changePassword")}>
+                                        onPress={() => this.navigateToOtherScreen("changePassword")}
+                                        style={{width: "90%"}}>
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-                                                
+                                                fontFamily: "poppins_regular"
                                             }}
                                         >Change Password</Text>
                                     </TouchableOpacity>
                                     <View style={{ height: heightToDp("3%") }} />
-                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("logout")}>
+                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("logout")} style={{width: "90%"}}>
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
+                                                fontFamily: "poppins_regular"
                                             }}
                                         >Logout</Text>
                                     </TouchableOpacity>
@@ -262,8 +265,9 @@ export default class Header extends React.Component {
                             <Text style={{
                                 color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
                                 fontSize: 15,
-                                fontWeight: 'bold',
-                                marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
+                                marginLeft: this.props.isBackButton ? widthToDp("2%") : 0,
+                                fontFamily: "proxima_nova_black",
+                                marginTop: this.props.marginTop ? widthToDp(this.props.marginTop) : "0%"
                             }}>
                                 {this.props.headerText}
                             </Text>                                                
@@ -283,7 +287,7 @@ export default class Header extends React.Component {
                                         style={{
                                             color: '#fff',
                                             textAlign: 'center',
-                                            fontWeight: 'bold'
+                                            fontFamily: "proxima_nova_black"
                                         }}
                                     >Clear All</Text>
                                 </TouchableOpacity>

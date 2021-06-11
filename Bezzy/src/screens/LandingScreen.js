@@ -66,8 +66,8 @@ export default class LandingScreen extends React.Component {
                             style={{
                                 textAlign: 'center',
                                 color: "#69abff",
-                                fontWeight: 'bold',
-                                fontSize: widthToDp("3.8%")
+                                fontSize: widthToDp("3.8%"),
+                                fontFamily: "proxima_nova_black"
                             }}
                         >
                             Get Started

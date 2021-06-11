@@ -22,6 +22,8 @@ const DataAccess = {
     followBack: 'followingback',
     removeUser: 'removeuser',
     blockUser: 'blockuser',
+    blockList: 'userblocklist',
+    unblockUser: 'unblockuser',
 
     //profile api's
     getProfileDetails: 'geteditprofiledata',

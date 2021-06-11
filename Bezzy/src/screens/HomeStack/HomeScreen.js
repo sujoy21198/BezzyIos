@@ -112,7 +112,7 @@ export default class HomeScreen extends React.Component {
     _renderSectionTitle = section => {
         return (
             <View >
-                <Text>{section.content}</Text>
+                <Text style={{fontFamily: "poppins_regular"}}>{section.content}</Text>
             </View>
         );
     };
@@ -172,12 +172,12 @@ export default class HomeScreen extends React.Component {
                                 </View>
                             }
                             <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days !== "" ? -0.5 : section.have_post === "No" ? 3.5 : 0}%`) }}>
-                                <Text>{section.friend_name}</Text>
+                                <Text style={{fontFamily: "poppins_regular"}}>{section.friend_name}</Text>
                             </View>
                             {
                                 section.past_post_days !== "" &&
                                 <View style={{ marginLeft: widthToDp("6%") }}>
-                                    <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
+                                    <Text style={{ color: '#f1b45c', fontFamily: "poppins_regular" }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                 </View>
                             }
                             <TouchableOpacity
@@ -243,17 +243,17 @@ export default class HomeScreen extends React.Component {
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{}}>{section.friend_name}</Text>
+                                                        <Text style={{fontFamily: "poppins_regular"}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                                        <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
+                                                        <Text style={{ color: '#69abff', fontFamily: "poppins_regular" }}>{i.post_time}</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                             {
                                                 i.post_content !== "" &&
                                                 <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
-                                                    <Text style={{ color: 'black' }}>{i.post_content}</Text>
+                                                    <Text style={{ color: 'black', fontFamily: "poppins_regular" }}>{i.post_content}</Text>
                                                 </View>
                                             }
                                             {
@@ -343,7 +343,9 @@ export default class HomeScreen extends React.Component {
                                                     style={{
                                                         color: "#cdcdcd",
                                                         fontSize: widthToDp("3.5%"),
-                                                        paddingLeft: widthToDp("1%")
+                                                        paddingLeft: widthToDp("1%"),
+                                                        fontFamily: "poppins_regular",
+                                                        marginTop: widthToDp("1%")
                                                     }}
                                                 >{i.number_of_like}</Text>
                                                 <TouchableOpacity
@@ -360,7 +362,9 @@ export default class HomeScreen extends React.Component {
                                                     style={{
                                                         color: "#cdcdcd",
                                                         fontSize: widthToDp("3.5%"),
-                                                        paddingLeft: widthToDp("1%")
+                                                        paddingLeft: widthToDp("1%"),
+                                                        fontFamily: "poppins_regular",
+                                                        marginTop: widthToDp("1%")
                                                     }}
                                                 >{i.number_of_comment}</Text>
                                                 <Icon2
@@ -543,6 +547,7 @@ export default class HomeScreen extends React.Component {
                                         style={{
                                             textAlign: "center",
                                             paddingVertical: heightToDp("0.8%"),
+                                            fontFamily: "poppins_regular"
                                         }}
                                         numberOfLines={1}
                                         ellipsizeMode="tail"                                        
@@ -558,7 +563,7 @@ export default class HomeScreen extends React.Component {
                                         }}
                                         onPress={() => this.followUser(item, index)}
                                     >
-                                        <Text style={{ color: "#fff" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                        <Text style={{ color: "#fff", fontFamily: "poppins_regular" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                     </TouchableOpacity>
                                     <RBSheet
                                         ref={ref => {
@@ -636,7 +641,7 @@ export default class HomeScreen extends React.Component {
                                 size={25}
                                 style={{ marginRight: widthToDp("7%") }}
                             />
-                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Internally</Text>
+                            <Text style={{ marginBottom: heightToDp("3%"), fontFamily: "poppins_regular" }}>Share Internally</Text>
                         </View>
                     </TouchableOpacity>
 
@@ -647,7 +652,7 @@ export default class HomeScreen extends React.Component {
                                 size={25}
                                 style={{ marginRight: widthToDp("7%") }}
                             />
-                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Externally</Text>
+                            <Text style={{ marginBottom: heightToDp("3%"), fontFamily: "poppins_regular" }}>Share Externally</Text>
                         </View>
                     </TouchableOpacity>
                 </RBSheet2>

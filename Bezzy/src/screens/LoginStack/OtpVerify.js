@@ -148,19 +148,19 @@ export default class OtpVerify extends React.Component {
                 >
                     <Text
                         style={{
-                            fontWeight: 'bold',
                             fontSize: widthToDp("4%"),
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            fontFamily: "proxima_nova_black",
                         }}
                     >
                         Verification
                     </Text>
                     <Text
                         style={{
-                            fontWeight: 'bold',
                             marginTop: heightToDp("1%"),
                             fontSize: widthToDp("4%"),
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            fontFamily: "proxima_nova_black",
                         }}
                     >
                         Enter the 4 digit OTP
@@ -175,7 +175,8 @@ export default class OtpVerify extends React.Component {
                             ref={e => (this.otpInput = e)} 
                             textInputStyle={{
                                 backgroundColor: "#ececec",
-                                fontSize: widthToDp("3.8%")
+                                fontSize: widthToDp("3.8%"),
+                                fontFamily: "poppins_regular",
                             }}
                             offTintColor="#ececec"
                             tintColor="#ececec"
@@ -225,7 +226,7 @@ export default class OtpVerify extends React.Component {
                                 fontSize: widthToDp("3.8%"),
                                 textAlign: "center",
                                 color: "#808080",
-                                fontWeight: "bold",
+                                fontFamily: "poppins_regular",
                             }}
                         >
                             Resend OTP?

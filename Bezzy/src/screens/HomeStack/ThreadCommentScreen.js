@@ -76,7 +76,7 @@ export default class ThreadCommentScreen extends Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <Header isBackButton threadCommentReload isHomeStackInnerPage headerText={"Replies"} navigation={this.props.navigation} post={{post_id: this.props.route.params.post_id}} />
+                <Header isBackButton threadCommentReload marginTop={"0.5%"} isHomeStackInnerPage headerText={"Replies"} navigation={this.props.navigation} post={{post_id: this.props.route.params.post_id}} />
                 <View style={{ flex: 1 }}>
                     <View style={{paddingVertical: heightToDp('2%')}}>
                         <View
@@ -103,15 +103,16 @@ export default class ThreadCommentScreen extends Component {
                                     style={{
                                         width: widthToDp("100%"),
                                         color: '#1b1b1b',
-                                        fontWeight: 'bold',
-                                        fontSize: widthToDp("3.5%")
+                                        fontSize: widthToDp("3.5%"),
+                                        fontFamily: "proxima_nova_black",
                                     }}
                                 >{this.props.route.params.username}</Text>
                                 <Text
                                     style={{
                                         color: '#1b1b1b',
                                         fontSize: widthToDp("3%"),
-                                        marginTop: heightToDp("1%")
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "poppins_regular",
                                     }}
                                 >{this.props.route.params.commentText}</Text>
                             </View>
@@ -129,7 +130,8 @@ export default class ThreadCommentScreen extends Component {
                             <Text
                                 style={{
                                     color: '#808080',
-                                    fontSize: widthToDp("3%")
+                                    fontSize: widthToDp("3%"),
+                                    fontFamily: "poppins_regular",
                                 }}
                             >{this.props.route.params.postcomment_time}</Text>
                             <View
@@ -146,7 +148,7 @@ export default class ThreadCommentScreen extends Component {
                         </View>
                     </View>
                     <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-                        <View style={{height: heightToDp("77%")}}>
+                        <View style={{height: heightToDp("76%")}}>
                             {
                                 this.state.comments.length > 0 &&
                                 <FlatList
@@ -180,15 +182,16 @@ export default class ThreadCommentScreen extends Component {
                                                         style={{
                                                             width: widthToDp("90%"),
                                                             color: '#1b1b1b',
-                                                            fontWeight: 'bold',
-                                                            fontSize: widthToDp("3.5%")
+                                                            fontSize: widthToDp("3.5%"),
+                                                            fontFamily: "proxima_nova_black",
                                                         }}
                                                     >{item.username}</Text>
                                                     <Text
                                                         style={{
                                                             color: '#1b1b1b',
                                                             fontSize: widthToDp("3%"),
-                                                            marginTop: heightToDp("1%")
+                                                            marginTop: heightToDp("1%"),
+                                                            fontFamily: "poppins_regular",
                                                         }}
                                                     >{item.commentText}</Text>
                                                 </View>
@@ -206,7 +209,8 @@ export default class ThreadCommentScreen extends Component {
                                                 <Text
                                                     style={{
                                                         color: '#808080',
-                                                        fontSize: widthToDp("3%")
+                                                        fontSize: widthToDp("3%"),
+                                                        fontFamily: "poppins_regular",
                                                     }}
                                                 >{item.postcomment_time}</Text>
                                                 <View
@@ -253,7 +257,8 @@ export default class ThreadCommentScreen extends Component {
                                         paddingHorizontal: widthToDp("1%"),
                                         paddingVertical: heightToDp("0%"),
                                         fontSize: widthToDp("4.3%"),
-                                        color: '#777'
+                                        color: '#777',
+                                        fontFamily: "poppins_regular",
                                     }}
                                     multiline
                                     ref={ref => this.refChatField = ref}

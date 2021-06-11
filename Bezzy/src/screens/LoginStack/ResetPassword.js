@@ -142,6 +142,7 @@ export default class ResetPassword extends React.Component {
                                     color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Enter New Password</Label>
                             <Input
@@ -150,6 +151,8 @@ export default class ResetPassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     marginLeft: widthToDp("-1%"),
+                                    fontFamily: "poppins_regular",
+                                    marginTop: widthToDp("1%")
                                 }}
                                 secureTextEntry={!this.state.showPassword}
                                 onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -174,6 +177,7 @@ export default class ResetPassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "poppins_regular",
                             }}
                         >Password should have at least 8 characters</Text>
                     }
@@ -200,6 +204,7 @@ export default class ResetPassword extends React.Component {
                                     color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Confirm New Password</Label>
                             <Input
@@ -208,7 +213,9 @@ export default class ResetPassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%")
+                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "poppins_regular",
+                                    marginTop: widthToDp("1%")
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
@@ -230,6 +237,7 @@ export default class ResetPassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "poppins_regular",
                             }}
                         >Passwords should match</Text>
                     }

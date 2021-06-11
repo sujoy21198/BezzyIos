@@ -342,7 +342,9 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            width: widthToDp("95%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                         defaultValue={this.state.name}
                         placeholder="Name"
@@ -363,7 +365,9 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            width: widthToDp("95%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                         defaultValue={this.state.email}
                         placeholder="Email Address"
@@ -377,7 +381,9 @@ export default class EditProfileScreen extends React.Component {
                     <Text
                         style={{
                             color: "#ff0000",
-                            marginHorizontal: widthToDp("3%")
+                            marginHorizontal: widthToDp("3%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >Entered email address is not valid</Text>
                 }
@@ -397,7 +403,9 @@ export default class EditProfileScreen extends React.Component {
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
                             paddingBottom: heightToDp("2%"),
-                            width: widthToDp("87%")
+                            width: widthToDp("87%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >
                         {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
@@ -426,7 +434,9 @@ export default class EditProfileScreen extends React.Component {
                             color: "#808080",
                             fontSize: widthToDp("3.4%"),
                             paddingBottom: heightToDp("1%"),
-                            width: widthToDp("87%")
+                            width: widthToDp("87%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >
                         {
@@ -450,7 +460,9 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            width: widthToDp("95%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                         defaultValue={this.state.bio}
                         placeholder="Bio"
@@ -517,6 +529,8 @@ export default class EditProfileScreen extends React.Component {
                     <Text
                         style={{
                             fontSize: widthToDp("4.6%"),
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >Male</Text>
                 </TouchableOpacity>
@@ -530,7 +544,8 @@ export default class EditProfileScreen extends React.Component {
                     <Text
                         style={{
                             fontSize: widthToDp("4.6%"),
-                            
+                            fontFamily: "poppins_regular",
+                            marginTop: widthToDp("1%")
                         }}
                     >Female</Text>
                 </TouchableOpacity>

@@ -59,10 +59,28 @@ export default class ChatScreen extends React.Component {
                             </View>
                             <TextSection>
                                 <UserInfoText>
-                                    <UserName>{item.username}</UserName>
-                                    <PostTime>{item.chat_date_time}</PostTime>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontFamily: "proxima_nova_black"
+                                        }}
+                                    >{item.username}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontFamily: "proxima_nova_black"
+                                        }}
+                                    >{item.chat_date_time}</Text>
                                 </UserInfoText>
-                                <MessageText>{item.chat_message}</MessageText>
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color: "#333333",
+                                        fontFamily: "poppins_regular"
+                                    }}
+                                >
+                                    {item.chat_message}
+                                </Text>
                             </TextSection>
                         </UserInfo>
                     </Card>
@@ -97,7 +115,6 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     sender: {
-        fontWeight: 'bold',
         paddingRight: 10
     },
     footer: {
@@ -113,7 +130,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: 'lightseagreen',
         fontSize: 16,
-        fontWeight: 'bold',
         padding: 20
     }
 });

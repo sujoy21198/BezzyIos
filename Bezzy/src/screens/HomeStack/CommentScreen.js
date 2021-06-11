@@ -102,7 +102,7 @@ export default class CommentScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
+            <Header isBackButton isHomeStackInnerPage marginTop={"0.5%"} headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"
             >
@@ -144,15 +144,18 @@ export default class CommentScreen extends React.Component {
                                             style={{
                                                 width: widthToDp("100%"),
                                                 color: '#1b1b1b',
-                                                fontWeight: 'bold',
-                                                fontSize: widthToDp("3.5%")
+                                                fontSize: widthToDp("3.5%"),
+                                                fontFamily: "proxima_nova_black",
+                                                marginTop: widthToDp("1%")
                                             }}
                                         >{item.username}</Text>
                                         <Text
                                             style={{
                                                 color: '#1b1b1b',
                                                 fontSize: widthToDp("3%"),
-                                                marginTop: heightToDp("1%")
+                                                marginTop: heightToDp("1%"),
+                                                fontFamily: "poppins_regular",
+                                                marginTop: widthToDp("1%")
                                             }}
                                         >{item.commentText}</Text>
                                     </View>                            
@@ -170,7 +173,9 @@ export default class CommentScreen extends React.Component {
                                     <Text
                                         style={{
                                             color: '#808080',
-                                            fontSize: widthToDp("3%")
+                                            fontSize: widthToDp("3%"),
+                                            fontFamily: "poppins_regular",
+                                            marginTop: widthToDp("1%")
                                         }}
                                     >{item.postcomment_time}</Text>
                                     <View
@@ -204,7 +209,9 @@ export default class CommentScreen extends React.Component {
                                             style={{
                                                 color: "#777",
                                                 fontSize: widthToDp("3.5%"),
-                                                paddingLeft: widthToDp("2%")
+                                                paddingLeft: widthToDp("2%"),
+                                                fontFamily: "poppins_regular",
+                                                marginTop: widthToDp("1%")
                                             }}
                                         >{item.total_like_on_comment}</Text>
                                         <Icon
@@ -218,7 +225,9 @@ export default class CommentScreen extends React.Component {
                                             style={{
                                                 color: "#777",
                                                 fontSize: widthToDp("3.5%"),
-                                                paddingLeft: widthToDp("2%")
+                                                paddingLeft: widthToDp("2%"),
+                                                fontFamily: "poppins_regular",
+                                                marginTop: widthToDp("1%")
                                             }}
                                         >{item.total_comment_on_comment}</Text>
                                     </View> 
@@ -256,6 +265,7 @@ export default class CommentScreen extends React.Component {
                                 paddingVertical: heightToDp("0%"),
                                 fontSize: widthToDp("4.3%"),
                                 color: '#777',
+                                fontFamily: "poppins_regular",
                             }}
                             multiline
                             ref={ref => this.refChatField = ref}

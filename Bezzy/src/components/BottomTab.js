@@ -60,7 +60,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#007dfe",
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Home</Text>
                         }
@@ -90,7 +91,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#007dfe",
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Chat</Text>
                         }
@@ -174,7 +176,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#007dfe",
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Search</Text>
                         }
@@ -211,7 +214,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#007dfe",
+                                    fontFamily: "poppins_regular",
                                 }}
                             >Profile</Text>
                         }

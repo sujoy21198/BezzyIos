@@ -281,7 +281,7 @@ export default class PostScreen extends React.Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <Header isHomeStackInnerPage isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
+                <Header isHomeStackInnerPage marginTop={"0.5%"} isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
 
                 <View
                     style={{
@@ -299,6 +299,7 @@ export default class PostScreen extends React.Component {
                             color: "#69abff",
                             marginBottom: heightToDp("1%"),
                             height: heightToDp("10%"),
+                            fontFamily: "poppins_regular"
                         }}
                         textAlignVertical="top"
                         placeholder="Write Something here..."
@@ -326,7 +327,8 @@ export default class PostScreen extends React.Component {
                             >
                                 <Text
                                     style={{
-                                        color: '#fff'
+                                        color: '#fff',
+                                        fontFamily: "poppins_regular"
                                     }}
                                 >
                                     {this.state.focusedTab === "photo" ? this.state.buttonText = "UPLOAD PHOTO" : this.state.buttonText = "UPLOAD VIDEO"}
@@ -345,7 +347,8 @@ export default class PostScreen extends React.Component {
                             >
                                 <Text
                                     style={{
-                                        color: '#fff'
+                                        color: '#fff',
+                                        fontFamily: "poppins_regular"
                                     }}
                                 >
                                     POST
@@ -361,7 +364,8 @@ export default class PostScreen extends React.Component {
                         style={{
                             marginVertical: heightToDp("0.5%"),
                             marginHorizontal: widthToDp("1%"),
-                            color: "#ff0000"
+                            color: "#ff0000",
+                            fontFamily: "poppins_regular"
                         }}
                     >
                         Caption field can't be empty
@@ -448,6 +452,7 @@ export default class PostScreen extends React.Component {
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
+                                        fontFamily: "poppins_regular",
                                         color: this.state.focusedTab === "photo" ? "#007dfe" : "#808080"
                                     }}
                                 >PHOTO</Text>
@@ -476,6 +481,7 @@ export default class PostScreen extends React.Component {
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
+                                        fontFamily: "poppins_regular",
                                         color: this.state.focusedTab === "video" ? "#007dfe" : "#808080"
                                     }}
                                 >Video</Text>
