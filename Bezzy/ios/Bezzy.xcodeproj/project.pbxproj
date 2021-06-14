@@ -12,12 +12,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		174860F4264BB62800DDF5DF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 174860F3264BB62800DDF5DF /* GoogleService-Info.plist */; };
-		174862F5264BFF7800DDF5DF /* Oswald-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E1264BFF4900DDF5DF /* Oswald-Bold.ttf */; };
-		174862F6264BFF7800DDF5DF /* Oswald-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E2264BFF4900DDF5DF /* Oswald-ExtraLight.ttf */; };
-		174862F7264BFF7800DDF5DF /* Oswald-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E6264BFF4A00DDF5DF /* Oswald-Light.ttf */; };
-		174862F8264BFF7800DDF5DF /* Oswald-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E4264BFF4900DDF5DF /* Oswald-Medium.ttf */; };
-		174862F9264BFF7800DDF5DF /* Oswald-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E5264BFF4A00DDF5DF /* Oswald-SemiBold.ttf */; };
-		174862FA264BFF7800DDF5DF /* Oswald-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 174862E3264BFF4900DDF5DF /* Oswald-VariableFont_wght.ttf */; };
+		17599FDD2677311500AA880D /* proxima_nova_black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17599FDB2677311400AA880D /* proxima_nova_black.otf */; };
+		17599FDE2677311500AA880D /* poppins_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17599FDC2677311400AA880D /* poppins_regular.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		93B1C2314F21EFCCA56A168D /* libPods-Bezzy-BezzyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B8FBEEF96F5B0E5C5CC6FA7 /* libPods-Bezzy-BezzyTests.a */; };
 		D8EEF8796591756F680B15B7 /* libPods-Bezzy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6512EACFE156AF53FCC5C0D5 /* libPods-Bezzy.a */; };
@@ -44,12 +40,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Bezzy/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Bezzy/main.m; sourceTree = "<group>"; };
 		174860F3264BB62800DDF5DF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		174862E1264BFF4900DDF5DF /* Oswald-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-Bold.ttf"; sourceTree = "<group>"; };
-		174862E2264BFF4900DDF5DF /* Oswald-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-ExtraLight.ttf"; sourceTree = "<group>"; };
-		174862E3264BFF4900DDF5DF /* Oswald-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		174862E4264BFF4900DDF5DF /* Oswald-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-Medium.ttf"; sourceTree = "<group>"; };
-		174862E5264BFF4A00DDF5DF /* Oswald-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-SemiBold.ttf"; sourceTree = "<group>"; };
-		174862E6264BFF4A00DDF5DF /* Oswald-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Oswald-Light.ttf"; sourceTree = "<group>"; };
+		17599FDB2677311400AA880D /* proxima_nova_black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proxima_nova_black.otf; sourceTree = "<group>"; };
+		17599FDC2677311400AA880D /* poppins_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = poppins_regular.ttf; sourceTree = "<group>"; };
 		1759DA0C2656389600A5D4E7 /* Bezzy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Bezzy.entitlements; path = Bezzy/Bezzy.entitlements; sourceTree = "<group>"; };
 		2282AFFA3740319C83603B49 /* Pods-Bezzy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bezzy.debug.xcconfig"; path = "Target Support Files/Pods-Bezzy/Pods-Bezzy.debug.xcconfig"; sourceTree = "<group>"; };
 		6512EACFE156AF53FCC5C0D5 /* libPods-Bezzy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Bezzy.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,12 +107,8 @@
 		174862E0264BFE9200DDF5DF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				174862E1264BFF4900DDF5DF /* Oswald-Bold.ttf */,
-				174862E2264BFF4900DDF5DF /* Oswald-ExtraLight.ttf */,
-				174862E6264BFF4A00DDF5DF /* Oswald-Light.ttf */,
-				174862E4264BFF4900DDF5DF /* Oswald-Medium.ttf */,
-				174862E5264BFF4A00DDF5DF /* Oswald-SemiBold.ttf */,
-				174862E3264BFF4900DDF5DF /* Oswald-VariableFont_wght.ttf */,
+				17599FDC2677311400AA880D /* poppins_regular.ttf */,
+				17599FDB2677311400AA880D /* proxima_nova_black.otf */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -274,12 +262,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				174862F5264BFF7800DDF5DF /* Oswald-Bold.ttf in Resources */,
-				174862F6264BFF7800DDF5DF /* Oswald-ExtraLight.ttf in Resources */,
-				174862F7264BFF7800DDF5DF /* Oswald-Light.ttf in Resources */,
-				174862F8264BFF7800DDF5DF /* Oswald-Medium.ttf in Resources */,
-				174862F9264BFF7800DDF5DF /* Oswald-SemiBold.ttf in Resources */,
-				174862FA264BFF7800DDF5DF /* Oswald-VariableFont_wght.ttf in Resources */,
+				17599FDE2677311500AA880D /* poppins_regular.ttf in Resources */,
+				17599FDD2677311500AA880D /* proxima_nova_black.otf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				174860F4264BB62800DDF5DF /* GoogleService-Info.plist in Resources */,

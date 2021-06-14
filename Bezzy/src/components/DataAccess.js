@@ -65,6 +65,8 @@ const DataAccess = {
     GetVideoDetails : 'postimagevideodetails',
     //delete video
     deleteVideo : 'deletepostimagevideo',
+    blockList: 'userblocklist',
+    unblockUser: 'unblockuser',
     //some api
 }
 

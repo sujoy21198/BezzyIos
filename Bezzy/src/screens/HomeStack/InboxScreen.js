@@ -84,6 +84,7 @@ export default class InboxScreen extends Component {
   }
 
   sendMessage = async () => {
+    if(this.state.myMessage.trim() === "") return;
     this.setState
     await axios.post(DataAccess.BaseUrl + DataAccess.addChatData, {
       "from_userID": this.state.userId,
