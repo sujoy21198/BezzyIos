@@ -9,6 +9,7 @@ import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { Toast } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class ImagePreviewScreen extends React.Component {
     
@@ -346,7 +347,8 @@ export default class ImagePreviewScreen extends React.Component {
                     size="large"
                     color="#69abff"
                 />
-            </RBSheet>    
+            </RBSheet>   
+            <PushNotificationController navigation={this.props.navigation}/> 
         </ScrollView>
     )
 }

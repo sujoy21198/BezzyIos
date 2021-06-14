@@ -13,6 +13,7 @@ import EmojiBoard from 'react-native-emoji-board'
 import ImagePicker from 'react-native-image-crop-picker';
 import ImgToBase64 from 'react-native-image-base64';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class InboxScreen extends Component {
   constructor(props) {
@@ -424,7 +425,7 @@ export default class InboxScreen extends Component {
             </View>
         </View>
         </KeyboardAwareScrollView>       
-
+        <PushNotificationController navigation={this.props.navigation}/>
       </SafeAreaView>
     )
   }

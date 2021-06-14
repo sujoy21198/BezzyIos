@@ -11,6 +11,7 @@ import { Form, Input, Item, Label, Toast } from 'native-base';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import PushNotificationController from "../../components/PushNotificationController";
 
 export default class ChangePassword extends React.Component {
     state = {
@@ -333,6 +334,7 @@ export default class ChangePassword extends React.Component {
                     />
                 </RBSheet> 
             </KeyboardAwareScrollView>
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }

@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-video'
 import RBSheet from "react-native-raw-bottom-sheet"
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -504,6 +505,7 @@ export default class PostScreen extends React.Component {
                         color="#69abff"
                     />
                 </RBSheet>
+                <PushNotificationController navigation={this.props.navigation}/>
             </SafeAreaView>
         )
     }

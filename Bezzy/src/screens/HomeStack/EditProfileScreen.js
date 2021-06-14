@@ -15,6 +15,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ImgToBase64 from 'react-native-image-base64';
 import ButtonComponent from '../../components/ButtonComponent';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -170,15 +171,30 @@ export default class EditProfileScreen extends React.Component {
         });
         if(response.data.resp === "success") {           
 
-            this.convertImage()
+            if(this.state.image.startsWith("http://")) {
+                Toast.show({
+                    text: "Profile has been updated successfully",
+                    type: "success",
+                    duration: 3000
+                });
+                this.RBSheet.close()
+                this.props.navigation.reset({
+                    index: 3,
+                    routes: [
+                        { name: "ProfileScreen" , params:{profile_id : ''}}
+                    ]
+                })                
+            } else {
+                this.convertImage()
+            }      
         } else {
             Toast.show({
                 text: response.data.message,
                 type: "danger",
                 duration: 3000
             });
+            this.RBSheet.close()
         } 
-        this.RBSheet.close()
     }
 
     uploadPicture = async () => {
@@ -266,6 +282,7 @@ export default class EditProfileScreen extends React.Component {
                 type: "success",
                 duration: 3000
             });
+            this.RBSheet.close()
             this.props.navigation.reset({
                 index: 3,
                 routes: [
@@ -273,6 +290,7 @@ export default class EditProfileScreen extends React.Component {
                 ]
             })
         } else {
+            this.RBSheet.close()
             Toast.show({
                 text: response.data.reg_msg,
                 type: "danger",
@@ -536,7 +554,7 @@ export default class EditProfileScreen extends React.Component {
                     >Female</Text>
                 </TouchableOpacity>
             </RBSheet1>
-            
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }

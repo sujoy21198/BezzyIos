@@ -1,42 +1,88 @@
 {
   "project_info": {
-    "project_number": "331428830824",
-    "project_id": "bezzy-5b3e4",
-    "storage_bucket": "bezzy-5b3e4.appspot.com"
+    "project_number": "694046059233",
+    "firebase_url": "https://bezzy-applicatio-1603700126875.firebaseio.com",
+    "project_id": "bezzy-applicatio-1603700126875",
+    "storage_bucket": "bezzy-applicatio-1603700126875.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331428830824:android:06e0c9fcf1a79f86afe5dd",
+        "mobilesdk_app_id": "1:694046059233:android:f91d72f8ef5d71be2d65a0",
         "android_client_info": {
           "package_name": "com.bezzy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "331428830824-kavuvqeevqq1mfbngi4uhvh5na704da2.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.bezzy",
-            "certificate_hash": "a3ac854fcac5ca8ea7d9363366d291b06de7ef23"
-          }
-        },
-        {
-          "client_id": "331428830824-dcrequrcra8o8de2mhhe9vtdfeu7hobo.apps.googleusercontent.com",
+          "client_id": "694046059233-3t9nlkp717q43vm1enslf2ibn84revgi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDHfmIskSn9ZodrbHxze1LYRTkYudSva_o"
+          "current_key": "AIzaSyCTFNYbdYcGIMBiV8u5wN8rxjhEH4jk6Ms"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "331428830824-dcrequrcra8o8de2mhhe9vtdfeu7hobo.apps.googleusercontent.com",
+              "client_id": "694046059233-3t9nlkp717q43vm1enslf2ibn84revgi.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "694046059233-5s3midj17ug3vaguscrr7n7f4qducm4t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.Bezzy",
+                "app_store_id": "12345678"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694046059233:android:000300b137c3e1732d65a0",
+        "android_client_info": {
+          "package_name": "com.bezzy_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694046059233-o1qrrdcruul2338i5j58ad86qa7esiol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bezzy_application",
+            "certificate_hash": "a34863bcf1954c53cff96e8d3b3fa40e2249895f"
+          }
+        },
+        {
+          "client_id": "694046059233-3t9nlkp717q43vm1enslf2ibn84revgi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTFNYbdYcGIMBiV8u5wN8rxjhEH4jk6Ms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694046059233-3t9nlkp717q43vm1enslf2ibn84revgi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "694046059233-5s3midj17ug3vaguscrr7n7f4qducm4t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.Bezzy",
+                "app_store_id": "12345678"
+              }
             }
           ]
         }

@@ -12,6 +12,7 @@ import DataAccess from '../../components/DataAccess'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Toast } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class SearchScreen extends React.Component {
     constructor(props) {
@@ -246,6 +247,7 @@ export default class SearchScreen extends React.Component {
                         color="#69abff"
                     />
                 </RBSheet2>
+                <PushNotificationController navigation={this.props.navigation}/>
                 <BottomTab isSearchFocused navigation={this.props.navigation} />
             </SafeAreaView>
         )

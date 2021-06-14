@@ -19,6 +19,7 @@ import { FlatGrid } from 'react-native-super-grid'
 import { element } from 'prop-types';
 import Share from 'react-native-share'
 import Video from 'react-native-video'
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -649,6 +650,7 @@ export default class HomeScreen extends React.Component {
                         </View>
                     </TouchableOpacity>
                 </RBSheet2>
+                <PushNotificationController navigation={this.props.navigation}/>
                 <BottomTab isHomeFocused navigation={this.props.navigation} />
             </SafeAreaView>
         )

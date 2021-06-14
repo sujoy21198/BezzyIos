@@ -7,6 +7,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
+import PushNotificationController from '../../components/PushNotificationController';
 
 export default class FollowerScreen extends React.Component {
     state = {
@@ -227,6 +228,7 @@ export default class FollowerScreen extends React.Component {
                     color="#69abff"
                 />
             </RBSheet> 
+            <PushNotificationController navigation={this.props.navigation}/>
         </SafeAreaView>
     )
 }
