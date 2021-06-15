@@ -20,28 +20,28 @@ export default class Header extends React.Component {
             Alert.alert(
                 "Log out",
                 "Are you sure to Log out?", [
-                    {
-                        text: "Cancel",
-                        onPress: () => undefined,
-                        style: "cancel"
-                    },
-                    {
-                        text: "Yes",
-                        onPress: async () => {         
-                            //async storage will be null                   
-                            await AsyncStorage.removeItem("userDetails");
-                            await AsyncStorage.removeItem("userId");
-                            await AsyncStorage.removeItem("token");
-                            await AsyncStorage.removeItem("otpStatus");
-                            this.props.navigation.reset({
-                                index: 0,
-                                routes: [
-                                    { name: "SignInScreen" }
-                                ]
-                            });
-                        }
+                {
+                    text: "Cancel",
+                    onPress: () => undefined,
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    onPress: async () => {
+                        //async storage will be null                   
+                        await AsyncStorage.removeItem("userDetails");
+                        await AsyncStorage.removeItem("userId");
+                        await AsyncStorage.removeItem("token");
+                        await AsyncStorage.removeItem("otpStatus");
+                        this.props.navigation.reset({
+                            index: 0,
+                            routes: [
+                                { name: "SignInScreen" }
+                            ]
+                        });
                     }
-                ]
+                }
+            ]
             )
         }
     }
@@ -147,7 +147,7 @@ export default class Header extends React.Component {
                                 onPress={() => this.props.navigation.navigate("NotificationScreen")}
                             >
                                 <Icon1
-                                    name={Platform.OS==='android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
+                                    name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
                                     color={"#777"}
                                     size={22}
                                 />
@@ -196,7 +196,7 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-                                                
+
                                             }}
                                         >Change Password</Text>
                                     </TouchableOpacity>
@@ -218,29 +218,31 @@ export default class Header extends React.Component {
                             alignItems: 'center'
                         }}
                         activeOpacity={0.7}
-                        disabled={this.props.block}
-                        onPress={                            
-                            () => 
-                                typeof this.props.commentCount === 'number' ? 
-                                this.props.navigation.navigate(
-                                    "ImagePreviewScreen",
-                                    {commentCount: this.props.commentCount}
-                                ) : 
-                                this.props.threadCommentReload ? 
-                                this.props.navigation.reset({
-                                    index: 0,
-                                    routes: [
-                                        { name: "CommentScreen", post: {post_id: this.props.post.post_id} }
-                                    ]
-                                }):
-                                this.props.loginStack ? 
-                                this.props.navigation.goBack() :
-                                this.props.navigation.reset({
-                                    index: this.props.backToProfile ? 3 : 0,
-                                    routes: [
-                                        { name: this.props.backToProfile ? "ProfileScreen" : "HomeScreen"  }
-                                    ]
-                                })
+                        //disabled={this.props.block}
+                        onPress={
+                            () =>
+                                this.props.block ?
+                                    this.props.navigation.goBack() :
+                                    typeof this.props.commentCount === 'number' ?
+                                        this.props.navigation.navigate(
+                                            "ImagePreviewScreen",
+                                            { commentCount: this.props.commentCount }
+                                        ) :
+                                        this.props.threadCommentReload ?
+                                            this.props.navigation.reset({
+                                                index: 0,
+                                                routes: [
+                                                    { name: "CommentScreen", post: { post_id: this.props.post.post_id } }
+                                                ]
+                                            }) :
+                                            this.props.loginStack ?
+                                                this.props.navigation.goBack() :
+                                                this.props.navigation.reset({
+                                                    index: this.props.backToProfile ? 3 : 0,
+                                                    routes: [
+                                                        { name: this.props.backToProfile ? "ProfileScreen" : "HomeScreen" }
+                                                    ]
+                                                })
                         }
                     >
                         {
@@ -266,7 +268,7 @@ export default class Header extends React.Component {
                                 marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
                             }}>
                                 {this.props.headerText}
-                            </Text>                                                
+                            </Text>
                             {
                                 this.props.notification &&
                                 <TouchableOpacity

@@ -50,17 +50,25 @@ export default class BottomTab extends React.Component {
                                     })
                         }
                     >
-                        <Image
-                            source={require("../../assets/homeLogo.png")}
-                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
-                            resizeMode="contain"
-                        />
+                        {
+                            this.props.isHomeFocused ? 
+                            <Image
+                                source={require("../../assets/homeBlue.png")}
+                                style={{ height: heightToDp("3.1%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            /> :
+                            <Image
+                                source={require("../../assets/home.png")}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            />
+                        } 
                         {
                             this.props.isHomeFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#69abff"
                                 }}
                             >Home</Text>
                         }
@@ -80,17 +88,25 @@ export default class BottomTab extends React.Component {
                         activeOpacity={0.7}
                         onPress={() => this.props.isChatFocused ? undefined : this.props.navigation.navigate("ChatScreen")}
                     >
-                        <Image
-                            source={require("../../assets/chatLogo.png")}
-                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
-                            resizeMode="contain"
-                        />
+                        {
+                            this.props.isChatFocused ? 
+                            <Image
+                                source={require("../../assets/chatBlue.png")}
+                                style={{ height: heightToDp("3.1%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            /> :
+                            <Image
+                                source={require("../../assets/chat.png")}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            />
+                        } 
                         {
                             this.props.isChatFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#69abff"
                                 }}
                             >Chat</Text>
                         }
@@ -164,17 +180,26 @@ export default class BottomTab extends React.Component {
                                     })
                         }
                     >
-                        <Image
-                            source={require("../../assets/searchLogo.png")}
-                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
-                            resizeMode="contain"
-                        />
+                        {
+                            this.props.isSearchFocused ? 
+                            <Image
+                                source={require("../../assets/searchBlue.png")}
+                                style={{ height: heightToDp("3.1%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            /> :
+                            <Image
+                                source={require("../../assets/search.png")}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            />
+                        } 
                         {
                             this.props.isSearchFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#69abff",
+                                    marginLeft: widthToDp("1%")
                                 }}
                             >Search</Text>
                         }
@@ -201,17 +226,25 @@ export default class BottomTab extends React.Component {
                                     })
                         }
                     >
-                        <Image
-                            source={require("../../assets/profileLogo.png")}
-                            style={{ height: heightToDp("4%"), width: widthToDp("8%") }}
-                            resizeMode="contain"
-                        />
+                        {
+                            this.props.isProfileFocused ? 
+                            <Image
+                                source={require("../../assets/profileBlue.png")}
+                                style={{ height: heightToDp("3.1%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            /> :
+                            <Image
+                                source={require("../../assets/profile.png")}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                resizeMode="contain"
+                            />
+                        } 
                         {
                             this.props.isProfileFocused &&
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#007dfe"
+                                    color: "#69abff"
                                 }}
                             >Profile</Text>
                         }
