@@ -5,6 +5,7 @@ platform :ios, '10.0'
 
 target 'Bezzy' do
   permissions_path = '../node_modules/react-native-permissions/ios'
+  $RNFirebaseAsStaticFramework = true
 
   pod 'Firebase/Analytics'
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
