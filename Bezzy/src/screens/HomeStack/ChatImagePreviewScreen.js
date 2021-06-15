@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, St
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import PushNotificationController from "../../components/PushNotificationController";
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default class ChatImagePreviewScreen extends Component {
 
@@ -27,6 +28,28 @@ export default class ChatImagePreviewScreen extends Component {
                         source={{ uri: this.state.imageUrl }}
                     />
                 </LinearGradient>
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        top: heightToDp("2%"),
+                        left: widthToDp("3.5%"),
+                        backgroundColor: "#1b1b1b",
+                        height: 50, 
+                        width: 50,
+                        borderRadius: 50 / 2,
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                    activeOpacity={0.7}
+                    onPress={() => this.props.navigation.goBack()}
+                >
+                    <Icon
+                        name="chevron-left"
+                        color="#fff"
+                        size={20}                    
+                    />  
+                </TouchableOpacity> 
                 <PushNotificationController navigation={this.props.navigation}/>
             </View>
         );

@@ -620,35 +620,44 @@ export default class HomeScreen extends React.Component {
                         this.RBSheet2 = ref;
                     }}
                     height={100}
-                    //openDuration={250}
-                    customStyles={{
-                        container: {
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }
-                    }}
                 >
-                    <TouchableOpacity onPress={() => this.shareImageInternally()}>
-                        <View style={{ flexDirection: 'row' }}>
+                    <View
+                        style={{
+                            paddingHorizontal: widthToDp('2%'),
+                            paddingVertical: heightToDp("2%")
+                        }}
+                    >
+                        <TouchableOpacity 
+                        style={{ 
+                            flexDirection: 'row',
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingHorizontal: widthToDp("2%"),
+                            marginBottom: widthToDp("4%") 
+                        }}
+                        onPress={() => this.shareImageInternally()}>
                             <ShareIcon
                                 name={'share-apple'}
                                 size={25}
-                                style={{ marginRight: widthToDp("7%") }}
                             />
-                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Internally</Text>
-                        </View>
-                    </TouchableOpacity>
+                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%') }}>Share Internally</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.shareImageExternally()}>
-                        <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity 
+                        style={{ 
+                            flexDirection: 'row',
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            paddingHorizontal: widthToDp("2%"),
+                        }}
+                        onPress={() => this.shareImageExternally()}>
                             <ShareIcon
                                 name={'share-google'}
                                 size={25}
-                                style={{ marginRight: widthToDp("7%") }}
                             />
-                            <Text style={{ marginBottom: heightToDp("3%") }}>Share Externally</Text>
-                        </View>
-                    </TouchableOpacity>
+                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%') }}>Share Externally</Text>
+                        </TouchableOpacity>
+                    </View>                    
                 </RBSheet2>
                 <PushNotificationController navigation={this.props.navigation}/>
                 <BottomTab isHomeFocused navigation={this.props.navigation} />

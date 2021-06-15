@@ -122,7 +122,7 @@ export default class ChangePassword extends React.Component {
             }}
         >       
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isHomeStackInnerPage block={true} navigation={this.props.navigation} headerText="Change Password"/>
+            <Header isHomeStackInnerPage isBackButton block={true} navigation={this.props.navigation} headerText="Change Password"/>
             <View style={{height: heightToDp("2%")}}/>
             <KeyboardAwareScrollView
                 style={{

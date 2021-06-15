@@ -273,7 +273,7 @@ export default class InboxScreen extends Component {
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
                           <Image
                             source={{ uri: item.chat_message }}
-                            resizeMode="stretch"
+                            resizeMode="contain"
                             style={{ 
                               height: heightToDp("20%"), 
                               width: widthToDp("50%"), 
@@ -338,7 +338,7 @@ export default class InboxScreen extends Component {
                               borderBottomLeftRadius: 20,
                               borderBottomRightRadius: 20,
                             }}
-                            resizeMode="stretch"
+                            resizeMode="contain"
                           />
                         </TouchableOpacity>
 
