@@ -58,7 +58,8 @@ export default class HomeScreen extends React.Component {
                 // console.warn(response.data.total_feed_response)
                 if (response.data.status === "success") {
                     userList = [];
-                    followingList = response.data.total_feed_response.friend_list;                    
+                    followingList = response.data.total_feed_response.friend_list;   
+                    console.log(response.data.total_feed_response.friend_list);                 
                 } else if(response.data.status === "error") {
                     await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
                         "log_userID": userId
@@ -163,20 +164,52 @@ export default class HomeScreen extends React.Component {
 
                         <View>
                             {
-                                section.have_post === "Yes" &&
+                                (section.today_post === "" && section.unread_post_number === "") ?
                                 <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
                                     <Image
                                         source={require("../../../assets/ago.png")}
                                         resizeMode="contain"
                                         style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
                                     />
-                                </View>
+                                </View> :
+                                <TouchableOpacity
+                                    activeOpacity={0.7}
+                                    style={{ marginLeft: widthToDp("58%") }}
+                                    onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                                >
+                                    <Icon2
+                                        name={Platform.OS==='android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
+                                        color={"#777"}
+                                        size={22}
+                                    />
+                                    <View
+                                        style={{
+                                            position: "absolute",
+                                            top: heightToDp("-1%"),
+                                            right: 0,
+                                            backgroundColor: "#ff0000",
+                                            borderRadius: 7,
+                                            paddingHorizontal: 2,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "#fff",
+                                                fontSize: widthToDp("3%"),
+                                                fontFamily: "poppin_regular"
+                                            }}
+                                        >{section.unread_post_number}</Text>
+                                    </View>
+                                </TouchableOpacity>
                             }
                             <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days !== "" ? -0.5 : section.have_post === "No" ? 3.5 : 0}%`) }}>
                                 <Text>{section.friend_name}</Text>
                             </View>
                             {
-                                section.past_post_days !== "" &&
+                                !(section.today_post === "" && section.unread_post_number === "") ? 
+                                <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
+                                    <Text style={{ color: '#ff0000' }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
+                                </View> :
                                 <View style={{ marginLeft: widthToDp("6%") }}>
                                     <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                 </View>
@@ -184,7 +217,7 @@ export default class HomeScreen extends React.Component {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.past_post_days !== "" ? 1 : section.have_post === "No" ? 3.2 : 2.5}%`) }}>
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${(section.today_post === "" && section.unread_post_number === "") ? 1 : 1.3}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
                                     size={23}
@@ -267,21 +300,26 @@ export default class HomeScreen extends React.Component {
                                                                 padding: widthToDp("2%")
                                                             }}
                                                             renderItem={({ item, index }) => (
-                                                                <Video
-                                                                    source={{ uri: item.post_url }}
-                                                                    ref={(ref) => {
-                                                                        this.player = ref
-                                                                    }}
-                                                                    onBuffer={this.onBuffer}
-                                                                    onError={this.videoError}
-                                                                    controls={true}
-                                                                    style={{
-                                                                        height: heightToDp("30%"),
-                                                                        width: widthToDp("80%"),
-                                                                        alignSelf: 'center',
-                                                                    }}
-                                                                    resizeMode="contain"
-                                                                />
+                                                                <TouchableOpacity
+                                                                    
+                                                                >
+                                                                    <Video
+                                                                        source={{ uri: item.post_url }}
+                                                                        ref={(ref) => {
+                                                                            this.player = ref
+                                                                        }}
+                                                                        onBuffer={this.onBuffer}
+                                                                        onError={this.videoError}
+                                                                        controls={true}
+                                                                        volume={0.0}
+                                                                        style={{
+                                                                            height: heightToDp("30%"),
+                                                                            width: widthToDp("80%"),
+                                                                            alignSelf: 'center',
+                                                                        }}
+                                                                        resizeMode="contain"
+                                                                    />
+                                                                </TouchableOpacity>
                                                             )}
                                                         />
                                                     }
