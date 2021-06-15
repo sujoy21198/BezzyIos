@@ -10,6 +10,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { Toast } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PushNotificationController from '../../components/PushNotificationController';
+import Video from 'react-native-video';
 
 export default class ImagePreviewScreen extends React.Component {
     
@@ -24,7 +25,8 @@ export default class ImagePreviewScreen extends React.Component {
             captionEditable: false,
             isUpdatingCaption: false,
             postUrl: [],
-            otherProfile:false
+            otherProfile:false,
+            postType: ''
         }
         this.state.otherProfile = this.props.route.params.otherProfile
         //alert(this.state.otherProfile)
@@ -51,7 +53,8 @@ export default class ImagePreviewScreen extends React.Component {
                 postUrl: response.data.post_details.post_img_video_live,
                 numberOfComments: response.data.post_details.number_of_comment, 
                 numberOfLikes: response.data.post_details.number_of_like, 
-                postCaption: response.data.post_details.post_content
+                postCaption: response.data.post_details.post_content,
+                postType: response.data.post_details.post_type,
             })
         } else {
             this.setState({
@@ -170,10 +173,27 @@ export default class ImagePreviewScreen extends React.Component {
                         showsHorizontalScrollIndicator={false}
                         ItemSeparatorComponent={() => <View style={{width: widthToDp("5%")}}/>}
                         renderItem={({item, index}) => (
+                            this.state.postType === "image" ?
                             <Image
                                 resizeMode="contain"
                                 style={{ height: heightToDp("80%"), width: widthToDp("100%") }}
                                 source={{ uri: item.post_url}}
+                            /> :
+                            <Video
+                                source={{ uri: item.post_url }}
+                                ref={(ref) => {
+                                    this.player = ref
+                                }}
+                                // onBuffer={this.onBuffer}
+                                // onError={this.videoError}
+                                controls={true}
+                                // paused
+                                style={{
+                                    height: heightToDp("80%"),
+                                    width: widthToDp("100%"),
+                                    alignSelf: 'center',
+                                }}
+                                resizeMode="contain"
                             />
                         )}
                     />

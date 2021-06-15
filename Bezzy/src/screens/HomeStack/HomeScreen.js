@@ -33,7 +33,8 @@ export default class HomeScreen extends React.Component {
             postDetails: [],
             isRefreshing: false,
             userId: '',
-            sharepostID: ''
+            sharepostID: '',
+            shouldPlay: false
         }
     }
 
@@ -301,17 +302,19 @@ export default class HomeScreen extends React.Component {
                                                             }}
                                                             renderItem={({ item, index }) => (
                                                                 <TouchableOpacity
-                                                                    
+                                                                    activeOpacity={0.7}
+                                                                    onPress={() => {
+                                                                        this.setState({shouldPlay: false});
+                                                                        this.props.navigation.navigate("ImagePreviewScreen", { image: {...item, post_id : i.post_id}, otherProfile: this.state.otherProfile })
+                                                                    }}
                                                                 >
                                                                     <Video
                                                                         source={{ uri: item.post_url }}
                                                                         ref={(ref) => {
                                                                             this.player = ref
                                                                         }}
-                                                                        onBuffer={this.onBuffer}
-                                                                        onError={this.videoError}
-                                                                        controls={true}
                                                                         volume={0.0}
+                                                                        paused={this.state.shouldPlay}
                                                                         style={{
                                                                             height: heightToDp("30%"),
                                                                             width: widthToDp("80%"),
@@ -477,9 +480,9 @@ export default class HomeScreen extends React.Component {
         }
         this.setState({ postDetails });
         if (status === 'success') {
-            this.setState({ expand: true })
+            this.setState({ expand: true, shouldPlay: true })
         } else {
-            this.setState({ expand: false })
+            this.setState({ expand: false, shouldPlay: false })
         }
     }
 
