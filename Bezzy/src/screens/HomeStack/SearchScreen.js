@@ -103,11 +103,10 @@ export default class SearchScreen extends React.Component {
                         activeOpacity={0.7}
                         onPress={() => this.RBSheet1.open()}
                     >
-                        <Icon
-                            name={"search"}
-                            size={20}
-                            color="#a9a9a9"
-                            style={{ marginLeft: widthToDp("50%"), marginTop: heightToDp("1%") }}
+                        <Image
+                            source={require("../../../assets/search.png")}
+                            style={{ height: heightToDp("6%"), width: widthToDp("6%"), marginLeft: widthToDp("50%") }}
+                            resizeMode="contain"
                         />
                     </TouchableOpacity>
                     <RBSheet
