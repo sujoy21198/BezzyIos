@@ -79,7 +79,7 @@ export default class ThreadCommentScreen extends Component {
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <Header isBackButton threadCommentReload isHomeStackInnerPage headerText={"Replies"} navigation={this.props.navigation} post={{post_id: this.props.route.params.post_id}} />
                 <View style={{ flex: 1 }}>
-                    <View style={{paddingVertical: heightToDp('2%')}}>
+                    <View style={{paddingVertical: heightToDp('2%'), flex: 0.135}}>
                         <View
                             style={{
                                 flexDirection: 'row',
@@ -146,8 +146,7 @@ export default class ThreadCommentScreen extends Component {
                             </View>
                         </View>
                     </View>
-                    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-                        <View style={{height: heightToDp("77%")}}>
+                    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" style={{flex: 0.8}}>
                             {
                                 this.state.comments.length > 0 &&
                                 <FlatList
@@ -226,18 +225,18 @@ export default class ThreadCommentScreen extends Component {
                                     )}
                                 />
                             }
-                        </View>
+                    </KeyboardAwareScrollView>
                         <View
                             style={{
                                 backgroundColor: '#fff',
                                 padding: widthToDp("1%"),
-                                height: heightToDp("5%"),
+                                flex: 0.065,
                                 marginBottom:heightToDp("1%")
                             }}
                         >
                             <View
                                 style={{
-                                    paddingHorizontal: widthToDp("2%"),
+                                    padding: widthToDp("2%"),
                                     width: widthToDp("98%"),
                                     borderWidth: 1,
                                     borderRadius: 10,
@@ -274,7 +273,6 @@ export default class ThreadCommentScreen extends Component {
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </KeyboardAwareScrollView>
                 </View>
                 
                 <RBSheet

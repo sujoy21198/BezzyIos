@@ -158,11 +158,11 @@ export default class PostScreen extends React.Component {
 
     //Upload photo and video function
     postImage = async () => {
-        if (this.state.caption.trim() === "") {
-            this.setState({ isCaptionEmpty: true });
-            return;
-        }
-        this.setState({ isCaptionEmpty: false });
+        //if (this.state.caption.trim() === "") {
+        //   this.setState({ isCaptionEmpty: true });
+        //    return;
+        //}
+        //this.setState({ isCaptionEmpty: false });
         let userID = await AsyncStorage.getItem('userId')
         if (this.state.focusedTab === 'photo') {
             if (this.state.fromCamera === false) {

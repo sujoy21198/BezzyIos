@@ -196,8 +196,7 @@ export default class HomeScreen extends React.Component {
                                             <Text
                                                 style={{
                                                     color: "#fff",
-                                                    fontSize: widthToDp("3%"),
-                                                    fontFamily: "poppin_regular"
+                                                    fontSize: widthToDp("3%")
                                                 }}
                                             >{section.unread_post_number}</Text>
                                         </View>

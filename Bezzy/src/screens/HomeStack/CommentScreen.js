@@ -106,10 +106,8 @@ export default class CommentScreen extends React.Component {
             <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"
+                style={{flex: 0.935}}
             >
-                <View
-                    style={{height: heightToDp("91.5%")}}
-                >
                     {
                         this.state.comments.length > 0 &&
                         <FlatList
@@ -228,12 +226,12 @@ export default class CommentScreen extends React.Component {
                         )}
                         />
                     }  
-                </View>   
+            </KeyboardAwareScrollView>  
                 <View
                     style={{
+                        flex: 0.065,
                         backgroundColor: '#fff',
                         padding: widthToDp("1%"),
-                        height: heightToDp("5%"),
                         marginBottom:heightToDp("1%")
                     }}
                 >
@@ -277,7 +275,6 @@ export default class CommentScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </KeyboardAwareScrollView> 
             
             <RBSheet
                 ref={ref => {

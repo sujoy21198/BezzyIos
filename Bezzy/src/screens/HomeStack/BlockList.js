@@ -108,7 +108,6 @@ export default class BlockList extends React.Component {
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
-                                        fontFamily: "poppins_regular"
                                     }}
                                 >{item.name}</Text>
                             </View>

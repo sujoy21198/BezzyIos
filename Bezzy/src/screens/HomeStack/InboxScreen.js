@@ -221,8 +221,7 @@ export default class InboxScreen extends Component {
             {this.state.friendName}
           </Text>
         </TouchableOpacity>
-        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-          <View style={{height: heightToDp("89%")}}>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" style={{flex: 0.935}}>
             <FlatList
               data={this.state.message}
               keyExtractor={(item, index) => String(index)}
@@ -365,10 +364,10 @@ export default class InboxScreen extends Component {
 
               }
             />
-          </View>
+        </KeyboardAwareScrollView>  
           <View
             style={{
-              height: heightToDp("5%"),
+              flex: 0.065,
               borderTopWidth: 1,
               borderTopColor: '#ececec',
               padding: widthToDp('1%'),
@@ -423,8 +422,7 @@ export default class InboxScreen extends Component {
                 onPress={() => this.sendMessage()}
                 />
             </View>
-        </View>
-        </KeyboardAwareScrollView>       
+        </View>     
         <PushNotificationController navigation={this.props.navigation}/>
       </SafeAreaView>
     )
