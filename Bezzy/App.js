@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Root } from 'native-base'
 import Navigation from './src/Navigation';
-import RNFirebase from '@react-native-firebase/app';
+import RNFirebase from 'react-native-firebase';
 
 const configOptions = {
   debug: true,
