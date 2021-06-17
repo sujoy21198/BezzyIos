@@ -34,12 +34,14 @@ export default class HomeScreen extends React.Component {
             isRefreshing: false,
             userId: '',
             sharepostID: '',
-            shouldPlay: false
+            shouldPlay: false,
+            isLoading: false
         }
     }
 
     componentDidMount() {
-        this.RBSheet1.open();
+        this.setState({isLoading: true})
+        //this.RBSheet1.open();
         this.fetchHomeListing();
         this.userId()
     }
@@ -109,7 +111,8 @@ export default class HomeScreen extends React.Component {
                 }
             })
         this.setState({ userList, followingList: [...postUsers, ...noPostUsers], isRefreshing: false })
-        this.RBSheet1.close();
+        //this.RBSheet1.close();
+        this.setState({isLoading: false})
     }
 
     _renderSectionTitle = section => {
@@ -529,6 +532,16 @@ export default class HomeScreen extends React.Component {
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <Header isHomeScreen navigation={this.props.navigation} />
                 {
+                    this.state.isLoading ? 
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems:'center'
+                        }}
+                    >
+                        <ActivityIndicator size="large" color="#1b1b1b"/>
+                    </View> :
                     this.state.followingList.length > 0 ?
                         <ScrollView
                             contentContainerStyle={{
