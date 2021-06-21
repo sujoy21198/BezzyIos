@@ -11,7 +11,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import ButtonComponent from '../../components/ButtonComponent';
-//import {firebase} from '../../../App'
+import messaging from '@react-native-firebase/messaging';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
@@ -69,14 +69,13 @@ export default class SignInScreen extends React.Component {
                 }
             })
         }
-        //let deviceId = await firebase.messaging().getToken();
+        let deviceId = await messaging().getToken();
         this.RBSheet.open();
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
             "username": this.state.email.trim(),
             "password": this.state.password.trim(),
-            "device_token": null
+            "device_token": deviceId
         });
-        
         if (response.data.resp === "true") {
             this.RBSheet.close()
             AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails));

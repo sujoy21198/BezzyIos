@@ -258,7 +258,7 @@ export default class HomeScreen extends React.Component {
         return (
             <View >
                 {
-                    this.state.isLoading ?
+                    this.state.isAccordianOpening ?
                         <Card style={{ height: heightToDp("50%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                             <ActivityIndicator size="large" color="#69abff" />
                         </Card> : (
@@ -315,7 +315,6 @@ export default class HomeScreen extends React.Component {
                                                                         ref={(ref) => {
                                                                             this.player = ref
                                                                         }}
-                                                                        paused={this.state.shouldPlay}
                                                                         volume={0.0}
                                                                         style={{
                                                                             height: heightToDp("30%"),
@@ -468,12 +467,12 @@ export default class HomeScreen extends React.Component {
     }
 
     friendsBlockDetails = async (id) => {
-        this.setState({ isLoading: true });
+        this.setState({ isAccordianOpening: true });
         let userID = await AsyncStorage.getItem('userId')
         var status
         var postDetails
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendblockdetails + id + '/' + userID);
-        this.setState({ isLoading: false });
+        this.setState({ isAccordianOpening: false });
         if (response.data.status === "success") {
             status = response.data.status
             postDetails = response.data.post_details

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Root } from 'native-base'
 import Navigation from './src/Navigation';
-import RNFirebase from '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
 
 //const configOptions = {
   //debug: true,
@@ -17,6 +17,17 @@ import RNFirebase from '@react-native-firebase/app';
 //export const firebase = RNFirebase.initializeApp(configOptions);
 
 export default class App extends Component {
+
+  async componentDidMount () {
+    const cloudMessagePermission = await messaging.AuthorizationStatus;
+    const authorizationStatus = await messaging().requestPermission();
+      if (authorizationStatus === cloudMessagePermission.AUTHORIZED) {
+        console.log('Permission status:', authorizationStatus);
+      } else {
+        await messaging().requestPermission({provisional: true})
+      }
+  }
+
   render() {
     return (
       <Root>
