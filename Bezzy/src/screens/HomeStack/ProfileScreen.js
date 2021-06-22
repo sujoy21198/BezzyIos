@@ -88,7 +88,7 @@ export default class ProfileScreen extends React.Component {
             await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
                 "profile_id": this.state.friendsProfileId
             }).then(res => {
-                console.warn(res);
+                // console.warn(res);
                 userDetails = res.data.usedetails;
                 userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             }).catch(err => console.warn(err))
@@ -112,7 +112,7 @@ export default class ProfileScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isProfileFocused headerText="Profile" navigation={this.props.navigation} />
+            <Header isHomeStackInnerPage isProfileFocused={!this.state.otherProfile} block={true} isBackButton={this.state.otherProfile} headerText={this.state.otherProfile ? (this.state.userDetails.get_name || "View Profile") : "Profile"} navigation={this.props.navigation} />
 
             {
                 !this.state.isLoading &&
@@ -143,7 +143,13 @@ export default class ProfileScreen extends React.Component {
                             >
                                 <Image
                                     source={{ uri: this.state.userDetails.profile_pic }}
-                                    style={{ height: heightToDp("10%"), width: widthToDp("20%"), borderRadius: 20 }}
+                                    style={{ 
+                                        height: heightToDp("10%"), 
+                                        width: widthToDp("20%"), 
+                                        borderRadius: 20,
+                                        borderWidth: 1,
+                                        borderColor: '#69abff'
+                                    }}
                                 />
                                 <Text
                                     style={{
@@ -479,7 +485,7 @@ export default class ProfileScreen extends React.Component {
                 />
             </RBSheet>
             <PushNotificationController navigation={this.props.navigation}/>
-            <BottomTab isProfileFocused navigation={this.props.navigation} />
+            {!this.state.otherProfile && <BottomTab isProfileFocused navigation={this.props.navigation} />}
         </SafeAreaView>
     )
 }
