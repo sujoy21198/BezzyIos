@@ -3,8 +3,23 @@ import React from "react";
 import { Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View, Image } from "react-native";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import { heightToDp, widthToDp } from './Responsive';
+import axios from 'axios';
+import DataAccess from './DataAccess';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class BottomTab extends React.Component {
+    componentDidMount = async() => {
+        let userID = await AsyncStorage.getItem('userId')
+        await axios.post(DataAccess.BaseUrl + DataAccess.setUserActiveStatus, {
+            "userID" : userID,
+            "user_active_status" : "true"
+        }).then(res => {
+            // console.log(res.data);
+        }).catch(err => {
+            // console.log(err);
+        })
+    }
+
     render = () => (
         <SafeAreaView
             style={{

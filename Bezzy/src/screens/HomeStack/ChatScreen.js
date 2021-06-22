@@ -32,16 +32,17 @@ export default class ChatScreen extends React.Component {
 
     componentDidMount() {
         this.RBSheet.open()
-        this.getChatList()
+        this.getChatList("")
     }
 
 
-    getChatList = async () => {
+    getChatList = async (type) => {
         let value = await AsyncStorage.getItem('userId')
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.chatList + "/" + value)
         this.setState({ Messages: response.data.chat_notification_list })
         console.log(response.data.chat_notification_list)
-        this.RBSheet.close()
+        if(type === "pullRefresh") this.setState({isRefreshing: false})
+        else this.RBSheet.close()
     }
 
     render = () => (
@@ -51,6 +52,8 @@ export default class ChatScreen extends React.Component {
             <FlatList
                 data={this.state.Messages}
                 keyExtractor={item => item.id}
+                refreshing={this.state.isRefreshing}
+                onRefresh={() => this.setState({ isRefreshing: true }, () => this.getChatList("pullRefresh"))}
                 renderItem={({ item }) => (
                     <Card onPress={() => this.props.navigation.navigate('InboxScreen', { friendId: item.friendID, friendImage: item.userimage, friendName: item.username })}>
                         <UserInfo>
@@ -59,6 +62,19 @@ export default class ChatScreen extends React.Component {
                                     source={{ uri: item.userimage }}
                                     style={{ height: heightToDp("7%"), width: widthToDp("13%"), marginLeft: widthToDp("5%"), borderRadius: 300, marginTop: heightToDp("1%") }}
                                 />
+                                {
+                                    item.user_active_status === "true" &&
+                                    <View 
+                                        style={{
+                                            height: 13,
+                                            width: 13,
+                                            borderRadius: 13 / 2,
+                                            backgroundColor: "#008000",
+                                            left: widthToDp("16%"),
+                                            top: widthToDp("-2%")
+                                        }}
+                                    />
+                                }
                             </View>
                             <TextSection>
                                 <UserInfoText>

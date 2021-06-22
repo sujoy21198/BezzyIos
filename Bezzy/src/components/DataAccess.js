@@ -9,6 +9,7 @@ const DataAccess = {
     ResetPassword: 'setforgotpassword',
     resendOtp: "resendotp",
     terms: 'terms-condition', 
+    setUserActiveStatus: 'appbasic_userative_status',
 
     //user listing api's
     userList: "RegisterUserList",
@@ -31,9 +32,12 @@ const DataAccess = {
     friendblockdetails : 'friendblockdetails/',
     updateProfile: 'UpdateProfileData',
     changePassword: 'changepassword',
+    blockList: 'userblocklist',
+    unblockUser: 'unblockuser',
 
     //post api's
     deletePost: 'deletepostimagevideo',
+    deleteVideo : 'deletepostimagevideo', //delete video
     likePost: 'postlikedislike',
     postLikedUsers: 'postlikeuserslist',
     postCommentedUsers: 'comment-list',
@@ -48,26 +52,17 @@ const DataAccess = {
     clearNotification: 'ClearNotificationlist',
 
 
-    //chat api
-    //chat list for inbox
-    chatListInbox:'chat-list/',
-    //sendMessage
-    addChatData:'add-chat-data',
-    //get chat list
-    chatList:'chat-notification-list',
-    //post image to chat
-    addChatDataImage:'add-chat-data-image',
-    //share post view
-    getSharePostData: 'getshare-postdata',
-    //share post internally
-    sharePostInternally: 'share_post_internally',
-    //get video details
-    GetVideoDetails : 'postimagevideodetails',
-    //delete video
-    deleteVideo : 'deletepostimagevideo',
-    blockList: 'userblocklist',
-    unblockUser: 'unblockuser',
-    //some api
+    //chat api's    
+    chatListInbox:'chat-list/', //chat list for inbox    
+    addChatData:'add-chat-data', //sendMessage    
+    chatList:'chat-notification-list', //get chat list    
+    addChatDataImage:'add-chat-data-image', //post image to chat
+    readUnreadChats: 'click-on-chat-notification', //read unread chats
+
+    //share api's
+    getSharePostData: 'getshare-postdata', //share post view
+    sharePostInternally: 'share_post_internally', //share post internally
+    GetVideoDetails : 'postimagevideodetails', //get video details
 }
 
 export default DataAccess

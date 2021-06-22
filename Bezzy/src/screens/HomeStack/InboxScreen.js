@@ -50,6 +50,18 @@ export default class InboxScreen extends Component {
     let value = await AsyncStorage.getItem('userId')
     this.setState({ userId: value })
     this.getInboxChats("0")
+    this.readChats()
+  }
+
+  readChats = async() => {
+    let userId = await AsyncStorage.getItem("userId");
+    await axios.get(DataAccess.BaseUrl + DataAccess.readUnreadChats + "/" + userId + "/" + this.props.route.params.friendId)
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   getInboxChats = async (value) => {
@@ -58,7 +70,7 @@ export default class InboxScreen extends Component {
       await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
         .then(function (response) {
           messages = response.data.chat_history_list
-          console.log(response.data.chat_history_list)
+          // console.log(response.data.chat_history_list)
         }).catch(function (error) {
           console.log(error)
         })
@@ -381,7 +393,6 @@ export default class InboxScreen extends Component {
               color="#69abff"
               onPress={() => this.startEmoji()}
             />
-            <EmojiBoard showBoard={this.state.show} onClick={(value) => this.endEmoji(value)} />
             <Ionicons
               name={Platform.OS==='android' ? 'md-image' : 'ios-image'}
               size={25}
@@ -423,6 +434,7 @@ export default class InboxScreen extends Component {
                 />
             </View>
         </View>     
+        <EmojiBoard showBoard={this.state.show} onClick={(value) => this.endEmoji(value)} />
         <PushNotificationController navigation={this.props.navigation}/>
       </SafeAreaView>
     )

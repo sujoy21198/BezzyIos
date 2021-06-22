@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DataAccess from './DataAccess';
+import axios from 'axios';
 
 export default class Header extends React.Component {
     state = {
@@ -28,7 +30,16 @@ export default class Header extends React.Component {
                 {
                     text: "Yes",
                     onPress: async () => {
-                        //async storage will be null                   
+                        //async storage will be null   
+                        let userID = await AsyncStorage.getItem('userId')
+                        await axios.post(DataAccess.BaseUrl + DataAccess.setUserActiveStatus, {
+                            "userID" : userID,
+                            "user_active_status" : "false"
+                        }).then(res => {
+                            // console.log(res.data);
+                        }).catch(err => {
+                            // console.log(err);
+                        })                
                         await AsyncStorage.removeItem("userDetails");
                         await AsyncStorage.removeItem("userId");
                         await AsyncStorage.removeItem("token");
