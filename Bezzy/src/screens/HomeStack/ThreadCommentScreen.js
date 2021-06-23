@@ -243,7 +243,8 @@ export default class ThreadCommentScreen extends Component {
                                     borderColor: "#69abff",
                                     flexDirection: 'row',
                                     justifyContent: 'space-between',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    height: heightToDp("5%")
                                 }}
                             >
                                 <TextInput

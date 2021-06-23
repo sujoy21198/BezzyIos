@@ -35,7 +35,8 @@ export default class HomeScreen extends React.Component {
             userId: '',
             sharepostID: '',
             shouldPlay: false,
-            isLoading: false
+            isLoading: false,
+            isAccordianLoading: false
         }
     }
 
@@ -168,7 +169,7 @@ export default class HomeScreen extends React.Component {
 
                         <View>
                             {
-                                (section.today_post === "" && section.unread_post_number === "") ?
+                                (section.unread_post_number === "") ?
                                     <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
                                         <Image
                                             source={require("../../../assets/ago.png")}
@@ -209,7 +210,7 @@ export default class HomeScreen extends React.Component {
                                 <Text>{section.friend_name}</Text>
                             </View>
                             {
-                                !(section.today_post === "" && section.unread_post_number === "") ?
+                                (section.today_post !== "") ?
                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
                                         <Text style={{ color: '#ff0000' }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
                                     </View> :
@@ -258,7 +259,7 @@ export default class HomeScreen extends React.Component {
         return (
             <View >
                 {
-                    this.state.isLoading ?
+                    this.state.isAccordianLoading ?
                         <Card style={{ height: heightToDp("50%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                             <ActivityIndicator size="large" color="#69abff" />
                         </Card> : (
@@ -315,7 +316,8 @@ export default class HomeScreen extends React.Component {
                                                                         ref={(ref) => {
                                                                             this.player = ref
                                                                         }}
-                                                                        paused={this.state.shouldPlay}
+                                                                        onBuffer={() => console.log("buffered")}
+                                                                        onError={() => console.log("error")}
                                                                         volume={0.0}
                                                                         style={{
                                                                             height: heightToDp("30%"),
@@ -468,12 +470,11 @@ export default class HomeScreen extends React.Component {
     }
 
     friendsBlockDetails = async (id) => {
-        this.setState({ isLoading: true });
+        this.setState({isAccordianLoading: true})
         let userID = await AsyncStorage.getItem('userId')
         var status
         var postDetails
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendblockdetails + id + '/' + userID);
-        this.setState({ isLoading: false });
         if (response.data.status === "success") {
             status = response.data.status
             postDetails = response.data.post_details
@@ -482,9 +483,9 @@ export default class HomeScreen extends React.Component {
         }
         this.setState({ postDetails });
         if (status === 'success') {
-            this.setState({ expand: true, shouldPlay: true })
+            this.setState({ expand: true, shouldPlay: true, isAccordianLoading: false })
         } else {
-            this.setState({ expand: false, shouldPlay: false })
+            this.setState({ expand: false, shouldPlay: false, isAccordianLoading: false })
         }
     }
 
