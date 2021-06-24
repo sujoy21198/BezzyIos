@@ -156,7 +156,8 @@ export default class ProfileScreen extends React.Component {
                                         color: '#007dfe',
                                         marginTop: heightToDp('1.5%'),
                                         marginBottom: heightToDp('0.5%'),
-                                        fontSize: widthToDp("4.5%")
+                                        fontSize: widthToDp("4.5%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{this.state.userDetails.get_name}</Text>
                                 {
@@ -164,7 +165,8 @@ export default class ProfileScreen extends React.Component {
                                     <Text
                                         style={{
                                             // paddingVertical: heightToDp('0%'),
-                                            fontSize: widthToDp("4%")
+                                            fontSize: widthToDp("4%"),
+                                            fontFamily: "Poppins-Regular"
                                         }}
                                     >{this.state.userDetails.bio}</Text>
                                 }
@@ -191,10 +193,18 @@ export default class ProfileScreen extends React.Component {
                                     disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.following === 0}
                                     onPress={() => this.props.navigation.navigate("FollowingScreen", { user: this.state.userDetails.get_name })}
                                 >
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Following</Text>
                                 </TouchableOpacity>
@@ -206,10 +216,18 @@ export default class ProfileScreen extends React.Component {
                                     disabled={Object.keys(this.state.userDetails).length > 0 && this.state.userDetails.followers === 0}
                                     onPress={() => this.props.navigation.navigate("FollowerScreen", { user: this.state.userDetails.get_name })}
                                 >
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Followers</Text>
                                 </TouchableOpacity>
@@ -218,10 +236,18 @@ export default class ProfileScreen extends React.Component {
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Posts</Text>
                                 </View>
@@ -237,20 +263,36 @@ export default class ProfileScreen extends React.Component {
                                 <View style={{
                                     alignItems: 'center',
                                 }}>
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.following : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Following</Text>
                                 </View>
                                 <View style={{
                                     alignItems: 'center',
                                 }}>
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.followers : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Followers</Text>
                                 </View>
@@ -259,10 +301,18 @@ export default class ProfileScreen extends React.Component {
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <Text>{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
                                     <Text
                                         style={{
-                                            fontSize: widthToDp("3.8%")
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
+                                        }}
+                                    >{Object.keys(this.state.userDetails).length > 0 ? this.state.userDetails.number_of_post : 0}</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: widthToDp("3.8%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: "#808080"
                                         }}
                                     >Posts</Text>
                                 </View>
@@ -310,7 +360,7 @@ export default class ProfileScreen extends React.Component {
                                         require("../../../assets/default_posts.png")
                                 }
                                 resizeMode="contain"
-                                style={{ height: heightToDp("5%"), width: widthToDp("5%") }}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -391,7 +441,8 @@ export default class ProfileScreen extends React.Component {
                                             <Text
                                                 style={{
                                                     color: "#db472b",
-                                                    fontSize: widthToDp("3%")
+                                                    fontSize: widthToDp("3%"),
+                                                    fontFamily: "Poppins-Regular"
                                                 }}
                                             >{item.post_date + " " + item.post_time}</Text>
                                         </View>
@@ -443,7 +494,8 @@ export default class ProfileScreen extends React.Component {
                                             <Text
                                                 style={{
                                                     color: "#db472b",
-                                                    fontSize: widthToDp("3%")
+                                                    fontSize: widthToDp("3%"),
+                                                    fontFamily: "Poppins-Regular"
                                                 }}
                                             >{item.post_date + " " + item.post_time}</Text>
                                         </View>

@@ -97,7 +97,7 @@ export default class SearchScreen extends React.Component {
                 <StatusBar backgroundColor="#69abff" barStyle="light-content" />
                 <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
-                        <Text style={{ fontSize: widthToDp("4.5%"), color: '#007dfe', fontWeight: 'bold' }}>Search for friends</Text>
+                        <Text style={{ fontSize: widthToDp("4.5%"), color: '#007dfe', fontFamily: "ProximaNova-Black", }}>Search for friends</Text>
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.7}
@@ -134,7 +134,8 @@ export default class SearchScreen extends React.Component {
                             style={{
                                 width: widthToDp("97%"),
                                 color: "#777",
-                                fontSize: widthToDp("3.5%")
+                                fontSize: widthToDp("3.5%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                             onChangeText={text => this.searchUsers(text)}
                         />
@@ -171,6 +172,7 @@ export default class SearchScreen extends React.Component {
                                 style={{
                                     textAlign: "center",
                                     paddingVertical: heightToDp("0.8%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 numberOfLines={1}
                                 ellipsizeMode="tail"
@@ -187,7 +189,7 @@ export default class SearchScreen extends React.Component {
                                         padding: 5,
                                         marginHorizontal: 5}}
                                 >
-                                    <Text style={{ color: "#fff" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                    <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black", }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                 </LinearGradient>
 
                             </TouchableOpacity>

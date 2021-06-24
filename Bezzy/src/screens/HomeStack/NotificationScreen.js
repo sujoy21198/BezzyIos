@@ -83,7 +83,8 @@ export default class NotificationScreen extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3.8%"),
-                                    color: '#007dfe'
+                                    color: '#007dfe',
+                                    fontFamily: "Poppins-Regular"
                                 }}
                             >No Records Found</Text>
                         </View>
@@ -123,7 +124,8 @@ export default class NotificationScreen extends React.Component {
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
-                                        fontSize: widthToDp("3%")
+                                        fontSize: widthToDp("3%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.activity_message}</Text>
                             </View>

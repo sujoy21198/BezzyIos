@@ -352,8 +352,6 @@ export default class EditProfileScreen extends React.Component {
                 <View
                     style={{
                         alignItems: 'center',
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#a9a9a9',
                         marginHorizontal: widthToDp("3.5%")
                     }}
                 >
@@ -361,7 +359,11 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            paddingBottom: heightToDp("1%"),
+                            width: widthToDp("95%"),
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#a9a9a9',
+                            fontFamily: "Poppins-Regular"
                         }}
                         defaultValue={this.state.name}
                         placeholder="Name"
@@ -372,9 +374,7 @@ export default class EditProfileScreen extends React.Component {
                 <View
                     style={{
                         alignItems: 'center',
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#a9a9a9',
-                        marginTop: heightToDp("3%"),
+                        marginTop: heightToDp("4%"),
                         marginHorizontal: widthToDp("3.5%")
                     }}
                 >
@@ -382,7 +382,11 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            paddingBottom: heightToDp("1%"),
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#a9a9a9',
+                            width: widthToDp("95%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                         defaultValue={this.state.email}
                         placeholder="Email Address"
@@ -396,7 +400,8 @@ export default class EditProfileScreen extends React.Component {
                     <Text
                         style={{
                             color: "#ff0000",
-                            marginHorizontal: widthToDp("3%")
+                            marginHorizontal: widthToDp("3%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                     >Entered email address is not valid</Text>
                 }
@@ -415,8 +420,9 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            paddingBottom: heightToDp("2%"),
-                            width: widthToDp("87%")
+                            paddingBottom: heightToDp("1%"),
+                            width: widthToDp("87%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                     >
                         {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
@@ -430,7 +436,7 @@ export default class EditProfileScreen extends React.Component {
                 />
                 <TouchableOpacity
                     style={{
-                        marginTop: heightToDp("5%"),
+                        marginTop: heightToDp("4%"),
                         borderBottomWidth: 1,
                         borderBottomColor: '#a9a9a9',
                         alignItems: "flex-start",
@@ -445,7 +451,8 @@ export default class EditProfileScreen extends React.Component {
                             color: "#808080",
                             fontSize: widthToDp("3.4%"),
                             paddingBottom: heightToDp("1%"),
-                            width: widthToDp("87%")
+                            width: widthToDp("87%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                     >
                         {
@@ -459,9 +466,7 @@ export default class EditProfileScreen extends React.Component {
                 <View
                     style={{
                         alignItems: 'center',
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#a9a9a9',
-                        marginTop: heightToDp("3%"),
+                        marginTop: heightToDp("4%"),
                         marginHorizontal: widthToDp("3.5%")
                     }}
                 >
@@ -469,7 +474,11 @@ export default class EditProfileScreen extends React.Component {
                         style={{
                             color: '#808080',
                             fontSize: widthToDp("3.3%"),
-                            width: widthToDp("95%")
+                            borderBottomWidth: 1,
+                            paddingBottom: heightToDp("1%"),
+                            borderBottomColor: '#a9a9a9',
+                            width: widthToDp("95%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                         defaultValue={this.state.bio}
                         placeholder="Bio"
@@ -477,7 +486,7 @@ export default class EditProfileScreen extends React.Component {
                         onChangeText={text => this.setState({ bio: text })}
                     />
                 </View>
-                
+                <View style={{height: heightToDp("1%")}}/>
                 <ButtonComponent
                     onPressButton={this.updateProfile}
                     buttonText={"Update"}

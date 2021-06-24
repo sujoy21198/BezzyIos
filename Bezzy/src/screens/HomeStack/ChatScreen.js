@@ -70,7 +70,7 @@ export default class ChatScreen extends React.Component {
                                             width: 13,
                                             borderRadius: 13 / 2,
                                             backgroundColor: "#008000",
-                                            left: widthToDp("16%"),
+                                            left: widthToDp("15%"),
                                             top: widthToDp("-2%")
                                         }}
                                     />
@@ -78,11 +78,11 @@ export default class ChatScreen extends React.Component {
                             </View>
                             <TextSection>
                                 <UserInfoText>
-                                    <Text style={{ width: "50%", fontWeight: "bold" }}>{item.username}</Text>
+                                    <Text style={{ width: "50%", fontFamily: "ProximaNova-Black" }}>{item.username}</Text>
                                     <PostTime>{item.chat_date_time}</PostTime>
                                 </UserInfoText>
                                 <UserInfoText>
-                                    <Text style={{ width: "90%" }}>{item.chat_message}</Text>
+                                    <Text style={{ width: "90%", fontFamily: "Poppins-Regular", }}>{item.chat_message}</Text>
                                     {
                                         item.unread_msg > 0 &&
                                         <View
@@ -95,7 +95,7 @@ export default class ChatScreen extends React.Component {
                                                 alignItems: 'center'
                                             }}
                                         >
-                                            <Text style={{ color: "#fff", fontSize: widthToDp("2.8%") }}>{item.unread_msg}</Text>
+                                            <Text style={{ color: "#fff", fontSize: widthToDp("3"), fontFamily: "Poppins-Regular", }}>{item.unread_msg}</Text>
                                         </View>
                                     }
                                 </UserInfoText>
@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     sender: {
-        fontWeight: 'bold',
         paddingRight: 10
     },
     footer: {
@@ -176,7 +175,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: 'lightseagreen',
         fontSize: 16,
-        fontWeight: 'bold',
         padding: 20
     }
 });

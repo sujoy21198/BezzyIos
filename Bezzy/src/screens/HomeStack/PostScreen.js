@@ -297,6 +297,7 @@ export default class PostScreen extends React.Component {
                             color: "#69abff",
                             marginBottom: heightToDp("1%"),
                             height: heightToDp("10%"),
+                            fontFamily: "Poppins-Regular"
                         }}
                         textAlignVertical="top"
                         placeholder="Write Something here..."
@@ -324,7 +325,8 @@ export default class PostScreen extends React.Component {
                             >
                                 <Text
                                     style={{
-                                        color: '#fff'
+                                        color: '#fff',
+                                        fontFamily: "ProximaNova-Black"
                                     }}
                                 >
                                     {this.state.focusedTab === "photo" ? this.state.buttonText = "UPLOAD PHOTO" : this.state.buttonText = "UPLOAD VIDEO"}
@@ -343,7 +345,8 @@ export default class PostScreen extends React.Component {
                             >
                                 <Text
                                     style={{
-                                        color: '#fff'
+                                        color: '#fff',
+                                        fontFamily: "ProximaNova-Black"
                                     }}
                                 >
                                     POST
@@ -444,7 +447,8 @@ export default class PostScreen extends React.Component {
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
-                                        color: this.state.focusedTab === "photo" ? "#007dfe" : "#808080"
+                                        color: this.state.focusedTab === "photo" ? "#007dfe" : "#808080",
+                                        fontFamily: "ProximaNova-Black"
                                     }}
                                 >PHOTO</Text>
                             </TouchableOpacity>
@@ -472,7 +476,8 @@ export default class PostScreen extends React.Component {
                                 <Text
                                     style={{
                                         fontSize: widthToDp("3%"),
-                                        color: this.state.focusedTab === "video" ? "#007dfe" : "#808080"
+                                        color: this.state.focusedTab === "video" ? "#007dfe" : "#808080",
+                                        fontFamily: "ProximaNova-Black"
                                     }}
                                 >Video</Text>
                             </TouchableOpacity>

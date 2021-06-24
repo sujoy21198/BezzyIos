@@ -25,7 +25,7 @@ export default class ButtonComponent extends React.Component {
                     style={{
                         color: "#fff",
                         textAlign: "center",
-                        fontWeight: 'bold'
+                        fontFamily: "ProximaNova-Black",
                     }}
                 >
                     {this.props.buttonText}

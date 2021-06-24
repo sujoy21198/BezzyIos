@@ -159,6 +159,7 @@ export default class ChangePassword extends React.Component {
                                     color: this.state.isCurrentPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isCurrentPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                             >Enter Old Password</Label>
                             <Input
@@ -167,7 +168,7 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                                 secureTextEntry={!this.state.showOldPassword}
                                 onChangeText={(text) => this.setState({ currentPassword: text.trim() })}
@@ -209,6 +210,7 @@ export default class ChangePassword extends React.Component {
                                     color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                             >Enter New Password</Label>
                             <Input
@@ -217,7 +219,7 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                                 secureTextEntry={!this.state.showNewPassword}
                                 onChangeText={(text) => this.setState({ newPassword: text.trim() })}
@@ -242,6 +244,7 @@ export default class ChangePassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "Poppins-Regular"
                             }}
                         >Password should have at least 8 characters</Text>
                     }
@@ -268,6 +271,7 @@ export default class ChangePassword extends React.Component {
                                     color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                             >Confirm New Password</Label>
                             <Input
@@ -276,7 +280,7 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
@@ -298,6 +302,7 @@ export default class ChangePassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "Poppins-Regular"
                             }}
                         >Passwords should match</Text>
                     }

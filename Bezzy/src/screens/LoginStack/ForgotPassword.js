@@ -117,7 +117,7 @@ export default class ForgotPassword extends React.Component {
                 >
                     <Text
                         style={{
-                            fontWeight: 'bold',
+                            fontFamily: "ProximaNova-Black",
                             fontSize: widthToDp("4%")
                         }}
                     >
@@ -142,6 +142,7 @@ export default class ForgotPassword extends React.Component {
                                     color: this.state.isEmailFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Enter Mail Id</Label>
                             <Input
@@ -150,7 +151,7 @@ export default class ForgotPassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}

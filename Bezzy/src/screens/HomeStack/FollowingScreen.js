@@ -98,7 +98,8 @@ export default class FollowingScreen extends React.Component {
                                 />
                                 <Text
                                     style={{
-                                        marginLeft: widthToDp("2%")
+                                        marginLeft: widthToDp("2%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.friend_name}</Text>
                             </View>

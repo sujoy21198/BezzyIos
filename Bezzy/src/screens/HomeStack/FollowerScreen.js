@@ -150,7 +150,8 @@ export default class FollowerScreen extends React.Component {
                                 />
                                 <Text
                                     style={{
-                                        marginLeft: widthToDp("2%")
+                                        marginLeft: widthToDp("2%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.name}</Text>
                             </View>

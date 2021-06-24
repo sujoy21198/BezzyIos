@@ -99,7 +99,7 @@ export default class Header extends React.Component {
                                     <Text style={{
                                         color: !this.props.headerText ? '#fff' : '#007dfe',
                                         fontSize: widthToDp("4.5%"),
-                                        fontWeight: 'bold',
+                                        fontFamily: "ProximaNova-Black",
                                         marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
                                     }}>
                                         {this.props.headerText}
@@ -275,7 +275,7 @@ export default class Header extends React.Component {
                             <Text style={{
                                 color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
                                 fontSize: 15,
-                                fontWeight: 'bold',
+                                fontFamily: "ProximaNova-Black",
                                 marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
                             }}>
                                 {this.props.headerText}
@@ -296,7 +296,7 @@ export default class Header extends React.Component {
                                         style={{
                                             color: '#fff',
                                             textAlign: 'center',
-                                            fontWeight: 'bold'
+                                            fontFamily: "ProximaNova-Black",
                                         }}
                                     >Clear All</Text>
                                 </TouchableOpacity>

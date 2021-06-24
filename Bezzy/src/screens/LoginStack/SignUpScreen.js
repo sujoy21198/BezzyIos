@@ -321,7 +321,7 @@ export default class SignUpScreen extends React.Component {
                 >
                     <Text
                         style={{
-                            fontWeight: 'bold',
+                            fontFamily: "ProximaNova-Black",
                             fontSize: widthToDp("4.5%")
                         }}
                     >
@@ -376,6 +376,7 @@ export default class SignUpScreen extends React.Component {
                                     color: this.state.isNameFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isNameFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Name</Label>
                             <Input
@@ -384,7 +385,7 @@ export default class SignUpScreen extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 onChangeText={(text) => this.setState({ name: text.trim() })}
                                 onFocus={() => this.setState({ isNameFocused: true, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
@@ -409,6 +410,7 @@ export default class SignUpScreen extends React.Component {
                                     color: this.state.isEmailFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Email Address</Label>
                             <Input
@@ -418,7 +420,7 @@ export default class SignUpScreen extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
@@ -436,6 +438,7 @@ export default class SignUpScreen extends React.Component {
                                 style={{
                                     color: "#ff0000",
                                     marginLeft: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Entered email address is not valid</Text>
                         }
@@ -462,6 +465,7 @@ export default class SignUpScreen extends React.Component {
                                         color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                         fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
                                         marginTop: heightToDp("-0.5%"),
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                 >Password</Label>
                                 <Input
@@ -470,7 +474,7 @@ export default class SignUpScreen extends React.Component {
                                         borderWidth: 0,
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
-                                        marginLeft: widthToDp("-1%"),
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                     secureTextEntry={!this.state.showPassword}
                                     onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -495,6 +499,7 @@ export default class SignUpScreen extends React.Component {
                                 style={{
                                     color: "#ff0000",
                                     marginLeft: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Password should have at least 8 characters</Text>
                         }
@@ -521,6 +526,7 @@ export default class SignUpScreen extends React.Component {
                                         color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
                                         fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
                                         marginTop: heightToDp("-0.5%"),
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                 >Confirm Password</Label>
                                 <Input
@@ -529,7 +535,7 @@ export default class SignUpScreen extends React.Component {
                                         borderWidth: 0,
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
-                                        marginLeft: widthToDp("-1%"),
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                     secureTextEntry={!this.state.showConfirmPassword}
                                     onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
@@ -551,6 +557,7 @@ export default class SignUpScreen extends React.Component {
                                 style={{
                                     color: "#ff0000",
                                     marginLeft: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Passwords should match</Text>
                         }
@@ -562,7 +569,8 @@ export default class SignUpScreen extends React.Component {
                                 color: '#808080',
                                 fontSize: widthToDp("3.0%"),
                                 marginTop: heightToDp("3%"),
-                                marginBottom: heightToDp("0.5%")
+                                marginBottom: heightToDp("0.5%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >Date of Birth</Text>
                     }                 
@@ -581,7 +589,8 @@ export default class SignUpScreen extends React.Component {
                                 color: this.state.dob === ""  ? '#808080' : "#1b1b1b",
                                 fontSize: widthToDp("3.4%"),
                                 paddingBottom: heightToDp("1%"),
-                                width: widthToDp("87%")
+                                width: widthToDp("87%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >
                             {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
@@ -609,7 +618,8 @@ export default class SignUpScreen extends React.Component {
                                 color: this.state.dob === ""  ? '#808080' : "#1b1b1b",
                                 fontSize: widthToDp("3.4%"),
                                 paddingBottom: heightToDp("1%"),
-                                width: widthToDp("87%")
+                                width: widthToDp("87%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >
                             {
@@ -622,6 +632,7 @@ export default class SignUpScreen extends React.Component {
                     <View
                         style={{
                             flexDirection: 'row',
+                            alignItems: "center",
                             borderBottomWidth: 0,
                             marginTop: heightToDp("3%"),
                         }}
@@ -634,7 +645,8 @@ export default class SignUpScreen extends React.Component {
                         />
                         <Text
                             style={{
-                                marginLeft: widthToDp("1%")
+                                marginLeft: widthToDp("1%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >
                             I accept the <Text style={{ color: "#69abff" }} onPress={() => this.props.navigation.navigate("Terms")}>Terms & Conditions</Text>

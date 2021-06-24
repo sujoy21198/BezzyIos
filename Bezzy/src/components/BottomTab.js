@@ -83,7 +83,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#69abff",
+                                    fontFamily: "ProximaNova-Black",
                                 }}
                             >Home</Text>
                         }
@@ -121,7 +122,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#69abff",
+                                    fontFamily: "ProximaNova-Black",
                                 }}
                             >Chat</Text>
                         }
@@ -214,7 +216,8 @@ export default class BottomTab extends React.Component {
                                 style={{
                                     fontSize: widthToDp("3%"),
                                     color: "#69abff",
-                                    marginLeft: widthToDp("1%")
+                                    marginLeft: widthToDp("1%"),
+                                    fontFamily: "ProximaNova-Black",
                                 }}
                             >Search</Text>
                         }
@@ -259,7 +262,8 @@ export default class BottomTab extends React.Component {
                             <Text
                                 style={{
                                     fontSize: widthToDp("3%"),
-                                    color: "#69abff"
+                                    color: "#69abff",
+                                    fontFamily: "ProximaNova-Black",
                                 }}
                             >Profile</Text>
                         }

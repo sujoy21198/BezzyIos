@@ -142,7 +142,7 @@ export default class SignInScreen extends React.Component {
                 >
                     <Text
                         style={{
-                            fontWeight: 'bold',
+                            fontFamily: "ProximaNova-Black",
                             fontSize: widthToDp("4.5%")
                         }}
                     >
@@ -150,7 +150,7 @@ export default class SignInScreen extends React.Component {
                     </Text>
                     <Text
                         style={{
-                            fontWeight: 'bold',
+                            fontFamily: "ProximaNova-Black",
                             fontSize: widthToDp("4.5%")
                         }}
                     >
@@ -174,6 +174,7 @@ export default class SignInScreen extends React.Component {
                                 style={{
                                     color: this.state.isEmailFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
+                                    fontFamily: "Poppins-Regular",
                                     marginTop: heightToDp("-0.5%"),
                                 }}
                             >Email Id</Label>
@@ -183,8 +184,7 @@ export default class SignInScreen extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
-                                    
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
@@ -202,6 +202,7 @@ export default class SignInScreen extends React.Component {
                                 style={{
                                     color: "#ff0000",
                                     marginLeft: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Entered email address is not valid</Text>
                         }
@@ -228,6 +229,7 @@ export default class SignInScreen extends React.Component {
                                         color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                         fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
                                         marginTop: heightToDp("-0.5%"),
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                 >Password</Label>
                                 <Input
@@ -236,8 +238,7 @@ export default class SignInScreen extends React.Component {
                                         borderWidth: 0,
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
-                                        marginLeft: widthToDp("-1%"),
-                                        
+                                        fontFamily: "Poppins-Regular",
                                     }}
                                     secureTextEntry={!this.state.showPassword}
                                     onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -294,7 +295,8 @@ export default class SignInScreen extends React.Component {
                     >
                         <Text
                             style={{
-                                color: "#69abff"
+                                color: "#69abff",
+                                fontFamily: "Poppins-Regular",
                             }}
                         >
                             Forgot Password?
@@ -309,7 +311,8 @@ export default class SignInScreen extends React.Component {
                     >
                         <Text
                             style={{
-                                color: "#69abff"
+                                color: "#69abff",
+                                fontFamily: "Poppins-Regular",
                             }}
                         >
                             New User? Register

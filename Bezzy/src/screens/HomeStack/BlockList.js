@@ -93,7 +93,7 @@ export default class BlockList extends React.Component {
                                 borderRadius: 10
                             }}
                             activeOpacity={0.7}
-                            onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.name, id: item.block_user_id, loginStack: true})}
+                            // onPress={() => this.props.navigation.navigate("ViewProfileScreen", {name: item.name, id: item.block_user_id, loginStack: true})}
                         >
                             <View
                                 style={{
@@ -108,6 +108,7 @@ export default class BlockList extends React.Component {
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.name}</Text>
                             </View>

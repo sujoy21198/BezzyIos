@@ -101,7 +101,7 @@ export default class ResetPassword extends React.Component {
     render = () => (
         <SafeAreaView
             style={{
-                flex: 1,
+                flex: 1
             }}
         >
             <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
@@ -142,6 +142,7 @@ export default class ResetPassword extends React.Component {
                                     color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Enter New Password</Label>
                             <Input
@@ -149,7 +150,7 @@ export default class ResetPassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 secureTextEntry={!this.state.showPassword}
                                 onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -174,6 +175,7 @@ export default class ResetPassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >Password should have at least 8 characters</Text>
                     }
@@ -200,6 +202,7 @@ export default class ResetPassword extends React.Component {
                                     color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
                                     marginTop: heightToDp("-0.5%"),
+                                    fontFamily: "Poppins-Regular",
                                 }}
                             >Confirm New Password</Label>
                             <Input
@@ -208,7 +211,7 @@ export default class ResetPassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    marginLeft: widthToDp("-1%")
+                                    fontFamily: "Poppins-Regular",
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}
@@ -230,6 +233,7 @@ export default class ResetPassword extends React.Component {
                             style={{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
+                                fontFamily: "Poppins-Regular",
                             }}
                         >Passwords should match</Text>
                     }

@@ -104,7 +104,7 @@ export default class ThreadCommentScreen extends Component {
                                     style={{
                                         width: widthToDp("100%"),
                                         color: '#1b1b1b',
-                                        fontWeight: 'bold',
+                                        fontFamily: "ProximaNova-Black",
                                         fontSize: widthToDp("3.5%")
                                     }}
                                 >{this.props.route.params.username}</Text>
@@ -112,7 +112,8 @@ export default class ThreadCommentScreen extends Component {
                                     style={{
                                         color: '#1b1b1b',
                                         fontSize: widthToDp("3%"),
-                                        marginTop: heightToDp("1%")
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                 >{this.props.route.params.commentText}</Text>
                             </View>
@@ -130,7 +131,8 @@ export default class ThreadCommentScreen extends Component {
                             <Text
                                 style={{
                                     color: '#808080',
-                                    fontSize: widthToDp("3%")
+                                    fontSize: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular"
                                 }}
                             >{this.props.route.params.postcomment_time}</Text>
                             <View
@@ -180,7 +182,7 @@ export default class ThreadCommentScreen extends Component {
                                                         style={{
                                                             width: widthToDp("90%"),
                                                             color: '#1b1b1b',
-                                                            fontWeight: 'bold',
+                                                            fontFamily: "ProximaNova-Black",
                                                             fontSize: widthToDp("3.5%")
                                                         }}
                                                     >{item.username}</Text>
@@ -188,7 +190,8 @@ export default class ThreadCommentScreen extends Component {
                                                         style={{
                                                             color: '#1b1b1b',
                                                             fontSize: widthToDp("3%"),
-                                                            marginTop: heightToDp("1%")
+                                                            marginTop: heightToDp("1%"),
+                                                            fontFamily: "Poppins-Regular"
                                                         }}
                                                     >{item.commentText}</Text>
                                                 </View>
@@ -206,7 +209,8 @@ export default class ThreadCommentScreen extends Component {
                                                 <Text
                                                     style={{
                                                         color: '#808080',
-                                                        fontSize: widthToDp("3%")
+                                                        fontSize: widthToDp("3%"),
+                                                        fontFamily: "Poppins-Regular"
                                                     }}
                                                 >{item.postcomment_time}</Text>
                                                 <View
@@ -231,7 +235,7 @@ export default class ThreadCommentScreen extends Component {
                                 backgroundColor: '#fff',
                                 padding: widthToDp("1%"),
                                 flex: 0.065,
-                                marginBottom:heightToDp("1%")
+                                marginBottom:heightToDp("1%"),
                             }}
                         >
                             <View
@@ -254,7 +258,9 @@ export default class ThreadCommentScreen extends Component {
                                         paddingHorizontal: widthToDp("1%"),
                                         paddingVertical: heightToDp("0%"),
                                         fontSize: widthToDp("4.3%"),
-                                        color: '#777'
+                                        color: '#777',
+                                        height: heightToDp("3%"),
+                                        fontFamily: "Poppins-Regular"
                                     }}
                                     multiline
                                     ref={ref => this.refChatField = ref}

@@ -118,7 +118,7 @@ export default class HomeScreen extends React.Component {
     _renderSectionTitle = section => {
         return (
             <View >
-                <Text>{section.content}</Text>
+                <Text style={{fontFamily: "Poppins-Regular"}}>{section.content}</Text>
             </View>
         );
     };
@@ -168,7 +168,7 @@ export default class HomeScreen extends React.Component {
 
                         <View>
                             {
-                                (section.today_post === "" && section.unread_post_number === "") ?
+                                section.unread_post_number === "" ?
                                     <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
                                         <Image
                                             source={require("../../../assets/ago.png")}
@@ -199,28 +199,30 @@ export default class HomeScreen extends React.Component {
                                             <Text
                                                 style={{
                                                     color: "#fff",
-                                                    fontSize: widthToDp("3%")
+                                                    fontSize: widthToDp("3%"),
+                                                    fontFamily: "Poppins-Regular",
                                                 }}
                                             >{section.unread_post_number}</Text>
                                         </View>
                                     </TouchableOpacity>
                             }
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days !== "" ? -0.5 : section.have_post === "No" ? 3.5 : 0}%`) }}>
-                                <Text>{section.friend_name}</Text>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? 0 : section.past_post_days !== "" ? -0.5 : section.have_post === "No" ? 3.5 : 0}%`), }}>
+                                <Text style={{fontFamily: "Poppins-Regular"}}>{section.friend_name || "Anonymous User"}</Text>
                             </View>
                             {
-                                !(section.today_post === "" && section.unread_post_number === "") ?
+                                section.today_post !== "" ?
                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
-                                        <Text style={{ color: '#ff0000' }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
-                                    </View> :
+                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular" }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
+                                    </View> :(
+                                        section.past_post_days !== "" &&
                                     <View style={{ marginLeft: widthToDp("6%") }}>
-                                        <Text style={{ color: '#f1b45c' }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
-                                    </View>
+                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular" }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
+                                    </View>)
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${(section.today_post === "" && section.unread_post_number === "") ? 1 : 1.3}%`) }}>
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 1 : 0}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
                                     size={23}
@@ -280,17 +282,17 @@ export default class HomeScreen extends React.Component {
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{}}>{section.friend_name}</Text>
+                                                        <Text style={{fontFamily: "Poppins-Regular"}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                                        <Text style={{ color: '#69abff' }}>{i.post_time}</Text>
+                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular" }}>{i.post_time}</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                             {
                                                 i.post_content !== "" &&
                                                 <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
-                                                    <Text style={{ color: 'black' }}>{i.post_content}</Text>
+                                                    <Text style={{ color: 'black', fontFamily: "Poppins-Regular" }}>{i.post_content}</Text>
                                                 </View>
                                             }
                                             {
@@ -316,6 +318,8 @@ export default class HomeScreen extends React.Component {
                                                                             this.player = ref
                                                                         }}
                                                                         volume={0.0}
+                                                                        repeat
+                                                                        paused={false}
                                                                         style={{
                                                                             height: heightToDp("30%"),
                                                                             width: widthToDp("80%"),
@@ -386,7 +390,8 @@ export default class HomeScreen extends React.Component {
                                                     style={{
                                                         color: "#cdcdcd",
                                                         fontSize: widthToDp("3.5%"),
-                                                        paddingLeft: widthToDp("1%")
+                                                        paddingLeft: widthToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
                                                     }}
                                                 >{i.number_of_like}</Text>
                                                 <TouchableOpacity
@@ -403,7 +408,8 @@ export default class HomeScreen extends React.Component {
                                                     style={{
                                                         color: "#cdcdcd",
                                                         fontSize: widthToDp("3.5%"),
-                                                        paddingLeft: widthToDp("1%")
+                                                        paddingLeft: widthToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
                                                     }}
                                                 >{i.number_of_comment}</Text>
                                                 <Icon2
@@ -596,6 +602,7 @@ export default class HomeScreen extends React.Component {
                                         style={{
                                             textAlign: "center",
                                             paddingVertical: heightToDp("0.8%"),
+                                            fontFamily: "Poppins-Regular"
                                         }}
                                     >{item.name}</Text>
                                     <TouchableOpacity
@@ -609,7 +616,7 @@ export default class HomeScreen extends React.Component {
                                         }}
                                         onPress={() => this.followUser(item, index)}
                                     >
-                                        <Text style={{ color: "#fff" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                        <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                     </TouchableOpacity>
                                     <RBSheet
                                         ref={ref => {
@@ -692,7 +699,7 @@ export default class HomeScreen extends React.Component {
                                 name={'share-apple'}
                                 size={25}
                             />
-                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%') }}>Share Internally</Text>
+                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%'), fontFamily: "Poppins-Regular" }}>Share Internally</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -707,7 +714,7 @@ export default class HomeScreen extends React.Component {
                                 name={'share-google'}
                                 size={25}
                             />
-                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%') }}>Share Externally</Text>
+                            <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%'), fontFamily: "Poppins-Regular" }}>Share Externally</Text>
                         </TouchableOpacity>
                     </View>
                 </RBSheet2>
