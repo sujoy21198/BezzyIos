@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, StatusBar, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DataAccess from '../../components/DataAccess';
@@ -20,9 +20,24 @@ export default class CommentScreen extends React.Component {
             comments: [],
             commentText: "",
             isSendingComment: false,
-            post_id:''
+            post_id:'',
+            isKeyboardOpened: false
         }
         this.state.post_id = typeof this.props.route.post === "object" ? this.props.route.post.post_id : this.props.route.params.post.post_id
+    }
+
+    UNSAFE_componentWillMount () {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    }
+
+    _keyboardDidShow = () => this.setState({isKeyboardOpened: true})
+
+    _keyboardDidHide = () => this.setState({isKeyboardOpened: false})
+    
+    componentWillUnmount () {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
     }
 
     componentDidMount = async () => {
@@ -104,10 +119,8 @@ export default class CommentScreen extends React.Component {
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
             <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
-            <KeyboardAwareScrollView
-                keyboardShouldPersistTaps="handled"
-                style={{flex: 0.935}}
-            >
+            <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+                <View style={{flex: 0.965}}>
                     {
                         this.state.comments.length > 0 &&
                         <FlatList
@@ -122,13 +135,13 @@ export default class CommentScreen extends React.Component {
                                 <View
                                     style={{
                                         flexDirection: 'row',
-                                        alignItems: 'center',
+                                        alignItems: 'flex-start',
                                         paddingHorizontal: widthToDp("2%")
                                     }}
                                 >
                                     <Image
                                         source={{uri: item.userimage}}
-                                        style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 25}}
+                                        style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                     />
                                     <View
                                         style={{
@@ -159,7 +172,7 @@ export default class CommentScreen extends React.Component {
                                 </View>
                                 <View
                                     style={{
-                                        marginLeft: widthToDp("15%"),
+                                        marginLeft: widthToDp("16%"),
                                         marginTop: heightToDp("0.8%"),
                                         width: widthToDp("82%"),
                                         flexDirection: 'row',
@@ -230,13 +243,15 @@ export default class CommentScreen extends React.Component {
                         )}
                         />
                     }  
-            </KeyboardAwareScrollView>  
+                </View>
                 <View
                     style={{
-                        flex: 0.065,
+                        flex: 0.035,
                         backgroundColor: '#fff',
-                        padding: widthToDp("1%"),
-                        marginBottom:heightToDp("1%")
+                        paddingHorizontal: widthToDp("1%"),
+                        paddingBottom: heightToDp("2%"),
+                        paddingTop: heightToDp("1%"),
+                        marginBottom:heightToDp(`${this.state.isKeyboardOpened ? 2 : 1}%`)
                     }}
                 >
                     <View
@@ -261,7 +276,8 @@ export default class CommentScreen extends React.Component {
                                 paddingVertical: heightToDp("0%"),
                                 fontSize: widthToDp("4.3%"),
                                 color: '#777',
-                                fontFamily: "Poppins-Regular"
+                                fontFamily: "Poppins-Regular",
+                                maxHeight: 300
                             }}
                             multiline
                             ref={ref => this.refChatField = ref}
@@ -280,6 +296,8 @@ export default class CommentScreen extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+            </KeyboardAvoidingView>  
+                
             
             <RBSheet
                 ref={ref => {

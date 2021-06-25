@@ -125,6 +125,7 @@ export default class FollowerScreen extends React.Component {
                         padding: widthToDp("2%")
                     }}
                     data={this.state.followerList}
+                    ListFooterComponent={<View style={{height: heightToDp("1%")}}/>}
                     ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
                     renderItem={({item, index}) => (
                         <View

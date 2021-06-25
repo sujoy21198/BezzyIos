@@ -60,7 +60,7 @@ export default class ChatScreen extends React.Component {
                             <View>
                                 <Image
                                     source={{ uri: item.userimage }}
-                                    style={{ height: heightToDp("7%"), width: widthToDp("13%"), marginLeft: widthToDp("5%"), borderRadius: 300, marginTop: heightToDp("1%") }}
+                                    style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff', marginTop: heightToDp("1%"), marginLeft: widthToDp("5%")}}
                                 />
                                 {
                                     item.user_active_status === "true" &&
@@ -82,7 +82,7 @@ export default class ChatScreen extends React.Component {
                                     <PostTime>{item.chat_date_time}</PostTime>
                                 </UserInfoText>
                                 <UserInfoText>
-                                    <Text style={{ width: "90%", fontFamily: "Poppins-Regular", }}>{item.chat_message}</Text>
+                                    <Text style={{ width: "90%", fontFamily: "Poppins-Regular", }} numberOfLines={1} ellipsizeMode="tail">{item.chat_message}</Text>
                                     {
                                         item.unread_msg > 0 &&
                                         <View

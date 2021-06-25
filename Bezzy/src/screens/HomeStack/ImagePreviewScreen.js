@@ -301,14 +301,18 @@ export default class ImagePreviewScreen extends React.Component {
                             />
                         }
                     </TouchableOpacity>
-                    <Text
-                        style={{
-                            color: "#fff",
-                            fontSize: widthToDp("3.5%"),
-                            paddingLeft: widthToDp("2%"),
-                            fontFamily: "Poppins-Regular"
-                        }}
-                    >{this.state.numberOfLikes}</Text>
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.navigate("PostLikedUsersList", {postId: this.props.route.params.image.post_id})}
+                    >
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: widthToDp("3.5%"),
+                                paddingLeft: widthToDp("2%"),
+                                fontFamily: "Poppins-Regular"
+                            }}
+                        >{this.state.numberOfLikes}</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.7}
                         style={{paddingLeft: widthToDp("4%")}}

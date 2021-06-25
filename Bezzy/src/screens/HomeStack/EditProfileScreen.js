@@ -329,9 +329,9 @@ export default class EditProfileScreen extends React.Component {
                             <Image
                                 source={{ uri: this.state.image }}
                                 style={{
-                                    height: heightToDp("11%"),
-                                    width: widthToDp("22%"),
-                                    borderRadius: 50,
+                                    height: 80, 
+                                    width: 80,
+                                    borderRadius: 80 / 2,
                                     alignSelf: "center",
                                     borderWidth: 1,
                                     borderColor: '#69abff'

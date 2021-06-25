@@ -264,6 +264,7 @@ export default class HomeScreen extends React.Component {
                         <Card style={{ height: heightToDp("50%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                             <ActivityIndicator size="large" color="#69abff" />
                         </Card> : (
+                            this.state.expand &&
                             postDetails && postDetails.length > 0 &&
                             <Card style={{
                                 paddingHorizontal: widthToDp("2%"),
@@ -319,7 +320,7 @@ export default class HomeScreen extends React.Component {
                                                                         }}
                                                                         volume={0.0}
                                                                         repeat
-                                                                        paused={false}
+                                                                        paused={!this.state.shouldPlay}
                                                                         style={{
                                                                             height: heightToDp("30%"),
                                                                             width: widthToDp("80%"),
@@ -386,14 +387,18 @@ export default class HomeScreen extends React.Component {
                                                             />
                                                     }
                                                 </TouchableOpacity>
-                                                <Text
-                                                    style={{
-                                                        color: "#cdcdcd",
-                                                        fontSize: widthToDp("3.5%"),
-                                                        paddingLeft: widthToDp("1%"),
-                                                        fontFamily: "Poppins-Regular"
-                                                    }}
-                                                >{i.number_of_like}</Text>
+                                                <TouchableOpacity
+                                                    onPress={() => this.props.navigation.navigate("PostLikedUsersList", {postId: i.post_id})}
+                                                >
+                                                    <Text
+                                                        style={{
+                                                            color: "#cdcdcd",
+                                                            fontSize: widthToDp("3.5%"),
+                                                            paddingLeft: widthToDp("1%"),
+                                                            fontFamily: "Poppins-Regular"
+                                                        }}
+                                                    >{i.number_of_like}</Text>
+                                                </TouchableOpacity>
                                                 <TouchableOpacity
                                                     onPress={() => this.props.navigation.navigate("CommentScreen", { post: i, type: "otherUserPost" })}
                                                 >
@@ -473,19 +478,24 @@ export default class HomeScreen extends React.Component {
     }
 
     friendsBlockDetails = async (id) => {
-        this.setState({ isAccordianOpening: true });
+        this.setState({ isAccordianOpening: true, expand: false, shouldPlay: false });
         let userID = await AsyncStorage.getItem('userId')
         var status
         var postDetails
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendblockdetails + id + '/' + userID);
-        this.setState({ isAccordianOpening: false });
-        if (response.data.status === "success") {
-            status = response.data.status
-            postDetails = response.data.post_details
-        } else {
-            postDetails = [];
-        }
-        this.setState({ postDetails });
+        await axios.get(DataAccess.BaseUrl + DataAccess.friendblockdetails + id + '/' + userID)
+        .then(response => {
+            if (response.data.status === "success") {
+                status = response.data.status
+                postDetails = response.data.post_details
+            } else {
+                postDetails = [];
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            postDetails = []
+        })
+        this.setState({ postDetails, isAccordianOpening: false });
         if (status === 'success') {
             this.setState({ expand: true, shouldPlay: true })
         } else {

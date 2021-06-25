@@ -25,32 +25,41 @@ export default class Terms extends React.Component {
     }
 
     render = () => (
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#69abff'}}>
             <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header isBackButton loginStack={true} headerText={"Terms & Conditions"} navigation={this.props.navigation} />
-            {
-                this.state.isLoading ?
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center', 
-                        alignSelf: 'center'
-                    }}
-                >
-                    <ActivityIndicator size="large" color="#69abff" />
-                </View> :
-                <ScrollView
-                    style={{
-                        flex: 1, 
-                        backgroundColor: '#fff', 
-                        paddingHorizontal: widthToDp("2%"),
-                        paddingVertical: heightToDp("0.5%")
-                    }}
-                    showsVerticalScrollIndicator={false}
-                >
-                    <HTML source={{ html: this.state.terms || '<p></p>' }} contentWidth={Dimensions.get("window").width} />
-                </ScrollView>
-            }
+            <View
+                style={{
+                    borderTopWidth: 1,
+                    borderTopColor: '#69abff',
+                    borderTopLeftRadius: 18,
+                    borderTopRightRadius: 18,
+                    flex: 1, 
+                    backgroundColor: '#fff', 
+                }}
+            >
+                {
+                    this.state.isLoading ?
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center', 
+                            alignSelf: 'center'
+                        }}
+                    >
+                        <ActivityIndicator size="large" color="#69abff" />
+                    </View> :
+                    <ScrollView
+                        style={{
+                            paddingHorizontal: widthToDp("2%"),
+                            paddingVertical: heightToDp("0.5%"),
+                        }}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <HTML source={{ html: this.state.terms || '<p></p>' }} contentWidth={Dimensions.get("window").width} />
+                    </ScrollView>
+                }
+            </View>
         </SafeAreaView>
     )
 }

@@ -101,19 +101,26 @@ export default class ResetPassword extends React.Component {
     render = () => (
         <SafeAreaView
             style={{
-                flex: 1
+                flex: 1, 
+                backgroundColor: '#69abff'
             }}
         >
             <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
             <Header isBackButton navigation={this.props.navigation} loginStack={true} headerText="Create New Password"/>
-            <View style={{height: heightToDp("2%")}}/>
+            
             <KeyboardAwareScrollView
                 style={{
                     height: heightToDp('94%'),
+                    backgroundColor: "#fff",
                     paddingHorizontal: widthToDp("3%"),
+                    borderTopWidth: 1,
+                    borderTopColor: '#69abff',
+                    borderTopLeftRadius: 18,
+                    borderTopRightRadius: 18,
                 }}
                 keyboardShouldPersistTaps="handled"
             >
+                <View style={{height: heightToDp("2%")}}/>
                 <Form
                     style={{
                         marginLeft: widthToDp("-3%")
