@@ -197,6 +197,7 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
+                                                fontFamily: "Poppins-Regular",
                                             }}
                                         >Block List</Text>
                                     </TouchableOpacity>
@@ -207,7 +208,7 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
-
+                                                fontFamily: "Poppins-Regular",
                                             }}
                                         >Change Password</Text>
                                     </TouchableOpacity>
@@ -216,6 +217,7 @@ export default class Header extends React.Component {
                                         <Text
                                             style={{
                                                 fontSize: widthToDp("4.6%"),
+                                                fontFamily: "Poppins-Regular",
                                             }}
                                         >Logout</Text>
                                     </TouchableOpacity>
