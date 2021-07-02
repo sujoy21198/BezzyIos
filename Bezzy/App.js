@@ -1,38 +1,60 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Root } from 'native-base'
 import Navigation from './src/Navigation';
 import messaging from '@react-native-firebase/messaging';
+import PushNotification from "react-native-push-notification"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-//const configOptions = {
-  //debug: true,
- // promptOnMissingPlayServices: true,
-  //apiKey: "AIzaSyCTFNYbdYcGIMBiV8u5wN8rxjhEH4jk6Ms", 
- // appId: "1:694046059233:ios:885204988f61b3b92d65a0",
-  //databaseURL: "https://bezzy-applicatio-1603700126875.firebaseio.com/",
-  //messagingSenderId: "694046059233",
-  //projectId: "bezzy-applicatio-1603700126875",
-  //storageBucket: "bezzy-applicatio-1603700126875.appspot.com"
-//}
+const requestUserPermission = async () => {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-//export const firebase = RNFirebase.initializeApp(configOptions);
-
-export default class App extends Component {
-
-  async componentDidMount () {
-    const cloudMessagePermission = await messaging.AuthorizationStatus;
-    const authorizationStatus = await messaging().requestPermission();
-      if (authorizationStatus === cloudMessagePermission.AUTHORIZED) {
-        console.log('Permission status:', authorizationStatus);
-      } else {
-        await messaging().requestPermission({provisional: true})
-      }
-  }
-
-  render() {
-    return (
-      <Root>
-        <Navigation />
-      </Root>
-    )
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
   }
 }
+
+const App = () => {
+  useEffect(() => {
+    requestUserPermission();
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(async remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              'Notification caused app to open from quit state:',
+              remoteMessage,
+            );
+        }
+      });
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', remoteMessage);
+      AsyncStorage.setItem("notification", JSON.stringify(remoteMessage.data))
+      PushNotification.localNotification({
+        title: remoteMessage.notification.title,
+        message: remoteMessage.notification.body,
+      });
+    });
+
+    return unsubscribe;
+   }, []);
+
+  return (
+    <Root>
+      <Navigation />
+    </Root>
+  )
+}
+
+export default App;

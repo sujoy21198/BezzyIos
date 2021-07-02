@@ -206,7 +206,7 @@ export default class HomeScreen extends React.Component {
                                         </View>
                                     </TouchableOpacity>
                             }
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? 0 : section.past_post_days !== "" ? -0.5 : section.have_post === "No" ? 3.5 : 0}%`), }}>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? 0 : section.past_post_days !== "" ? -1 : section.have_post === "No" ? 3.5 : 0}%`), }}>
                                 <Text style={{fontFamily: "Poppins-Regular"}}>{section.friend_name || "Anonymous User"}</Text>
                             </View>
                             {
@@ -222,7 +222,7 @@ export default class HomeScreen extends React.Component {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 1 : 0}%`) }}>
+                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 0 : 0.2}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
                                     size={23}
