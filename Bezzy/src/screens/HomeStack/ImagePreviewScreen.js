@@ -184,6 +184,7 @@ export default class ImagePreviewScreen extends React.Component {
                                 ref={(ref) => {
                                     this.player = ref
                                 }}
+                                ignoreSilentSwitch="ignore"
                                 // onBuffer={this.onBuffer}
                                 // onError={this.videoError}
                                 controls={true}
@@ -202,7 +203,7 @@ export default class ImagePreviewScreen extends React.Component {
             <TouchableOpacity
                 style={{
                     position: 'absolute',
-                    top: heightToDp("2%"),
+                    top: heightToDp(`${this.state.postType === "video" ? 10 : 2}%`),
                     left: widthToDp("3.5%"),
                     backgroundColor: "#1b1b1b",
                     height: 50, 

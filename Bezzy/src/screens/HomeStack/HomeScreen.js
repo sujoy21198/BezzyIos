@@ -275,7 +275,7 @@ export default class HomeScreen extends React.Component {
                             }}>
                                 {
                                     postDetails.map((i, key) => (
-                                        <View style={{ width: widthToDp("95%"), alignSelf: 'center' }}>
+                                        <View style={{ width: widthToDp("95%"), alignSelf: 'center' }} key={key}>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Image
                                                     source={{ uri: section.friend_photo }}
@@ -320,11 +320,15 @@ export default class HomeScreen extends React.Component {
                                                                         }}
                                                                         volume={0.0}
                                                                         repeat
-                                                                        paused={!this.state.shouldPlay}
+                                                                        key={index}
+                                                                        ignoreSilentSwitch="ignore"
+                                                                        // paused={!this.state.shouldPlay}
                                                                         style={{
                                                                             height: heightToDp("30%"),
-                                                                            width: widthToDp("80%"),
+                                                                            width: widthToDp("85%"),
                                                                             alignSelf: 'center',
+                                                                            borderRadius: 20,
+                                                                            backgroundColor: "#1b1b1b"
                                                                         }}
                                                                         resizeMode="contain"
                                                                     />

@@ -50,10 +50,24 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSBlueToothAlwaysUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>YOUR TEXT</string>
 	<key>NSCameraUsageDescription</key>
 	<string>YOUR TEXT</string>
+	<key>NSContactsUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>YOUR TEXT</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>YOUR TEXT</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>YOUR TEXT</string>
+	<key>NSMotionUsageDescription</key>
+	<string>YOUR TEXT</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -63,8 +77,6 @@
 	<key>NSSiriUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>YOUR TEXT</string>
-	<key>NSUserTrackingUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>UIAppFonts</key>
 	<array>
