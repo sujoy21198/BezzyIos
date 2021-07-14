@@ -24,14 +24,14 @@ export default class BottomTab extends React.Component {
         <SafeAreaView
             style={{
                 position: 'absolute',
-                bottom: 0,
+                bottom: heightToDp("1%"),
                 width: widthToDp("100%"),
             }}
         >
             <View
                 style={{
                     backgroundColor: '#ececec',
-                    height: heightToDp("8%"),
+                    height: heightToDp("6%"),
                     justifyContent: 'flex-end',
                     borderTopWidth: 10,
                     borderTopColor: '#ececec'
