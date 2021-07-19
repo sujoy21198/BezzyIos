@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Platform, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { heightToDp, widthToDp } from './Responsive';
 
@@ -22,11 +22,11 @@ export default class ButtonComponent extends React.Component {
                 disabled={this.props.disabled}
             >
                 <Text
-                    style={{
+                    style={[{
                         color: "#fff",
                         textAlign: "center",
                         fontFamily: "ProximaNova-Black",
-                    }}
+                    }, Platform.isPad && {fontSize: widthToDp("3.2%")}]}
                 >
                     {this.props.buttonText}
                 </Text>

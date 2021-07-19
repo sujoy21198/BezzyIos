@@ -236,12 +236,12 @@ export default class InboxScreen extends Component {
       >
           <Icon 
             name="chevron-left"
-            size={20}
+            size={Platform.isPad ? 40 : 20}
             color={"#69abff"}                        
           />
           <Image
           source={{ uri: this.state.friendImage }}
-          style={{height: 40, width: 40, borderRadius: 40 / 2, marginLeft: widthToDp("1%")}}
+          style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, marginLeft: widthToDp("1%")}}
           resizeMode="contain"
           />
           <Text
@@ -288,7 +288,7 @@ export default class InboxScreen extends Component {
                         <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
                         <Ionicons
                         name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                        size={15}
+                        size={Platform.isPad ? 30 : 15}
                         color="#fff"
                         style={{alignSelf: 'flex-end', marginRight: widthToDp("2%")}}
                         />
@@ -326,7 +326,7 @@ export default class InboxScreen extends Component {
                           }}>{item.chat_msg_time}</Text>
                           <Ionicons
                           name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={15}
+                          size={Platform.isPad ? 30 : 15}
                           color="#fff"
                           style={{
                             position: 'absolute',
@@ -351,7 +351,7 @@ export default class InboxScreen extends Component {
                           <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
                           <Ionicons
                           name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={15}
+                          size={Platform.isPad ? 30 : 15}
                           color="#1b1b1b"
                           style={{alignSelf: 'flex-start', marginLeft: widthToDp("2%")}}
                           />
@@ -385,7 +385,7 @@ export default class InboxScreen extends Component {
                           }}>{item.chat_msg_time}</Text>
                           <Ionicons
                           name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={15}
+                          size={Platform.isPad ? 30 : 15}
                           color="#fff"
                           style={{
                             position: 'absolute',
@@ -414,14 +414,14 @@ export default class InboxScreen extends Component {
             >
               <Icon
                 name="smile"
-                size={20}
+                size={Platform.isPad ? 40 : 20}
                 color="#69abff"
                 onPress={() => this.startEmoji()}
                 style={{paddingTop: this.state.isKeyboardOpened ? heightToDp("0.5%") : heightToDp("0%")}}
               />
               <Ionicons
                 name={Platform.OS==='android' ? 'md-image' : 'ios-image'}
-                size={25}
+                size={Platform.isPad ? 50 : 25}
                 color="#69abff"
                 style={{paddingLeft: widthToDp("1%")}}
                 onPress={() => this.openImageSelection()}
@@ -431,7 +431,7 @@ export default class InboxScreen extends Component {
                       marginLeft: widthToDp("1%"),
                       paddingHorizontal: widthToDp("2%"),
                       height: heightToDp(`4%`),
-                      width: widthToDp("85%"),
+                      width: Platform.isPad ? widthToDp("87%") : widthToDp("85%"),
                       borderWidth: 1,
                       borderRadius: 5,
                       borderColor: "#69abff",
@@ -456,7 +456,7 @@ export default class InboxScreen extends Component {
                   />
                   <Ionicons
                   name={Platform.OS==='android' ? 'md-send' : 'ios-send'}
-                  size={20}
+                  size={Platform.isPad ? 40 : 20}
                   color="#69abff"
                   onPress={() => this.sendMessage()}
                   />

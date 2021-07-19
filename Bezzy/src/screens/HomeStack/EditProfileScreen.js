@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -80,7 +80,7 @@ export default class EditProfileScreen extends React.Component {
             email = res.data.usedetails.get_email;
             this.setEmail(email);
             gender = res.data.usedetails.get_gender;
-            dob = res.data.usedetails.get_dateofbirth;
+            dob = res.data.usedetails.get_dateofbirth !== null ? res.data.usedetails.get_dateofbirth : "";
             bio = res.data.usedetails.bio || "";
             userDob.setDate(Number(dob.split("-")[0]));
             userDob.setMonth(Number(dob.split("-")[1]));
@@ -133,22 +133,22 @@ export default class EditProfileScreen extends React.Component {
                 }
             })
         }
-        if(this.state.gender === "") {
-            return Toast.show({
-                text: "Please select your gender",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        if(this.state.dob === "") {
-            return Toast.show({
-                text: "Please select your date of birth",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
+        // if(this.state.gender === "") {
+        //     return Toast.show({
+        //         text: "Please select your gender",
+        //         style: {
+        //             backgroundColor: '#777',
+        //         }
+        //     })
+        // }
+        // if(this.state.dob === "") {
+        //     return Toast.show({
+        //         text: "Please select your date of birth",
+        //         style: {
+        //             backgroundColor: '#777',
+        //         }
+        //     })
+        // }
         if(this.state.bio.trim() === "") {
             return Toast.show({
                 text: "Please write few of your bio",
@@ -348,6 +348,19 @@ export default class EditProfileScreen extends React.Component {
                             />
                     }
                 </TouchableOpacity>
+                <Text
+                    style={{
+                        marginBottom: heightToDp("3%"),
+                        marginHorizontal: widthToDp("3%"),
+                        color: "#808080",
+                        borderWidth: 1,
+                        padding: widthToDp("1%")
+                    }}
+                >
+                    Please keep in mind that, if the profile picture uploaded by you is found to be objectionable, then{" "}
+                    that post can be deleted from our server by the database administrator and also, for posting such{" "}
+                    objectionable contents in our network, the database administrator may parmanently suspend your account.
+                </Text>
                 
                 <View
                     style={{
@@ -398,11 +411,11 @@ export default class EditProfileScreen extends React.Component {
                 {
                     !this.state.isEmailValid && this.state.email !== "" &&
                     <Text
-                        style={{
+                        style={[{
                             color: "#ff0000",
-                            marginHorizontal: widthToDp("3%"),
-                            fontFamily: "Poppins-Regular"
-                        }}
+                            marginHorizontal: Platform.isPad ? widthToDp("2.5%") : widthToDp("3%"),
+                            fontFamily: "Poppins-Regular",
+                        }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                     >Entered email address is not valid</Text>
                 }
                 <TouchableOpacity
@@ -425,7 +438,7 @@ export default class EditProfileScreen extends React.Component {
                             fontFamily: "Poppins-Regular"
                         }}
                     >
-                        {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
+                        {this.state.dob !== "" ? this.state.dob : 'Date of Birth (Optional)'}
                     </Text>
                 </TouchableOpacity>
                 <DateTimePickerModal
@@ -458,7 +471,7 @@ export default class EditProfileScreen extends React.Component {
                         {
                             this.state.gender === "0" ? "Male" :
                             this.state.gender === "1" ? "Female" :
-                            "Select Your Gender"
+                            "Select Your Gender (Optional)"
                         }
                     </Text>
                 </TouchableOpacity>

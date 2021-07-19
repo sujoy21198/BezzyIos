@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import DataAccess from '../../components/DataAccess';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -119,7 +119,7 @@ export default class NotificationScreen extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.userimage}}
-                                    style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 40}}
+                                    style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2}}
                                 />
                                 <Text
                                     style={{

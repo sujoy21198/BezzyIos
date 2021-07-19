@@ -169,63 +169,63 @@ export default class HomeScreen extends React.Component {
                         <View>
                             {
                                 section.unread_post_number === "" ?
-                                    <View style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp("-2%") }}>
+                                    <View style={{ marginLeft: Platform.isPad ? widthToDp("61%") : widthToDp("60%"), marginTop: Platform.isPad ? 0 : heightToDp("-2%") }}>
                                         <Image
                                             source={require("../../../assets/ago.png")}
                                             resizeMode="contain"
-                                            style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                            style={{ height: Platform.isPad ? heightToDp("5%") : heightToDp("6%"), width: Platform.isPad ? widthToDp("5%") : widthToDp("6%") }}
                                         />
                                     </View> :
                                     <TouchableOpacity
                                         activeOpacity={0.7}
-                                        style={{ marginLeft: widthToDp("58%") }}
+                                        style={{ marginLeft: widthToDp("59%") }}
                                         onPress={() => this.props.navigation.navigate("NotificationScreen")}
                                     >
-                                        <Icon2
-                                            name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
-                                            color={"#777"}
-                                            size={22}
+                                        <Image
+                                            source={require("../../../assets/notification.png")}
+                                            resizeMode="contain"
+                                            style={{ height: Platform.isPad ? heightToDp("5%") : heightToDp("6%"), width: Platform.isPad ? widthToDp("5%") : widthToDp("6%") }}
                                         />
                                         <View
                                             style={{
                                                 position: "absolute",
-                                                top: heightToDp("-1%"),
-                                                right: 0,
+                                                top: heightToDp("0.5%"),
+                                                right: widthToDp("1%"),
                                                 backgroundColor: "#ff0000",
                                                 borderRadius: 7,
                                                 paddingHorizontal: 2,
                                             }}
                                         >
                                             <Text
-                                                style={{
+                                                style={[{
                                                     color: "#fff",
                                                     fontSize: widthToDp("3%"),
                                                     fontFamily: "Poppins-Regular",
-                                                }}
+                                                }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
                                             >{section.unread_post_number}</Text>
                                         </View>
                                     </TouchableOpacity>
                             }
                             <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? 0 : section.past_post_days !== "" ? -1 : section.have_post === "No" ? 3.5 : 0}%`), }}>
-                                <Text style={{fontFamily: "Poppins-Regular"}}>{section.friend_name || "Anonymous User"}</Text>
+                                <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp('3%')}}>{section.friend_name || "Anonymous User"}</Text>
                             </View>
                             {
                                 section.today_post !== "" ?
                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
-                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular" }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
+                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular", fontSize: widthToDp('2.2%') }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
                                     </View> :(
                                         section.past_post_days !== "" &&
                                     <View style={{ marginLeft: widthToDp("6%") }}>
-                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular" }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
+                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular", fontSize: widthToDp('2.2%') }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                     </View>)
                             }
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
-                                style={{ marginLeft: widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 0 : 0.2}%`) }}>
+                                style={{ marginLeft: Platform.isPad ? widthToDp('62%') : widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 0 : 0.2}%`) }}>
                                 <Icon2
                                     name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
-                                    size={23}
+                                    size={Platform.isPad ? 40 : 23}
                                     color={"#69abff"}
                                 />
                             </TouchableOpacity>
@@ -279,21 +279,21 @@ export default class HomeScreen extends React.Component {
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Image
                                                     source={{ uri: section.friend_photo }}
-                                                    style={{ height: heightToDp("5%"), width: widthToDp("10%"), marginLeft: widthToDp("4%"), borderRadius: 300, marginTop: heightToDp("2%") }}
+                                                    style={{ height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, marginLeft: widthToDp("4%"), borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, marginTop: heightToDp("2%") }}
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{fontFamily: "Poppins-Regular"}}>{section.friend_name}</Text>
+                                                        <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp("3%")}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular" }}>{i.post_time}</Text>
+                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular", fontSize: widthToDp("2%") }}>{i.post_time}</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                             {
                                                 i.post_content !== "" &&
                                                 <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
-                                                    <Text style={{ color: 'black', fontFamily: "Poppins-Regular" }}>{i.post_content}</Text>
+                                                    <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("2.5%") }}>{i.post_content}</Text>
                                                 </View>
                                             }
                                             {
@@ -382,12 +382,12 @@ export default class HomeScreen extends React.Component {
                                                             <Icon
                                                                 name="heart"
                                                                 color="#69abff"
-                                                                size={23}
+                                                                size={Platform.isPad ? 35 : 23}
                                                             /> :
                                                             <Icon1
                                                                 name="heart"
                                                                 color="#ff0000"
-                                                                size={23}
+                                                                size={Platform.isPad ? 35 : 23}
                                                             />
                                                     }
                                                 </TouchableOpacity>
@@ -397,7 +397,7 @@ export default class HomeScreen extends React.Component {
                                                     <Text
                                                         style={{
                                                             color: "#cdcdcd",
-                                                            fontSize: widthToDp("3.5%"),
+                                                            fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                                                             paddingLeft: widthToDp("1%"),
                                                             fontFamily: "Poppins-Regular"
                                                         }}
@@ -409,14 +409,14 @@ export default class HomeScreen extends React.Component {
                                                     <Icon
                                                         name="comment"
                                                         color="#69abff"
-                                                        size={23}
+                                                        size={Platform.isPad ? 35 : 23}
                                                         style={{ paddingLeft: widthToDp("4%") }}
                                                     />
                                                 </TouchableOpacity>
                                                 <Text
                                                     style={{
                                                         color: "#cdcdcd",
-                                                        fontSize: widthToDp("3.5%"),
+                                                        fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                                                         paddingLeft: widthToDp("1%"),
                                                         fontFamily: "Poppins-Regular"
                                                     }}
@@ -424,7 +424,7 @@ export default class HomeScreen extends React.Component {
                                                 <Icon2
                                                     name={Platform.OS === 'android' ? 'md-arrow-redo-outline' : 'ios-arrow-redo-outline'}
                                                     color="#69abff"
-                                                    size={25}
+                                                    size={Platform.isPad ? 40 : 25}
                                                     style={{ paddingLeft: widthToDp("4%") }}
                                                     onPress={() => this.sharePostMethod(i.post_id)}
                                                 />
@@ -613,11 +613,11 @@ export default class HomeScreen extends React.Component {
                                         style={{ height: heightToDp("13%"), width: widthToDp("31%"), borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
                                     />
                                     <Text
-                                        style={{
+                                        style={[{
                                             textAlign: "center",
                                             paddingVertical: heightToDp("0.8%"),
                                             fontFamily: "Poppins-Regular"
-                                        }}
+                                        }, Platform.isPad && {fontSize: widthToDp("2%")}]}
                                     >{item.name}</Text>
                                     <TouchableOpacity
                                         activeOpacity={0.7}
@@ -630,7 +630,7 @@ export default class HomeScreen extends React.Component {
                                         }}
                                         onPress={() => this.followUser(item, index)}
                                     >
-                                        <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black" }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                        <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black", fontSize: widthToDp("2%") }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                     </TouchableOpacity>
                                     <RBSheet
                                         ref={ref => {
@@ -692,7 +692,7 @@ export default class HomeScreen extends React.Component {
                     ref={ref => {
                         this.RBSheet2 = ref;
                     }}
-                    height={100}
+                    height={Platform.isPad ? 250 : 100}
                 >
                     <View
                         style={{
@@ -711,7 +711,7 @@ export default class HomeScreen extends React.Component {
                             onPress={() => this.shareImageInternally()}>
                             <ShareIcon
                                 name={'share-apple'}
-                                size={25}
+                                size={Platform.isPad ? 50 : 25}
                             />
                             <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%'), fontFamily: "Poppins-Regular" }}>Share Internally</Text>
                         </TouchableOpacity>
@@ -726,7 +726,7 @@ export default class HomeScreen extends React.Component {
                             onPress={() => this.shareImageExternally()}>
                             <ShareIcon
                                 name={'share-google'}
-                                size={25}
+                                size={Platform.isPad ? 50 : 25}
                             />
                             <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('4%'), fontFamily: "Poppins-Regular" }}>Share Externally</Text>
                         </TouchableOpacity>

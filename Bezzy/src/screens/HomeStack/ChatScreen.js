@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, Image, SafeAreaView, ScrollView, StatusBar, FlatList, KeyboardAvoidingView, View, StyleSheet, TextInput, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { RefreshControl, Image, SafeAreaView, ScrollView, StatusBar, FlatList, KeyboardAvoidingView, View, StyleSheet, TextInput, TouchableOpacity, Text, ActivityIndicator, Platform } from 'react-native';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import {
@@ -55,6 +55,7 @@ export default class ChatScreen extends React.Component {
                 refreshing={this.state.isRefreshing}
                 onRefresh={() => this.setState({ isRefreshing: true }, () => this.getChatList("pullRefresh"))}
                 renderItem={({ item }) => (
+                    !Platform.isPad ? 
                     <Card onPress={() => this.props.navigation.navigate('InboxScreen', { friendId: item.friendID, friendImage: item.userimage, friendName: item.username })}>
                         <UserInfo>
                             <View>
@@ -101,7 +102,82 @@ export default class ChatScreen extends React.Component {
                                 </UserInfoText>
                             </TextSection>
                         </UserInfo>
-                    </Card>
+                    </Card> :
+                    <TouchableOpacity 
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: "center"
+                    }}
+                    onPress={() => this.props.navigation.navigate('InboxScreen', { friendId: item.friendID, friendImage: item.userimage, friendName: item.username })}>
+                        <Image
+                            source={{ uri: item.userimage }}
+                            style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff', marginTop: heightToDp("2%"), marginLeft: widthToDp("2%")}}
+                        />
+                        {
+                            item.user_active_status === "true" &&
+                            <View 
+                                style={{
+                                    height: 20,
+                                    width: 20,
+                                    borderRadius: 20 / 2,
+                                    backgroundColor: "#008000",
+                                    position: "absolute",
+                                    left: widthToDp("9%"),
+                                    top: widthToDp("9%")
+                                }}
+                            />
+                        }
+                        <View
+                            style={{
+                                flexDirection: "column",
+                                justifyContent: "flex-start",
+                                marginLeft: widthToDp("3%"),
+                                paddingTop: heightToDp("3%"),
+                                paddingBottom: heightToDp('1%'),
+                                borderBottomWidth: 1,
+                                borderBottomColor: "#cccccc",
+                                width: "85%"
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Text style={{ width: "57%", fontSize: widthToDp("3%"), fontFamily: "ProximaNova-Black" }}>{item.username}</Text>
+                                <Text style={{
+                                    fontSize: widthToDp("2%"),
+                                    color: "#666",
+                                    fontFamily: "Poppins-Regular"
+                                }}>{item.chat_date_time}</Text>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Text style={{ width: "80%", fontSize: widthToDp("2%"), fontFamily: "Poppins-Regular", }} numberOfLines={1} ellipsizeMode="tail">{item.chat_message}</Text>
+                                    {
+                                        item.unread_msg > 0 &&
+                                        <View
+                                            style={{
+                                                height: Platform.isPad ? 30 : 20,
+                                                width: Platform.isPad ? 30 : 20,
+                                                borderRadius: Platform.isPad ? 30 / 2 : 20 / 2,
+                                                backgroundColor: "#69abff",
+                                                justifyContent: "center",
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <Text style={{ color: "#fff", fontSize: widthToDp("2%"), fontFamily: "Poppins-Regular", }}>{item.unread_msg}</Text>
+                                        </View>
+                                    }  
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 )}
             />
             <PushNotificationController navigation={this.props.navigation} />

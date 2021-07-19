@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import {ActivityIndicator, Dimensions, SafeAreaView, ScrollView, StatusBar, View} from 'react-native'; 
+import {ActivityIndicator, Dimensions, Platform, SafeAreaView, ScrollView, StatusBar, View} from 'react-native'; 
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import HTML from "react-native-render-html";
@@ -56,7 +56,7 @@ export default class Terms extends React.Component {
                         }}
                         showsVerticalScrollIndicator={false}
                     >
-                        <HTML source={{ html: this.state.terms || '<p></p>' }} contentWidth={Dimensions.get("window").width} />
+                        <HTML source={{ html: this.state.terms || '<p></p>' }} baseFontStyle={{fontSize: Platform.isPad ? 20 : 15}} contentWidth={Dimensions.get("window").width} />
                     </ScrollView>
                 }
             </View>

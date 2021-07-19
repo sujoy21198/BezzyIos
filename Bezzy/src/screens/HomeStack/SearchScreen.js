@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput, ActivityIndicator, StatusBar } from 'react-native';
+import { FlatList, Image, SafeAreaView, Text, TouchableOpacity, View, TextInput, ActivityIndicator, StatusBar, Platform } from 'react-native';
 import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -169,14 +169,14 @@ export default class SearchScreen extends React.Component {
                                 />
                             </TouchableOpacity>
                             <Text
-                                style={{
+                                style={[{
                                     textAlign: "center",
                                     paddingVertical: heightToDp("0.8%"),
                                     fontFamily: "Poppins-Regular",
-                                }}
+                                }, Platform.isPad && {fontSize: widthToDp("2%")}]}
                                 numberOfLines={1}
                                 ellipsizeMode="tail"
-                            >{item.name}</Text>
+                            >{item.name || "Anonymous User"}</Text>
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => this.followUser(item, index)}
@@ -189,7 +189,7 @@ export default class SearchScreen extends React.Component {
                                         padding: 5,
                                         marginHorizontal: 5}}
                                 >
-                                    <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black", }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
+                                    <Text style={{ color: "#fff", fontFamily: "ProximaNova-Black", fontSize: widthToDp("2%") }}>{item.user_is_flollowers === "No" ? "FOLLOW" : "FOLLOW BACK"}</Text>
                                 </LinearGradient>
 
                             </TouchableOpacity>

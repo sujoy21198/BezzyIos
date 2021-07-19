@@ -154,7 +154,7 @@ export default class BottomTab extends React.Component {
                                 bottom: heightToDp("4.9%"),
                                 left: widthToDp("1.4%"),
                                 height: 50,
-                                width: 50,
+                                width: Platform.isPad ? '80%' : 50,
                                 borderRadius: 50 / 2,
                                 backgroundColor: "#007dfe",
                                 justifyContent: 'center',

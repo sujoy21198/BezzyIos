@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Alert, Image, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -160,7 +160,7 @@ export default class SignUpScreen extends React.Component {
         let isOnline = await NetInfo.fetch().then(state => state.isConnected);
         if(!isOnline) {
             return Toast.show({
-                text: "Please be online to login to the app.",
+                text: "Please be online to sign up to the app.",
                 style: {
                     backgroundColor: '#777',
                 }
@@ -231,22 +231,22 @@ export default class SignUpScreen extends React.Component {
                 }
             })
         }
-        if(this.state.gender === "") {
-            return Toast.show({
-                text: "Please select your gender",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        if(this.state.dob === "") {
-            return Toast.show({
-                text: "Please select your date of birth",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
+        // if(this.state.gender === "") {
+        //     return Toast.show({
+        //         text: "Please select your gender",
+        //         style: {
+        //             backgroundColor: '#777',
+        //         }
+        //     })
+        // }
+        // if(this.state.dob === "") {
+        //     return Toast.show({
+        //         text: "Please select your date of birth",
+        //         style: {
+        //             backgroundColor: '#777',
+        //         }
+        //     })
+        // }
         this.RBSheet.open();
         var formData = new FormData()
         formData.append('username', null)
@@ -357,9 +357,22 @@ export default class SignUpScreen extends React.Component {
                         }
 
                     </TouchableOpacity>
+                    <Text
+                        style={{
+                            marginTop: heightToDp("3%"),
+                            marginHorizontal: widthToDp("3%"),
+                            color: "#808080",
+                            borderWidth: 1,
+                            padding: widthToDp("1%")
+                        }}
+                    >
+                        Please keep in mind that, if the profile picture uploaded by you is found to be objectionable, then{" "}
+                        that post can be deleted from our server by the database administrator and also, for posting such{" "}
+                        objectionable contents in our network, the database administrator may parmanently suspend your account.
+                    </Text>
                     <Form
                         style={{
-                            marginLeft: widthToDp("-3%")
+                            marginLeft: Platform.isPad ? heightToDp("-1%") : widthToDp("-3%")
                         }}
                     >
                         <Item 
@@ -368,6 +381,7 @@ export default class SignUpScreen extends React.Component {
                                 borderBottomWidth: 1,
                                 borderBottomColor: this.state.isNameFocused ? '#69abff' : '#a9a9a9',
                                 marginTop: heightToDp("2%"),
+                                paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                             }}
                             floatingLabel
                         >
@@ -402,6 +416,7 @@ export default class SignUpScreen extends React.Component {
                                 borderBottomWidth: 1,
                                 borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
                                 marginTop: heightToDp("3%"),
+                                paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                             }}
                             floatingLabel
                         >
@@ -435,11 +450,11 @@ export default class SignUpScreen extends React.Component {
                         {
                             !this.state.isEmailValid && this.state.email !== "" &&
                             <Text
-                                style={{
+                                style={[{
                                     color: "#ff0000",
-                                    marginLeft: widthToDp("3%"),
+                                    marginLeft: Platform.isPad ? widthToDp("1.5%") : widthToDp("3%"),
                                     fontFamily: "Poppins-Regular",
-                                }}
+                                }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                             >Entered email address is not valid</Text>
                         }
                         <View style={{
@@ -448,7 +463,8 @@ export default class SignUpScreen extends React.Component {
                             borderBottomWidth: 1,
                             borderBottomColor: this.state.isPasswordFocused ? '#69abff' : '#a9a9a9',
                             marginTop: heightToDp("5%"),
-                            marginLeft: widthToDp("3%")
+                            marginLeft: Platform.isPad ? widthToDp("2%") : widthToDp("3%"),
+                            paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                         }}>
                             <Item 
                                 style={{
@@ -488,7 +504,7 @@ export default class SignUpScreen extends React.Component {
                             </Item>
                             <Icon
                                 name={this.state.showPassword ? "eye-off" : "eye"}
-                                size={20}
+                                size={Platform.isPad ? 40 : 20}
                                 color="#808080"
                                 onPress={() => this.setState({ showPassword: !this.state.showPassword })}
                             />
@@ -496,11 +512,11 @@ export default class SignUpScreen extends React.Component {
                         {
                             this.state.password!=="" && this.state.password.trim().length < 8 &&
                             <Text
-                                style={{
+                                style={[{
                                     color: "#ff0000",
-                                    marginLeft: widthToDp("3%"),
+                                    marginLeft: Platform.isPad ? widthToDp("2%") : widthToDp("3%"),
                                     fontFamily: "Poppins-Regular",
-                                }}
+                                }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                             >Password should have at least 8 characters</Text>
                         }
                         <View style={{
@@ -509,7 +525,8 @@ export default class SignUpScreen extends React.Component {
                             borderBottomWidth: 1,
                             borderBottomColor: this.state.isConfirmPasswordFocused ? '#69abff' : '#a9a9a9',
                             marginTop: heightToDp("5%"),
-                            marginLeft: widthToDp("3%")
+                            marginLeft: Platform.isPad ? widthToDp("2%") : widthToDp("3%"),
+                            paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                         }}>
                             <Item 
                                 style={{
@@ -546,7 +563,7 @@ export default class SignUpScreen extends React.Component {
                             </Item>
                             <Icon
                                 name={this.state.showConfirmPassword ? "eye-off" : "eye"}
-                                size={20}
+                                size={Platform.isPad ? 40 : 20}
                                 color="#808080"
                                 onPress={() => this.setState({ showConfirmPassword: !this.state.showConfirmPassword })}
                             />
@@ -554,11 +571,11 @@ export default class SignUpScreen extends React.Component {
                         {
                             this.state.confirmPassword.trim()!=="" && this.state.password.trim()!==this.state.confirmPassword.trim() &&
                             <Text
-                                style={{
+                                style={[{
                                     color: "#ff0000",
-                                    marginLeft: widthToDp("3%"),
+                                    marginLeft: Platform.isPad ? widthToDp("2%") : widthToDp("3%"),
                                     fontFamily: "Poppins-Regular",
-                                }}
+                                }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                             >Passwords should match</Text>
                         }
                     </Form>   
@@ -593,7 +610,7 @@ export default class SignUpScreen extends React.Component {
                                 fontFamily: "Poppins-Regular",
                             }}
                         >
-                            {this.state.dob !== "" ? this.state.dob : 'Date of Birth'}
+                            {this.state.dob !== "" ? this.state.dob : 'Date of Birth (Optional)'}
                         </Text>
                     </TouchableOpacity>
                     <DateTimePickerModal
@@ -625,7 +642,7 @@ export default class SignUpScreen extends React.Component {
                             {
                                 this.state.gender === "0" ? "Male" :
                                 this.state.gender === "1" ? "Female" :
-                                "Select Your Gender"
+                                "Select Your Gender (Optional)"
                             }
                         </Text>
                     </TouchableOpacity>
@@ -640,14 +657,14 @@ export default class SignUpScreen extends React.Component {
                         <Icon
                             name={this.state.checkTerms ? "checkbox" : "square-outline"}
                             color="#808080"
-                            size={20}
+                            size={Platform.isPad ? 40 : 20}
                             onPress={() => this.setState({ checkTerms: !this.state.checkTerms })}
                         />
                         <Text
-                            style={{
+                            style={[{
                                 marginLeft: widthToDp("1%"),
                                 fontFamily: "Poppins-Regular",
-                            }}
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         >
                             I accept the <Text style={{ color: "#69abff" }} onPress={() => this.props.navigation.navigate("Terms")}>Terms & Conditions</Text>
                         </Text>

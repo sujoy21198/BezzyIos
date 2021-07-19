@@ -141,7 +141,7 @@ export default class CommentScreen extends React.Component {
                                 >
                                     <Image
                                         source={{uri: item.userimage}}
-                                        style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                                        style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                     />
                                     <View
                                         style={{
@@ -149,7 +149,7 @@ export default class CommentScreen extends React.Component {
                                             padding: widthToDp("2%"),
                                             backgroundColor: 'rgba(0, 255, 255, 0.1)',
                                             borderRadius: 10,
-                                            width: widthToDp("82.5%")
+                                            width: Platform.isPad ? widthToDp("85%") : widthToDp("82.5%")
                                         }}
                                     >
                                         <Text
@@ -205,19 +205,19 @@ export default class CommentScreen extends React.Component {
                                                 <Icon1
                                                     name="heart"
                                                     color={"#ff0000"}
-                                                    size={15}
+                                                    size={Platform.isPad ? 30 : 15}
                                                 /> :
                                                 <Icon
                                                     name="heart"
                                                     color={"#69abff"}
-                                                    size={15}
+                                                    size={Platform.isPad ? 30 : 15}
                                                 />
                                             }
                                         </TouchableOpacity>
                                         <Text
                                             style={{
                                                 color: "#777",
-                                                fontSize: widthToDp("3.5%"),
+                                                fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                                                 paddingLeft: widthToDp("2%"),
                                                 fontFamily: "Poppins-Regular"
                                             }}
@@ -225,14 +225,14 @@ export default class CommentScreen extends React.Component {
                                         <Icon
                                             name="comment"
                                             color="#69abff"
-                                            size={15}
+                                            size={Platform.isPad ? 30 : 15}
                                             style={{paddingLeft: widthToDp("4%")}}
                                             onPress={() => this.threadComment(item)}
                                         />
                                         <Text
                                             style={{
                                                 color: "#777",
-                                                fontSize: widthToDp("3.5%"),
+                                                fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                                                 paddingLeft: widthToDp("2%"),
                                                 fontFamily: "Poppins-Regular"
                                             }}
@@ -271,10 +271,10 @@ export default class CommentScreen extends React.Component {
                             placeholder="Enter message"
                             placeholderTextColor="#808080"
                             style={{
-                                width: widthToDp("88%"),
+                                width: Platform.isPad ? widthToDp("90%") : widthToDp("88%"),
                                 paddingHorizontal: widthToDp("1%"),
                                 paddingVertical: heightToDp("0%"),
-                                fontSize: widthToDp("4.3%"),
+                                fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("4.3%"),
                                 color: '#777',
                                 fontFamily: "Poppins-Regular",
                                 maxHeight: 300
@@ -290,7 +290,7 @@ export default class CommentScreen extends React.Component {
                         >
                             <Ionicons
                             name={Platform.OS==='android' ? 'md-send' : 'ios-send'}
-                            size={20}
+                            size={Platform.isPad ? 40 : 20}
                             color="#69abff"
                             />
                         </TouchableOpacity>

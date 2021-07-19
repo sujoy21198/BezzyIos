@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Toast } from 'native-base';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
@@ -147,11 +147,12 @@ export default class FollowerScreen extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.image}}
-                                    style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 40, borderWidth: 1, borderColor: '#69abff'}}
+                                    style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 1 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                 />
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
+                                        fontSize: widthToDp("3%"),
                                         fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.name}</Text>

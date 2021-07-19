@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, SafeAreaView, StatusBar, FlatList, TextInput, TouchableOpacity, ActivityIndicator, Image, KeyboardAvoidingView, Keyboard } from 'react-native'
+import { Text, View, SafeAreaView, StatusBar, FlatList, TextInput, TouchableOpacity, ActivityIndicator, Image, KeyboardAvoidingView, Keyboard, Platform } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -105,7 +105,7 @@ export default class ThreadCommentScreen extends Component {
                         >
                             <Image
                                 source={{ uri: this.props.route.params.userimage }}
-                                style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                                style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                             />
                             <View
                                 style={{
@@ -113,7 +113,7 @@ export default class ThreadCommentScreen extends Component {
                                     padding: widthToDp("2%"),
                                     backgroundColor: 'rgba(0, 255, 255, 0.1)',
                                     borderRadius: 10,
-                                    width: widthToDp("82.5%")
+                                    width: Platform.isPad ? widthToDp("84%") : widthToDp("82.5%")
                                 }}
                             >
                                 <Text
@@ -187,7 +187,7 @@ export default class ThreadCommentScreen extends Component {
                                         >
                                             <Image
                                                 source={{ uri: item.userimage }}
-                                                style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                                                style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                             />
                                             <View
                                                 style={{
@@ -276,10 +276,10 @@ export default class ThreadCommentScreen extends Component {
                                 placeholder="Enter message"
                                 placeholderTextColor="#808080"
                                 style={{
-                                    width: widthToDp("88%"),
+                                    width: Platform.isPad ? widthToDp("90%") : widthToDp("88%"),
                                     paddingHorizontal: widthToDp("1%"),
                                     paddingVertical: heightToDp("0%"),
-                                    fontSize: widthToDp("4.3%"),
+                                    fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("4.3%"),
                                     color: '#777',
                                     height: heightToDp("3%"),
                                     fontFamily: "Poppins-Regular"
@@ -295,7 +295,7 @@ export default class ThreadCommentScreen extends Component {
                             >
                                 <Ionicons
                                     name={Platform.OS === 'android' ? 'md-send' : 'ios-send'}
-                                    size={20}
+                                    size={Platform.isPad ? 40 : 20}
                                     color="#69abff"
                                 />
                             </TouchableOpacity>

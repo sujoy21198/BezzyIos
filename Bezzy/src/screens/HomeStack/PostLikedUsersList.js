@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-import { ActivityIndicator, FlatList, Image, SafeAreaView, StatusBar, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, StatusBar, Text, View } from "react-native";
 import DataAccess from "../../components/DataAccess";
 import Header from "../../components/Header";
 import { heightToDp, widthToDp } from "../../components/Responsive";
@@ -69,13 +69,13 @@ export default class PostLikedUsersList extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.profilePicture}}
-                                    style={{height: 40, width: 40, borderRadius: 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                                    style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                 />
                                 <Text
-                                    style={{
+                                    style={[{
                                         marginLeft: widthToDp("2%"),
                                         fontFamily: "Poppins-Regular"
-                                    }}
+                                    }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                                 >{item.name}</Text>
                             </View>
                         </View>

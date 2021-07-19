@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Form, Input, Item, Label, Toast } from 'native-base';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -132,7 +132,8 @@ export default class ResetPassword extends React.Component {
                         borderBottomWidth: 1,
                         borderBottomColor: this.state.isPasswordFocused ? '#69abff' : '#a9a9a9',
                         marginTop: heightToDp("5%"),
-                        marginLeft: widthToDp("3%")
+                        marginLeft: widthToDp("3%"),
+                        paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                     }}>
                         <Item 
                             style={{
@@ -148,7 +149,7 @@ export default class ResetPassword extends React.Component {
                                 style={{
                                     color: this.state.isPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isPasswordFocused ? 3 : 3.4}%`),
-                                    marginTop: heightToDp("-0.5%"),
+                                    marginTop: Platform.isPad ? heightToDp("-1%") : heightToDp("-0.5%"),
                                     fontFamily: "Poppins-Regular",
                                 }}
                             >Enter New Password</Label>
@@ -171,7 +172,7 @@ export default class ResetPassword extends React.Component {
                         </Item>
                         <Icon
                             name={this.state.showPassword ? "eye-off" : "eye"}
-                            size={20}
+                            size={Platform.isPad ? 40 : 20}
                             color="#808080"
                             onPress={() => this.setState({ showPassword: !this.state.showPassword })}
                         />
@@ -179,11 +180,11 @@ export default class ResetPassword extends React.Component {
                     {
                         this.state.password!=="" && this.state.password.trim().length < 8 &&
                         <Text
-                            style={{
+                            style={[{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
                                 fontFamily: "Poppins-Regular",
-                            }}
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         >Password should have at least 8 characters</Text>
                     }
                     <View style={{
@@ -192,7 +193,8 @@ export default class ResetPassword extends React.Component {
                         borderBottomWidth: 1,
                         borderBottomColor: this.state.isConfirmPasswordFocused ? '#69abff' : '#a9a9a9',
                         marginTop: heightToDp("5%"),
-                        marginLeft: widthToDp("3%")
+                        marginLeft: widthToDp("3%"),
+                        paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                     }}>
                         <Item
                             style={{
@@ -208,7 +210,7 @@ export default class ResetPassword extends React.Component {
                                 style={{
                                     color: this.state.isConfirmPasswordFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isConfirmPasswordFocused ? 3 : 3.4}%`),
-                                    marginTop: heightToDp("-0.5%"),
+                                    marginTop: Platform.isPad ? heightToDp("-1%") : heightToDp("-0.5%"),
                                     fontFamily: "Poppins-Regular",
                                 }}
                             >Confirm New Password</Label>
@@ -229,7 +231,7 @@ export default class ResetPassword extends React.Component {
                         </Item>
                         <Icon
                             name={this.state.showConfirmPassword ? "eye-off" : "eye"}
-                            size={20}
+                            size={Platform.isPad ? 40 : 20}
                             color="#808080"
                             onPress={() => this.setState({ showConfirmPassword: !this.state.showConfirmPassword })}
                         />
@@ -237,11 +239,11 @@ export default class ResetPassword extends React.Component {
                     {
                         this.state.confirmPassword.trim()!=="" && this.state.password.trim()!==this.state.confirmPassword.trim() &&
                         <Text
-                            style={{
+                            style={[{
                                 color: "#ff0000",
                                 marginLeft: widthToDp("3%"),
                                 fontFamily: "Poppins-Regular",
-                            }}
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         >Passwords should match</Text>
                     }
                 </Form>

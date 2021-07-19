@@ -375,7 +375,7 @@ export default class ProfileScreen extends React.Component {
                         >
                             <Icon
                                 name={'share'}
-                                size={24}
+                                size={Platform.isPad ? 40 : 24}
                                 color={this.state.isShareFocused ? "#69abff" : "#666"}
                             />
                         </TouchableOpacity>

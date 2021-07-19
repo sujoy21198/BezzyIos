@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Platform, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -219,7 +219,7 @@ export default class ImagePreviewScreen extends React.Component {
                 <Icon
                     name="chevron-left"
                     color="#fff"
-                    size={20}                    
+                    size={Platform.isPad ? 30 : 20}                    
                 />  
             </TouchableOpacity> 
             {
@@ -262,7 +262,7 @@ export default class ImagePreviewScreen extends React.Component {
                                 this.state.otherProfile === false ? ((this.state.isUpdatingCaption) ? <ActivityIndicator size="small" color="#fff"/> :<Icon
                                 name={this.state.captionEditable ? "paper-plane" : "pen"}
                                 color="#fff"
-                                size={20}                    
+                                size={Platform.isPad ? 25 : 20}                    
                             />):null
                             } 
                         </TouchableOpacity>  
@@ -293,12 +293,12 @@ export default class ImagePreviewScreen extends React.Component {
                             <Icon1
                                 name="heart"
                                 color={"#ff0000"}
-                                size={25}
+                                size={Platform.isPad ? 30 : 20}
                             /> :
                             <Icon
                                 name="heart"
                                 color={"#fff"}
-                                size={25}
+                                size={Platform.isPad ? 30 : 20}
                             />
                         }
                     </TouchableOpacity>
@@ -308,7 +308,7 @@ export default class ImagePreviewScreen extends React.Component {
                         <Text
                             style={{
                                 color: "#fff",
-                                fontSize: widthToDp("3.5%"),
+                                fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                                 paddingLeft: widthToDp("2%"),
                                 fontFamily: "Poppins-Regular"
                             }}
@@ -323,13 +323,13 @@ export default class ImagePreviewScreen extends React.Component {
                         <Icon
                             name="comment"
                             color="#fff"
-                            size={25}
+                            size={Platform.isPad ? 30 : 20}
                         />
                     </TouchableOpacity>
                     <Text
                         style={{
                             color: "#fff",
-                            fontSize: widthToDp("3.5%"),
+                            fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
                             paddingLeft: widthToDp("2%"),
                             fontFamily: "Poppins-Regular"
                         }}
@@ -343,7 +343,7 @@ export default class ImagePreviewScreen extends React.Component {
                         <Icon
                             name="trash-alt"
                             color="#fff"
-                            size={25}
+                            size={Platform.isPad ? 30 : 20}
                         />
                     </TouchableOpacity> : null):null
                     }            

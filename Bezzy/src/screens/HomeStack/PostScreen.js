@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator } from 'react-native';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator, Platform } from 'react-native';
 import { ActionSheet, Toast } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -167,7 +167,7 @@ export default class PostScreen extends React.Component {
         if (this.state.focusedTab === 'photo') {
             if (this.state.fromCamera === false) {
                 if (this.state.imagesArray.length <= 0) {
-                    alert('please add image ')
+                    alert('Please upload image')
                 } else {
                     this.RBSheet.open();
                     var filePaths = this.state.imagesArray.map((i) => i.path)
@@ -233,43 +233,52 @@ export default class PostScreen extends React.Component {
                     ]
                 });
             }
-            Toast.show({
-                text: "Image is uploaded successfully",
-                type: "success",
-                duration: 3000
-            });
+            if(this.state.imagesArray.length > 0 || this.state.cameraImagePath !== "") {
+                Toast.show({
+                    text: "Image is uploaded successfully",
+                    type: "success",
+                    duration: 3000
+                });
+            }
+            this.setState({imagesArray: [], cameraImagePath: ""})
         } else if (this.state.focusedTab === 'video') {
-            this.RBSheet.open();
-            var fromDataVideo = new FormData()
-            fromDataVideo.append('post_video', {
-                name: 'name.mp4',
-                uri: this.state.thumbnail,
-                type: 'video/mp4'
-            })
-            fromDataVideo.append('post_content', this.state.caption)
-            fromDataVideo.append('userID', userID)
-
-            await axios.post('http://bezzy-app.com/admin/api/PostVideo', fromDataVideo)
-                .then(function (response) {
-                    console.log(response.data, "VIDEO")
-                }).catch(function (error) {
-                    console.log(error)
+            if(this.state.thumbnail === "") {
+                alert('Please upload video')
+            } else {
+                this.RBSheet.open();
+                var fromDataVideo = new FormData()
+                fromDataVideo.append('post_video', {
+                    name: 'name.mp4',
+                    uri: this.state.thumbnail,
+                    type: 'video/mp4'
                 })
-                this.RBSheet.close();
-            this.props.navigation.reset({
-                index: 0,
-                routes: [
-                    { name: "HomeScreen" }
-                ]
-            });
+                fromDataVideo.append('post_content', this.state.caption)
+                fromDataVideo.append('userID', userID)
 
-            Toast.show({
-                text: "video uploaded successfully",
-                type: "success",
-                duration: 3000
-            });
+                await axios.post('http://bezzy-app.com/admin/api/PostVideo', fromDataVideo)
+                    .then(function (response) {
+                        console.log(response.data, "VIDEO")
+                    }).catch(function (error) {
+                        console.log(error)
+                    })
+                    this.RBSheet.close();
+                this.props.navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: "HomeScreen" }
+                    ]
+                });
+            }
 
+            if(this.state.thumbnail !== "") {
+                Toast.show({
+                    text: "Video uploaded successfully",
+                    type: "success",
+                    duration: 3000
+                });
+            }
 
+            this.setState({thumbnail: ""})
         }
     }
 
@@ -293,12 +302,12 @@ export default class PostScreen extends React.Component {
                     }}
                 >
                     <TextInput
-                        style={{
+                        style={[{
                             color: "#69abff",
                             marginBottom: heightToDp("1%"),
                             height: heightToDp("10%"),
                             fontFamily: "Poppins-Regular"
-                        }}
+                        }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         textAlignVertical="top"
                         placeholder="Write Something here..."
                         placeholderTextColor="#69abff"
@@ -324,10 +333,10 @@ export default class PostScreen extends React.Component {
                                 onPress={(text) => this.uploadButtonFunction(text)}
                             >
                                 <Text
-                                    style={{
+                                    style={[{
                                         color: '#fff',
                                         fontFamily: "ProximaNova-Black"
-                                    }}
+                                    }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                                 >
                                     {this.state.focusedTab === "photo" ? this.state.buttonText = "UPLOAD PHOTO" : this.state.buttonText = "UPLOAD VIDEO"}
                                 </Text>
@@ -344,10 +353,10 @@ export default class PostScreen extends React.Component {
                                 onPress={() => this.postImage()}
                             >
                                 <Text
-                                    style={{
+                                    style={[{
                                         color: '#fff',
                                         fontFamily: "ProximaNova-Black"
-                                    }}
+                                    }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                                 >
                                     POST
                                 </Text>
@@ -355,6 +364,17 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                <Text
+                    style={{
+                        marginVertical: heightToDp("0.5%"),
+                        marginHorizontal: widthToDp("1.5%"),
+                        color: "#808080"
+                    }}
+                >
+                    Please keep in mind that, if the post uploaded by you is found to be objectionable, then{" "}
+                    that post can be deleted from our server by the database administrator and also, for posting such{" "}
+                    objectionable contents in our network, the database administrator may parmanently suspend your account.
+                </Text>
                 {
                     this.state.isCaptionEmpty &&
                     <Text
@@ -441,7 +461,7 @@ export default class PostScreen extends React.Component {
                             >
                                 <Icon
                                     name={Platform.OS === 'android' ? 'md-camera' : 'ios-camera'}
-                                    size={23}
+                                    size={Platform.isPad ? 40 : 23}
                                     color={this.state.focusedTab === "photo" ? "#007dfe" : "#808080"}
                                 />
                                 <Text
@@ -470,7 +490,7 @@ export default class PostScreen extends React.Component {
                             >
                                 <Icon
                                     name={Platform.OS === 'android' ? 'md-videocam-outline' : 'ios-videocam-outline'}
-                                    size={23}
+                                    size={Platform.isPad ? 40 : 23}
                                     color={this.state.focusedTab === "video" ? "#007dfe" : "#808080"}
                                 />
                                 <Text

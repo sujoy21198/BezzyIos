@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -158,7 +158,7 @@ export default class SignInScreen extends React.Component {
                     </Text>
                     <Form
                         style={{
-                            marginLeft: widthToDp("-3%")
+                            marginLeft: Platform.isPad ? 0 : widthToDp("-3%")
                         }}
                     >
                         <Item
@@ -167,6 +167,8 @@ export default class SignInScreen extends React.Component {
                                 borderBottomWidth: 1,
                                 borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
                                 marginTop: heightToDp("10%"),
+                                paddingBottom: Platform.isPad ? heightToDp("3.5%") : 0,
+                                marginLeft: Platform.isPad ? widthToDp("0.3%") : widthToDp("3%"),
                             }}
                             floatingLabel
                         >
@@ -175,7 +177,7 @@ export default class SignInScreen extends React.Component {
                                     color: this.state.isEmailFocused ? '#69abff' : '#808080',
                                     fontSize: widthToDp(`${this.state.isEmailFocused ? 3 : 3.4}%`),
                                     fontFamily: "Poppins-Regular",
-                                    marginTop: heightToDp("-0.5%"),
+                                    marginTop: Platform.isPad ? 0 : heightToDp("-0.5%"),
                                 }}
                             >Email Id</Label>
                             <Input
@@ -199,11 +201,11 @@ export default class SignInScreen extends React.Component {
                         {
                             !this.state.isEmailValid && this.state.email !== "" &&
                             <Text
-                                style={{
+                                style={[{
                                     color: "#ff0000",
-                                    marginLeft: widthToDp("3%"),
+                                    marginLeft: Platform.isPad ? 0 : widthToDp("3%"),
                                     fontFamily: "Poppins-Regular",
-                                }}
+                                }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                             >Entered email address is not valid</Text>
                         }
                         <View style={{
@@ -212,12 +214,13 @@ export default class SignInScreen extends React.Component {
                             borderBottomWidth: 1,
                             borderBottomColor: this.state.isPasswordFocused ? '#69abff' : '#a9a9a9',
                             marginTop: heightToDp("5%"),
-                            marginLeft: widthToDp("3%")
+                            marginLeft: Platform.isPad ? widthToDp("0.3%") : widthToDp("3%"),
+                            paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                         }}>
                             <Item 
                                 style={{
                                     alignItems: 'center',
-                                    marginTop: heightToDp("-2%"),
+                                    marginTop: Platform.isPad ? heightToDp("-3%") : heightToDp("-2%"),
                                     width: widthToDp("87%"),
                                     marginLeft: widthToDp("0%"),
                                     borderBottomWidth: 0
@@ -249,7 +252,7 @@ export default class SignInScreen extends React.Component {
                             </Item>
                             <Icon
                                 name={this.state.showPassword ? "eye-off" : "eye"}
-                                size={20}
+                                size={Platform.isPad ? 40 : 20}
                                 color="#808080"
                                 onPress={() => this.setState({ showPassword: !this.state.showPassword })}
                             />
@@ -294,10 +297,10 @@ export default class SignInScreen extends React.Component {
                         onPress={() => this.props.navigation.navigate("ForgotPassword")}
                     >
                         <Text
-                            style={{
+                            style={[{
                                 color: "#69abff",
                                 fontFamily: "Poppins-Regular",
-                            }}
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         >
                             Forgot Password?
                         </Text>
@@ -310,10 +313,10 @@ export default class SignInScreen extends React.Component {
                         onPress={() => this.props.navigation.navigate("SignUpScreen")}
                     >
                         <Text
-                            style={{
+                            style={[{
                                 color: "#69abff",
                                 fontFamily: "Poppins-Regular",
-                            }}
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                         >
                             New User? Register
                         </Text>

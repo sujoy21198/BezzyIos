@@ -85,7 +85,7 @@ export default class Header extends React.Component {
                                 this.props.isBackButton &&
                                 <Icon
                                     name="chevron-left"
-                                    size={30}
+                                    size={Platform.isPad ? 45 : 30}
                                     color={"#69abff"}
                                 />
                             }
@@ -94,7 +94,7 @@ export default class Header extends React.Component {
                                     <Image
                                         source={require("../../assets/bezzy_logo.png")}
                                         resizeMode="contain"
-                                        style={{ height: heightToDp("3%"), width: widthToDp("20%"), marginLeft: widthToDp(`${this.props.isBackButton ? 3 : 0}%`) }}
+                                        style={{ height: heightToDp("3%"), width: widthToDp("20%"), marginLeft: widthToDp(`${this.props.isBackButton ? 3 : Platform.isPad ? -3 : 0}%`) }}
                                     /> :
                                     <Text style={{
                                         color: !this.props.headerText ? '#fff' : '#007dfe',
@@ -160,7 +160,7 @@ export default class Header extends React.Component {
                                 <Icon1
                                     name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
                                     color={"#777"}
-                                    size={22}
+                                    size={Platform.isPad ? 40 : 22}
                                 />
                             </TouchableOpacity>
                         }
@@ -262,7 +262,7 @@ export default class Header extends React.Component {
                             this.props.isBackButton &&
                             <Icon
                                 name="chevron-left"
-                                size={15}
+                                size={Platform.isPad ? 30 : 15}
                                 color={this.props.isHomeStackInnerPage ? '#69abff' : "#fff"}
                             />
                         }
@@ -276,7 +276,7 @@ export default class Header extends React.Component {
                         >
                             <Text style={{
                                 color: this.props.isHomeStackInnerPage ? '#007dfe' : '#fff',
-                                fontSize: 15,
+                                fontSize: Platform.isPad ? 32 : 15,
                                 fontFamily: "ProximaNova-Black",
                                 marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
                             }}>
@@ -295,11 +295,11 @@ export default class Header extends React.Component {
                                     onPress={this.props.clearNotifications}
                                 >
                                     <Text
-                                        style={{
+                                        style={[{
                                             color: '#fff',
                                             textAlign: 'center',
                                             fontFamily: "ProximaNova-Black",
-                                        }}
+                                        }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                                     >Clear All</Text>
                                 </TouchableOpacity>
                             }

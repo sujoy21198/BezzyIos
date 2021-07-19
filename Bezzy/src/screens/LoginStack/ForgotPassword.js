@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -125,7 +125,7 @@ export default class ForgotPassword extends React.Component {
                     </Text>
                     <Form
                         style={{
-                            marginLeft: widthToDp("-3%")
+                            marginLeft: Platform.isPad ? widthToDp("-1%") : widthToDp("-3%")
                         }}
                     >
                         <Item 
@@ -134,6 +134,7 @@ export default class ForgotPassword extends React.Component {
                                 borderBottomWidth: 1,
                                 borderBottomColor: this.state.isEmailFocused ? '#69abff' : '#a9a9a9',
                                 marginTop: heightToDp("3%"),
+                                paddingBottom: Platform.isPad ? heightToDp("2%") : 0
                             }}
                             floatingLabel
                         >
@@ -163,10 +164,10 @@ export default class ForgotPassword extends React.Component {
                         {
                             !this.state.isEmailValid && this.state.email !== "" &&
                             <Text
-                                style={{
+                                style={[{
                                     color: "#ff0000",
-                                    marginLeft: widthToDp("3%"),
-                                }}
+                                    marginLeft: Platform.isPad ? widthToDp("1.5%") : widthToDp("3%"),
+                                }, Platform.isPad && {fontSize: widthToDp("3%")}]}
                             >Entered email address is not valid</Text>
                         }
                     </Form>

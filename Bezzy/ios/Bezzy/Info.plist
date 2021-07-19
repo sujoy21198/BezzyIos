@@ -51,35 +51,33 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the user's media library.</string>
 	<key>NSBlueToothAlwaysUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It needs access to Bluetooth.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed for the ability to connect to Bluetooth peripherals.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to capture a new photo by your device camera.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the user's contacts.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the user's location at all times.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the user's location information while the app is in use.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the device's microphone.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the device's motion data.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to select an existing photo from your device storage.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to select an existing photo from your device storage.</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to access to the user's reminders.</string>
 	<key>NSSiriUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to send user data to Siri.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>YOUR TEXT</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>YOUR TEXT</string>
+	<string>It is needed to send user data to Apple's speech recognition servers.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>proxima_nova_black.otf</string>
@@ -118,6 +116,8 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -95,11 +95,12 @@ export default class FollowingScreen extends React.Component {
                             >
                                 <Image
                                     source={{uri: item.friend_photo}}
-                                    style={{height: heightToDp("5%"), width: widthToDp("10%"), borderRadius: 40, borderWidth: 1, borderColor: '#69abff'}}
+                                    style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                 />
                                 <Text
                                     style={{
                                         marginLeft: widthToDp("2%"),
+                                        fontSize: widthToDp("3%"),
                                         fontFamily: "Poppins-Regular"
                                     }}
                                 >{item.friend_name}</Text>
