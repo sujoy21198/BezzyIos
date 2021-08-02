@@ -348,19 +348,6 @@ export default class EditProfileScreen extends React.Component {
                             />
                     }
                 </TouchableOpacity>
-                <Text
-                    style={{
-                        marginBottom: heightToDp("3%"),
-                        marginHorizontal: widthToDp("3%"),
-                        color: "#808080",
-                        borderWidth: 1,
-                        padding: widthToDp("1%")
-                    }}
-                >
-                    Please keep in mind that, if the profile picture uploaded by you is found to be objectionable, then{" "}
-                    that post can be deleted from our server by the database administrator and also, for posting such{" "}
-                    objectionable contents in our network, the database administrator may parmanently suspend your account.
-                </Text>
                 
                 <View
                     style={{

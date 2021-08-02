@@ -116,7 +116,13 @@ export default class ProfileScreen extends React.Component {
 
             {
                 !this.state.isLoading &&
-                <View
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={() => this.setState({ isRefreshing: true }, this.getProfileData)}
+                        />
+                    }
                     style={{
                         flex: 1,
                         paddingVertical: heightToDp("1%")
@@ -129,17 +135,11 @@ export default class ProfileScreen extends React.Component {
                     >
                         {
                             Object.keys(this.state.userDetails).length > 0 &&
-                            <ScrollView
-                                contentContainerStyle={{
+                            <View
+                                style={{
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.isRefreshing}
-                                        onRefresh={() => this.setState({ isRefreshing: true }, this.getProfileData)}
-                                    />
-                                }
                             >
                                 <Image
                                     source={{ uri: this.state.userDetails.profile_pic }}
@@ -170,7 +170,7 @@ export default class ProfileScreen extends React.Component {
                                         }}
                                     >{this.state.userDetails.bio}</Text>
                                 }
-                            </ScrollView>
+                            </View>
                         }
 
                     </View>
@@ -508,7 +508,7 @@ export default class ProfileScreen extends React.Component {
                             )}
                         />
                     }
-                </View>
+                </ScrollView>
             }
             <RBSheet
                 ref={ref => {

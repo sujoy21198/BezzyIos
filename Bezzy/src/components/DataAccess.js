@@ -46,6 +46,7 @@ const DataAccess = {
     updatePostCaption: 'updatepostcaption',
     getPostDetails: 'friendsingleblockdetails',
     commentReplyList : 'comment-reply-list',
+    reportPost: 'report-to-block-post', 
 
     //notification api's
     fetchNotifications: 'Notificationlist',

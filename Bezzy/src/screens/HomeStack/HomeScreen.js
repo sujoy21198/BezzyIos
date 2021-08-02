@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
@@ -190,17 +190,20 @@ export default class HomeScreen extends React.Component {
                                             style={{
                                                 position: "absolute",
                                                 top: heightToDp("0.5%"),
-                                                right: widthToDp("1%"),
+                                                right: widthToDp("0.5%"),
                                                 backgroundColor: "#ff0000",
-                                                borderRadius: 7,
+                                                borderRadius: 18 / 2,
+                                                height: 18,
+                                                width: 18,
                                                 paddingHorizontal: 2,
                                             }}
                                         >
                                             <Text
                                                 style={[{
                                                     color: "#fff",
-                                                    fontSize: widthToDp("3%"),
+                                                    fontSize: widthToDp("3.2%"),
                                                     fontFamily: "Poppins-Regular",
+                                                    textAlign: "center"
                                                 }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
                                             >{section.unread_post_number}</Text>
                                         </View>
@@ -254,6 +257,62 @@ export default class HomeScreen extends React.Component {
         }
     }
 
+    reportPost = async (i) => {
+        Alert.alert(
+            "Do you want to report on this post?", 
+            "Reported post will be deleted from our server.", 
+            [
+                {
+                    text: "Cancel"
+                }, 
+                {
+                    text: "Ok",
+                    onPress: async () => {
+                        let userId = await AsyncStorage.getItem("userId");
+                        await axios.get(DataAccess.BaseUrl + DataAccess.reportPost + "/" + userId + "/" + i.post_id)
+                            .then(res => {
+                                console.log("Report Post Response ==> ", res.data);
+                                if(res.data.resp === "true") {
+                                    let posts = this.state.postDetails;
+                                    posts.map((item, index) => {
+                                        if (i.post_id === item.post_id) {
+                                            posts.splice(index, 1);
+                                        }
+                                    })
+                                    this.setState({ postDetails: posts });
+                                    Toast.show({
+                                        type: "success",
+                                        text: res.data.message,
+                                        duration: 2000
+                                    })
+                                } else if(res.data.resp === "false") {
+                                    Toast.show({
+                                        type: "warning",
+                                        text: res.data.message,
+                                        duration: 2000
+                                    })
+                                } else {
+                                    Toast.show({
+                                        type: "danger",
+                                        text: "Some error happened. Please retry!",
+                                        duration: 2000
+                                    })
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                Toast.show({
+                                    type: "danger",
+                                    text: "Either client or server side network error !!!",
+                                    duration: 2000
+                                })
+                            })
+                    }
+                }
+            ]
+        )
+    }
+
     _renderContent = section => {
         var postDetails = []
         postDetails = this.state.postDetails
@@ -292,8 +351,36 @@ export default class HomeScreen extends React.Component {
                                             </View>
                                             {
                                                 i.post_content !== "" &&
-                                                <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1%") }}>
-                                                    <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("2.5%") }}>{i.post_content}</Text>
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: "flex-start",
+                                                        paddingRight: "3%"
+                                                    }}
+                                                >
+                                                    <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1.5%"), width: "70%" }}>
+                                                        <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("4%") }}>{i.post_content}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            alignItems: "center",
+                                                            marginRight: widthToDp("6%"),
+                                                            marginTop: heightToDp("1.5%"),
+                                                            width: "20%",
+                                                            padding: "1%",
+                                                            borderWidth: 1,
+                                                            borderRadius: 10
+                                                        }}
+                                                        onPress={() => this.reportPost(i)}>
+                                                        <Icon2
+                                                            name={Platform.OS === 'android' ? 'md-thumbs-down' : 'ios-thumbs-down'}
+                                                            // color="#ff0000"
+                                                            size={Platform.isPad ? 25 : 15}
+                                                        />
+                                                        <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('3%'), fontFamily: "Poppins-Regular" }}>REPORT</Text>
+                                                    </TouchableOpacity>
                                                 </View>
                                             }
                                             {
@@ -327,8 +414,6 @@ export default class HomeScreen extends React.Component {
                                                                             height: heightToDp("30%"),
                                                                             width: widthToDp("85%"),
                                                                             alignSelf: 'center',
-                                                                            borderRadius: 20,
-                                                                            backgroundColor: "#1b1b1b"
                                                                         }}
                                                                         resizeMode="contain"
                                                                     />
@@ -618,6 +703,8 @@ export default class HomeScreen extends React.Component {
                                             paddingVertical: heightToDp("0.8%"),
                                             fontFamily: "Poppins-Regular"
                                         }, Platform.isPad && {fontSize: widthToDp("2%")}]}
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
                                     >{item.name}</Text>
                                     <TouchableOpacity
                                         activeOpacity={0.7}

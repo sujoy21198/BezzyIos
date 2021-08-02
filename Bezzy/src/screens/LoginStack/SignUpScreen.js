@@ -357,19 +357,6 @@ export default class SignUpScreen extends React.Component {
                         }
 
                     </TouchableOpacity>
-                    <Text
-                        style={{
-                            marginTop: heightToDp("3%"),
-                            marginHorizontal: widthToDp("3%"),
-                            color: "#808080",
-                            borderWidth: 1,
-                            padding: widthToDp("1%")
-                        }}
-                    >
-                        Please keep in mind that, if the profile picture uploaded by you is found to be objectionable, then{" "}
-                        that post can be deleted from our server by the database administrator and also, for posting such{" "}
-                        objectionable contents in our network, the database administrator may parmanently suspend your account.
-                    </Text>
                     <Form
                         style={{
                             marginLeft: Platform.isPad ? heightToDp("-1%") : widthToDp("-3%")

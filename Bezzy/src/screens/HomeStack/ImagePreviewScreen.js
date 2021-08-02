@@ -4,6 +4,7 @@ import { heightToDp, widthToDp } from '../../components/Responsive';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import DataAccess from '../../components/DataAccess';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -156,6 +157,62 @@ export default class ImagePreviewScreen extends React.Component {
         } else {
             //
         }        
+    }
+
+    reportPost = async () => {
+        Alert.alert(
+            "Do you want to report on this post?", 
+            "Reported post will be deleted from our server.", 
+            [
+                {
+                    text: "Cancel"
+                }, 
+                {
+                    text: "Ok",
+                    onPress: async () => {
+                        this.RBSheet.open()
+                        let userId = await AsyncStorage.getItem("userId");
+                        console.warn(userId);
+                        await axios.get(DataAccess.BaseUrl + DataAccess.reportPost + "/" + userId + "/" + this.props.route.params.image.post_id)
+                            .then(res => {
+                                console.log("Report Post Response ==> ", res.data);
+                                if(res.data.resp === "true") {
+                                    Toast.show({
+                                        type: "success",
+                                        text: res.data.message,
+                                        duration: 2000
+                                    })
+                                    this.RBSheet.close();
+                                    this.props.navigation.goBack();
+                                } else if(res.data.resp === "false") {
+                                    Toast.show({
+                                        type: "warning",
+                                        text: res.data.message,
+                                        duration: 2000
+                                    })
+                                    this.RBSheet.close();
+                                } else {
+                                    Toast.show({
+                                        type: "danger",
+                                        text: "Some error happened. Please retry!",
+                                        duration: 2000
+                                    })
+                                    this.RBSheet.close();
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                Toast.show({
+                                    type: "danger",
+                                    text: "Either client or server side network error !!!",
+                                    duration: 2000
+                                })
+                                this.RBSheet.close();
+                            })
+                    }
+                }
+            ]
+        )
     }
 
     render = () => (
@@ -336,16 +393,28 @@ export default class ImagePreviewScreen extends React.Component {
                     >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
                     
                     {
-                        this.state.otherProfile === false ? ((this.props.route.params.type !== "otherUserPost") ? <TouchableOpacity
-                        style={{paddingLeft: widthToDp("4%")}}
-                        onPress={this.deleteImage}
-                    >
-                        <Icon
-                            name="trash-alt"
-                            color="#fff"
-                            size={Platform.isPad ? 30 : 20}
-                        />
-                    </TouchableOpacity> : null):null
+                        this.state.otherProfile === false ? ((this.props.route.params.type !== "otherUserPost") ? 
+                        <TouchableOpacity
+                            style={{paddingLeft: widthToDp("4%")}}
+                            onPress={this.deleteImage}
+                        >
+                            <Icon
+                                name="trash-alt"
+                                color="#fff"
+                                size={Platform.isPad ? 30 : 20}
+                            />
+                        </TouchableOpacity> : null): (
+                        <TouchableOpacity
+                            style={{paddingLeft: widthToDp("4%")}}
+                            onPress={this.reportPost}
+                        >
+                            <Icon2
+                                name={Platform.OS === 'android' ? 'md-thumbs-down' : 'ios-thumbs-down'}
+                                color="#ff0000"
+                                size={Platform.isPad ? 30 : 18}
+                            />
+                        </TouchableOpacity>
+                        )
                     }            
                 </View> 
             }

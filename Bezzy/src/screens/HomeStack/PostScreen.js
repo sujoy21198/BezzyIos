@@ -364,17 +364,6 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
-                <Text
-                    style={{
-                        marginVertical: heightToDp("0.5%"),
-                        marginHorizontal: widthToDp("1.5%"),
-                        color: "#808080"
-                    }}
-                >
-                    Please keep in mind that, if the post uploaded by you is found to be objectionable, then{" "}
-                    that post can be deleted from our server by the database administrator and also, for posting such{" "}
-                    objectionable contents in our network, the database administrator may parmanently suspend your account.
-                </Text>
                 {
                     this.state.isCaptionEmpty &&
                     <Text
