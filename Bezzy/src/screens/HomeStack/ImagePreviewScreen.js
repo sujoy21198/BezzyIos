@@ -12,6 +12,7 @@ import { Toast } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PushNotificationController from '../../components/PushNotificationController';
 import Video from 'react-native-video';
+import Autolink from 'react-native-autolink';
 
 export default class ImagePreviewScreen extends React.Component {
     
@@ -290,21 +291,44 @@ export default class ImagePreviewScreen extends React.Component {
                         paddingTop: heightToDp("2%"),
                         paddingHorizontal: widthToDp("3%")
                     }}
-                >                
-                    <TextInput
-                        style={{
-                            color: '#fff',
-                            fontSize: widthToDp("3.5%"),
-                            width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
-                            borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
-                            borderBottomColor: '#fff',
-                            fontFamily: "Poppins-Regular"
-                        }}
-                        multiline
-                        defaultValue={this.state.postCaption}
-                        editable={this.state.captionEditable}
-                        onChangeText={text => this.setState({postCaption: text.trim()})}
-                    />
+                >           
+                    {
+                        this.state.captionEditable ? 
+                        <TextInput
+                            style={{
+                                color: '#fff',
+                                fontSize: widthToDp("3.5%"),
+                                width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
+                                borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                                borderBottomColor: '#fff',
+                                fontFamily: "Poppins-Regular"
+                            }}
+                            multiline
+                            defaultValue={this.state.postCaption}
+                            editable={this.state.captionEditable}
+                            onChangeText={text => this.setState({postCaption: text.trim()})}
+                        /> :
+                        <Autolink
+                            component={Text}
+                            text={this.state.postCaption}
+                            style={{
+                                color: '#fff',
+                                fontSize: widthToDp("3.5%"),
+                                width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
+                                borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                                borderBottomColor: '#fff',
+                                fontFamily: "Poppins-Regular"
+                            }}
+                            email
+                            url
+                            linkStyle={{
+                                color: '#fff', 
+                                textDecorationLine: "underline",
+                                fontFamily: "Poppins-Regular", 
+                                fontSize: widthToDp("3.5%")
+                            }}
+                        />  
+                    }
                     {
                         this.props.route.params.type !== "otherUserPost" && !this.props.route.params.noEditCaption &&
                         <TouchableOpacity

@@ -20,6 +20,7 @@ import { element } from 'prop-types';
 import Share from 'react-native-share'
 import Video from 'react-native-video'
 import PushNotificationController from '../../components/PushNotificationController';
+import Autolink from 'react-native-autolink';
 
 export default class HomeScreen extends React.Component {
     constructor(props) {
@@ -209,17 +210,17 @@ export default class HomeScreen extends React.Component {
                                         </View>
                                     </TouchableOpacity>
                             }
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? 0 : section.past_post_days !== "" ? -1 : section.have_post === "No" ? 3.5 : 0}%`), }}>
+                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? section.today_post !== "" ? -2 : 0 : section.past_post_days !== "" ? -1 : section.have_post === "No" ? 3.5 : 0}%`), }}>
                                 <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp('3%')}}>{section.friend_name || "Anonymous User"}</Text>
                             </View>
                             {
                                 section.today_post !== "" ?
                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
-                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular", fontSize: widthToDp('2.2%') }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
+                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular", fontSize: widthToDp('3%') }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
                                     </View> :(
                                         section.past_post_days !== "" &&
                                     <View style={{ marginLeft: widthToDp("6%") }}>
-                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular", fontSize: widthToDp('2.2%') }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
+                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular", fontSize: widthToDp('3%') }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                     </View>)
                             }
                             <TouchableOpacity
@@ -320,17 +321,18 @@ export default class HomeScreen extends React.Component {
             <View >
                 {
                     this.state.isAccordianOpening ?
-                        <Card style={{ height: heightToDp("50%"), width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ paddingVertical: heightToDp("10%"), backgroundColor: "#fff", width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                             <ActivityIndicator size="large" color="#69abff" />
-                        </Card> : (
+                        </View> : (
                             this.state.expand &&
                             postDetails && postDetails.length > 0 &&
-                            <Card style={{
+                            <View style={{
                                 paddingHorizontal: widthToDp("2%"),
-                                paddingVertical: heightToDp("1%"),
+                                height: "auto",
                                 width: widthToDp("95%"),
                                 alignSelf: 'center',
-                                borderRadius: 10
+                                borderRadius: 10,
+                                backgroundColor: "#fff"
                             }}>
                                 {
                                     postDetails.map((i, key) => (
@@ -342,10 +344,10 @@ export default class HomeScreen extends React.Component {
                                                 />
                                                 <View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("2%") }}>
-                                                        <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp("3%")}}>{section.friend_name}</Text>
+                                                        <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp("3.5%")}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular", fontSize: widthToDp("2%") }}>{i.post_time}</Text>
+                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular", fontSize: widthToDp("3%") }}>{i.post_time}</Text>
                                                     </View>
                                                 </View>
                                             </View>
@@ -360,7 +362,24 @@ export default class HomeScreen extends React.Component {
                                                     }}
                                                 >
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1.5%"), width: "70%" }}>
-                                                        <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("4%") }}>{i.post_content}</Text>
+                                                        {/* <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("4%") }}>{i.post_content}</Text> */}
+                                                        <Autolink
+                                                            component={Text}
+                                                            text={i.post_content}
+                                                            style={{
+                                                                color: '#1b1b1b', 
+                                                                fontFamily: "Poppins-Regular", 
+                                                                fontSize: widthToDp("4%")
+                                                            }}
+                                                            email
+                                                            url
+                                                            linkStyle={{
+                                                                color: '#0000ff', 
+                                                                textDecorationLine: "underline",
+                                                                fontFamily: "Poppins-Regular", 
+                                                                fontSize: widthToDp("4%")
+                                                            }}
+                                                        />
                                                     </View>
                                                     <TouchableOpacity
                                                         style={{
@@ -521,7 +540,7 @@ export default class HomeScreen extends React.Component {
                                         </View>
                                     ))
                                 }
-                            </Card>
+                            </View>
                         )
                 }
                 {/* {

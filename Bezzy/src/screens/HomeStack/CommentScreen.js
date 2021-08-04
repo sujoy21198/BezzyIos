@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import PushNotificationController from '../../components/PushNotificationController';
+import Autolink from 'react-native-autolink';
 
 export default class CommentScreen extends React.Component {
     
@@ -160,14 +161,33 @@ export default class CommentScreen extends React.Component {
                                                 fontSize: widthToDp("3.5%")
                                             }}
                                         >{item.username}</Text>
-                                        <Text
+                                        <Autolink
+                                            component={Text}
+                                            text={item.commentText}
                                             style={{
                                                 color: '#1b1b1b',
                                                 fontSize: widthToDp("3%"),
                                                 marginTop: heightToDp("1%"),
                                                 fontFamily: "Poppins-Regular"
                                             }}
-                                        >{item.commentText}</Text>
+                                            email
+                                            url
+                                            linkStyle={{
+                                                color: '#0000ff', 
+                                                textDecorationLine: "underline",
+                                                fontSize: widthToDp("3%"),
+                                                marginTop: heightToDp("1%"),
+                                                fontFamily: "Poppins-Regular"
+                                            }}
+                                        />
+                                        {/* <Text
+                                            style={{
+                                                color: '#1b1b1b',
+                                                fontSize: widthToDp("3%"),
+                                                marginTop: heightToDp("1%"),
+                                                fontFamily: "Poppins-Regular"
+                                            }}
+                                        >{item.commentText}</Text> */}
                                     </View>                            
                                 </View>
                                 <View

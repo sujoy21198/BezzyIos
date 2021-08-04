@@ -11,6 +11,7 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PushNotificationController from '../../components/PushNotificationController';
+import Autolink from 'react-native-autolink';
 
 export default class ThreadCommentScreen extends Component {
     constructor(props) {
@@ -124,14 +125,33 @@ export default class ThreadCommentScreen extends Component {
                                         fontSize: widthToDp("3.5%")
                                     }}
                                 >{this.props.route.params.username}</Text>
-                                <Text
+                                <Autolink
+                                    component={Text}
+                                    text={this.props.route.params.commentText}
                                     style={{
                                         color: '#1b1b1b',
                                         fontSize: widthToDp("3%"),
                                         marginTop: heightToDp("1%"),
                                         fontFamily: "Poppins-Regular"
                                     }}
-                                >{this.props.route.params.commentText}</Text>
+                                    email
+                                    url
+                                    linkStyle={{
+                                        color: '#0000ff', 
+                                        textDecorationLine: "underline",
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
+                                    }}
+                                />
+                                {/* <Text
+                                    style={{
+                                        color: '#1b1b1b',
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
+                                    }}
+                                >{this.props.route.params.commentText}</Text> */}
                             </View>
                         </View>
                         <View
@@ -206,14 +226,33 @@ export default class ThreadCommentScreen extends Component {
                                                         fontSize: widthToDp("3.5%")
                                                     }}
                                                 >{item.username}</Text>
-                                                <Text
+                                                <Autolink
+                                                    component={Text}
+                                                    text={item.commentText}
                                                     style={{
                                                         color: '#1b1b1b',
                                                         fontSize: widthToDp("3%"),
                                                         marginTop: heightToDp("1%"),
                                                         fontFamily: "Poppins-Regular"
                                                     }}
-                                                >{item.commentText}</Text>
+                                                    email
+                                                    url
+                                                    linkStyle={{
+                                                        color: '#0000ff', 
+                                                        textDecorationLine: "underline",
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                />
+                                                {/* <Text
+                                                    style={{
+                                                        color: '#1b1b1b',
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                >{item.commentText}</Text> */}
                                             </View>
                                         </View>
                                         <View

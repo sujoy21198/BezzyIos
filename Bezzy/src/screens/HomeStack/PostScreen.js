@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator, Platform } from 'react-native';
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, FlatList, Image, StatusBar, ActivityIndicator, Platform, Dimensions } from 'react-native';
 import { ActionSheet, Toast } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -100,8 +100,8 @@ export default class PostScreen extends React.Component {
             })
         if (this.state.focusedTab === 'photo') {
             ImagePicker.openCamera({
-                width: 300,
-                height: 400,
+                width: Dimensions.get("window").width,
+                height: (16 / 9) * Dimensions.get("window").width, //aspect ratio * width
                 cropping: true,
             })
                 .then(image => {

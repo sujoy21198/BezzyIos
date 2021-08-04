@@ -15,6 +15,7 @@ import ImgToBase64 from 'react-native-image-base64';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import PushNotificationController from '../../components/PushNotificationController';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import Autolink from 'react-native-autolink';
 
 export default class InboxScreen extends Component {
   constructor(props) {
@@ -284,7 +285,26 @@ export default class InboxScreen extends Component {
                         alignSelf: 'flex-end', 
                         marginBottom: heightToDp("2%") 
                       }}>
-                        <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text>
+                        <Autolink
+                          component={Text}
+                          text={item.chat_message}
+                          style={{ 
+                            marginLeft: widthToDp("2%"), 
+                            color: 'white', 
+                            fontSize: widthToDp("3.3%"), 
+                            fontFamily: "Poppins-Regular" 
+                          }}
+                          email
+                          url
+                          linkStyle={{
+                            marginLeft: widthToDp("2%"), 
+                            color: 'white', 
+                            fontSize: widthToDp("3.3%"), 
+                            fontFamily: "Poppins-Regular", 
+                            textDecorationLine: "underline",
+                          }}
+                        />
+                        {/* <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
                         <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
                         <Ionicons
                         name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
@@ -347,7 +367,24 @@ export default class InboxScreen extends Component {
                             marginBottom: heightToDp("2%"), 
                             alignSelf: 'flex-start' 
                           }}>
-                          <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text>
+                            <Autolink
+                              component={Text}
+                              text={item.chat_message}
+                              style={{ 
+                                marginLeft: widthToDp("2%"), 
+                                fontSize: widthToDp("3.3%"), 
+                                fontFamily: "Poppins-Regular" 
+                              }}
+                              email
+                              url
+                              linkStyle={{
+                                marginLeft: widthToDp("2%"), 
+                                fontSize: widthToDp("3.3%"), 
+                                fontFamily: "Poppins-Regular", 
+                                textDecorationLine: "underline",
+                              }}
+                            />
+                          {/* <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
                           <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
                           <Ionicons
                           name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
