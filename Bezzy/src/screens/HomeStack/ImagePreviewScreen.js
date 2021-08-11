@@ -35,8 +35,16 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     componentDidMount() {
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.RBSheet.open();
+            this.getPostDetails()
+        })
         this.RBSheet.open();
         this.getPostDetails()
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe()
     }
 
     getPostDetails = async () => {
@@ -310,7 +318,11 @@ export default class ImagePreviewScreen extends React.Component {
                         /> :
                         <Autolink
                             component={Text}
-                            text={this.state.postCaption}
+                            text={
+                                (
+                                    this.state.postCaption === null || this.state.postCaption === "null"
+                                ) ? "" : this.state.postCaption
+                            }
                             style={{
                                 color: '#fff',
                                 fontSize: widthToDp("3.5%"),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Alert, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
+import { AppState, ActivityIndicator, Alert, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Card, Toast } from 'native-base'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
@@ -36,15 +36,40 @@ export default class HomeScreen extends React.Component {
             userId: '',
             sharepostID: '',
             shouldPlay: false,
-            isLoading: false
+            isLoading: false,
+            appState: AppState.currentState
         }
     }
 
     componentDidMount() {
+        AppState.addEventListener('change', this._handleAppStateChange);
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.setState({isLoading: true})
+            this.fetchHomeListing();
+            this.userId()
+        })
         this.setState({isLoading: true})
-        //this.RBSheet1.open();
         this.fetchHomeListing();
         this.userId()
+    }
+
+    componentWillUnmount() {
+        AppState.removeEventListener('change', this._handleAppStateChange);
+        this.unsubscribe()
+    }
+
+    _handleAppStateChange = (nextAppState) => {
+        if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+          console.log('App has come to the foreground!')
+        }
+        this.setState({expand: false, postDetails: [], appState: nextAppState}, () => {
+            this.props.navigation.reset({
+                index: 0,
+                routes: [
+                    { name: "HomeScreen" }
+                ]
+            })
+        });
     }
 
     userId = async () => {
@@ -158,82 +183,90 @@ export default class HomeScreen extends React.Component {
     _renderHeader = section => {
         return (
             <View >
-                <Card style={{ paddingVertical: heightToDp("1.5%"), paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
+                <Card style={{ paddingHorizontal: widthToDp("1%"), width: widthToDp("95%"), alignSelf: 'center', borderRadius: 10 }}>
                     <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileScreen', { profile_id: section.friend_id })}>
                             <Image
                                 source={{ uri: section.friend_photo }}
-                                style={{ height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
+                                style={{ marginVertical: heightToDp("1.5%"), height: heightToDp("12%"), width: widthToDp("24%"), marginLeft: widthToDp("2%"), borderRadius: 10 }}
                             />
                         </TouchableOpacity>
-
-                        <View>
-                            {
-                                section.unread_post_number === "" ?
-                                    <View style={{ marginLeft: Platform.isPad ? widthToDp("61%") : widthToDp("60%"), marginTop: Platform.isPad ? 0 : heightToDp("-2%") }}>
-                                        <Image
-                                            source={require("../../../assets/ago.png")}
-                                            resizeMode="contain"
-                                            style={{ height: Platform.isPad ? heightToDp("5%") : heightToDp("6%"), width: Platform.isPad ? widthToDp("5%") : widthToDp("6%") }}
-                                        />
-                                    </View> :
-                                    <TouchableOpacity
-                                        activeOpacity={0.7}
-                                        style={{ marginLeft: widthToDp("59%") }}
-                                        onPress={() => this.props.navigation.navigate("NotificationScreen")}
-                                    >
-                                        <Image
-                                            source={require("../../../assets/notification.png")}
-                                            resizeMode="contain"
-                                            style={{ height: Platform.isPad ? heightToDp("5%") : heightToDp("6%"), width: Platform.isPad ? widthToDp("5%") : widthToDp("6%") }}
-                                        />
-                                        <View
-                                            style={{
-                                                position: "absolute",
-                                                top: heightToDp("0.5%"),
-                                                right: widthToDp("0.5%"),
-                                                backgroundColor: "#ff0000",
-                                                borderRadius: 18 / 2,
-                                                height: 18,
-                                                width: 18,
-                                                paddingHorizontal: 2,
-                                            }}
-                                        >
-                                            <Text
-                                                style={[{
-                                                    color: "#fff",
-                                                    fontSize: widthToDp("3.2%"),
-                                                    fontFamily: "Poppins-Regular",
-                                                    textAlign: "center"
-                                                }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
-                                            >{section.unread_post_number}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                            }
-                            <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp(`${section.past_post_days === "" ? section.today_post !== "" ? -2 : 0 : section.past_post_days !== "" ? -1 : section.have_post === "No" ? 3.5 : 0}%`), }}>
-                                <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp('3%')}}>{section.friend_name || "Anonymous User"}</Text>
-                            </View>
+                        <View style={{
+                            justifyContent: "center",
+                            paddingHorizontal: widthToDp("2%"),
+                            width: "65%"
+                        }}>
+                            <Text style={{fontFamily: "Poppins-Regular", fontSize: Platform.isPad ? widthToDp('3%') : widthToDp('3.5%'), textAlign: "left"}}>{section.friend_name || "Anonymous User"}</Text>
                             {
                                 section.today_post !== "" ?
-                                    <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0.5%") }}>
-                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular", fontSize: widthToDp('3%') }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
+                                    <View>
+                                        <Text style={{ color: '#ff0000', fontFamily: "Poppins-Regular", fontSize: Platform.isPad ? widthToDp('2.5%') : widthToDp('3%') }}>{Number(section.today_post) === 1 ? section.today_post + " New Post" : "New Post"}</Text>
                                     </View> :(
                                         section.past_post_days !== "" &&
-                                    <View style={{ marginLeft: widthToDp("6%") }}>
-                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular", fontSize: widthToDp('3%') }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
+                                    <View>
+                                        <Text style={{ color: '#f1b45c', fontFamily: "Poppins-Regular", fontSize: Platform.isPad ? widthToDp('2.5%') : widthToDp('3%'), textAlign: "left" }}>Posted {section.past_post_days} {Number(section.past_post_days) === 1 ? "day" : "days"} ago</Text>
                                     </View>)
                             }
-                            <TouchableOpacity
-                                activeOpacity={0.7}
-                                onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
-                                style={{ marginLeft: Platform.isPad ? widthToDp('62%') : widthToDp("60%"), marginTop: heightToDp(`${section.today_post === "" ? section.past_post_days === "" ? 2 : 0 : 0.2}%`) }}>
-                                <Icon2
-                                    name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
-                                    size={Platform.isPad ? 40 : 23}
-                                    color={"#69abff"}
-                                />
-                            </TouchableOpacity>
                         </View>
+                        {
+                            section.unread_post_number === "" ?
+                                <View style={{ position: 'absolute', top: Platform.isPad ? heightToDp("0.5%") : 0, right: widthToDp('1%') }}>
+                                    <Image
+                                        source={require("../../../assets/ago.png")}
+                                        resizeMode="contain"
+                                        style={{ height: Platform.isPad ? heightToDp("4.5%") : heightToDp("6%"), width: Platform.isPad ? widthToDp("4.5%") : widthToDp("6%") }}
+                                    />
+                                </View> :
+                                <TouchableOpacity
+                                    activeOpacity={0.7}
+                                    style={{ position: 'absolute', top: 0, right: widthToDp('1%') }}
+                                    onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                                >
+                                    <Image
+                                        source={require("../../../assets/notification.png")}
+                                        resizeMode="contain"
+                                        style={{ 
+                                            height: Platform.isPad ? heightToDp("5%") : heightToDp("6%"), 
+                                            width: Platform.isPad ? widthToDp("5%") : widthToDp("6%"),
+                                            position: 'absolute',
+                                            top: heightToDp("1%"),
+                                            right: Platform.isPad ? widthToDp("0.5%") : widthToDp('1.5%')
+                                        }}
+                                    />
+                                    <View
+                                        style={{
+                                            position: "absolute",
+                                            top: Platform.isPad ? heightToDp("1%") : heightToDp("1.5%"),
+                                            right: widthToDp("0.5%"),
+                                            backgroundColor: "#ff0000",
+                                            borderRadius: Platform.isPad ? 36 / 2 :18 / 2,
+                                            height: Platform.isPad ? 36 : 18,
+                                            width: Platform.isPad ? 36 : 18,
+                                            paddingHorizontal: 2,
+                                        }}
+                                    >
+                                        <Text
+                                            style={[{
+                                                color: "#fff",
+                                                fontSize: widthToDp("3.2%"),
+                                                fontFamily: "Poppins-Regular",
+                                                textAlign: "center"
+                                            }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
+                                        >{section.unread_post_number}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                        }
+                        
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
+                            style={{ position: 'absolute', bottom: heightToDp("1%"), right: widthToDp('1%') }}>
+                            <Icon2
+                                name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
+                                size={Platform.isPad ? 40 : 23}
+                                color={"#69abff"}
+                            />
+                        </TouchableOpacity>
 
                     </View>
                 </Card>
@@ -317,26 +350,31 @@ export default class HomeScreen extends React.Component {
     _renderContent = section => {
         var postDetails = []
         postDetails = this.state.postDetails
+        console.log(postDetails);
         return (
             <View >
                 {
                     this.state.isAccordianOpening ?
-                        <View style={{ paddingVertical: heightToDp("10%"), backgroundColor: "#fff", width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ paddingVertical: heightToDp("25%"), backgroundColor: "#fff", width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
                             <ActivityIndicator size="large" color="#69abff" />
                         </View> : (
                             this.state.expand &&
                             postDetails && postDetails.length > 0 &&
                             <View style={{
                                 paddingHorizontal: widthToDp("2%"),
-                                height: "auto",
+                                // height: `30%`,
                                 width: widthToDp("95%"),
                                 alignSelf: 'center',
                                 borderRadius: 10,
                                 backgroundColor: "#fff"
                             }}>
-                                {
-                                    postDetails.map((i, key) => (
-                                        <View style={{ width: widthToDp("95%"), alignSelf: 'center' }} key={key}>
+                                <FlatList
+                                    data={postDetails}
+                                    keyExtractor={i => i.post_id}
+                                    style={{height: heightToDp("55%")}}
+                                    ItemSeparatorComponent={() => <View style={{ borderWidth: 0.5, borderColor: '#cdcdcd', marginHorizontal: widthToDp("4%") }} />}
+                                    renderItem={(i, key) => (
+                                        <View style={{ width: widthToDp("95%"), paddingVertical: heightToDp('1%'), alignSelf: 'center' }} key={key}>
                                             <View style={{ flexDirection: 'row' }}>
                                                 <Image
                                                     source={{ uri: section.friend_photo }}
@@ -347,12 +385,12 @@ export default class HomeScreen extends React.Component {
                                                         <Text style={{fontFamily: "Poppins-Regular", fontSize: widthToDp("3.5%")}}>{section.friend_name}</Text>
                                                     </View>
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("0%") }}>
-                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular", fontSize: widthToDp("3%") }}>{i.post_time}</Text>
+                                                        <Text style={{ color: '#69abff', fontFamily: "Poppins-Regular", fontSize: widthToDp("3%") }}>{i.item.post_time}</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                             {
-                                                i.post_content !== "" &&
+                                                i.item.post_content !== "" &&
                                                 <View
                                                     style={{
                                                         flexDirection: 'row',
@@ -362,10 +400,14 @@ export default class HomeScreen extends React.Component {
                                                     }}
                                                 >
                                                     <View style={{ marginLeft: widthToDp("6%"), marginTop: heightToDp("1.5%"), width: "70%" }}>
-                                                        {/* <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("4%") }}>{i.post_content}</Text> */}
+                                                        {/* <Text style={{ color: 'black', fontFamily: "Poppins-Regular", fontSize: widthToDp("4%") }}>{i.item.post_content}</Text> */}
                                                         <Autolink
                                                             component={Text}
-                                                            text={i.post_content}
+                                                            text={
+                                                                (
+                                                                    i.item.post_content === null || i.item.post_content === "null"
+                                                                ) ? "" : i.item.post_content
+                                                            }
                                                             style={{
                                                                 color: '#1b1b1b', 
                                                                 fontFamily: "Poppins-Regular", 
@@ -387,27 +429,23 @@ export default class HomeScreen extends React.Component {
                                                             alignItems: "center",
                                                             marginRight: widthToDp("6%"),
                                                             marginTop: heightToDp("1.5%"),
-                                                            width: "20%",
-                                                            padding: "1%",
-                                                            borderWidth: 1,
-                                                            borderRadius: 10
                                                         }}
-                                                        onPress={() => this.reportPost(i)}>
+                                                        onPress={() => this.reportPost(i.item)}>
                                                         <Icon2
-                                                            name={Platform.OS === 'android' ? 'md-thumbs-down' : 'ios-thumbs-down'}
+                                                            name={Platform.OS === 'android' ? 'md-alert-circle-outline' : 'ios-alert-circle-outline'}
                                                             // color="#ff0000"
-                                                            size={Platform.isPad ? 25 : 15}
+                                                            size={Platform.isPad ? 60 : 35}
                                                         />
-                                                        <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('3%'), fontFamily: "Poppins-Regular" }}>REPORT</Text>
+                                                        {/* <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp('3%'), fontFamily: "Poppins-Regular" }}>REPORT</Text> */}
                                                     </TouchableOpacity>
                                                 </View>
                                             }
                                             {
-                                                i.post_type === "video" ? <View>
+                                                i.item.post_type === "video" ? <View>
                                                     {
-                                                        i.post_img_video_live.length > 0 &&
+                                                        i.item.post_img_video_live.length > 0 &&
                                                         <FlatList
-                                                            data={i.post_img_video_live}
+                                                            data={i.item.post_img_video_live}
                                                             style={{
                                                                 padding: widthToDp("2%")
                                                             }}
@@ -416,7 +454,7 @@ export default class HomeScreen extends React.Component {
                                                                     activeOpacity={0.7}
                                                                     onPress={() => {
                                                                         this.setState({ shouldPlay: false });
-                                                                        this.props.navigation.navigate("ImagePreviewScreen", { image: { ...item, post_id: i.post_id }, otherProfile: this.state.otherProfile })
+                                                                        this.props.navigation.navigate("ImagePreviewScreen", { image: { ...item, post_id: i.item.post_id }, otherProfile: this.state.otherProfile })
                                                                     }}
                                                                 >
                                                                     <Video
@@ -426,6 +464,10 @@ export default class HomeScreen extends React.Component {
                                                                         }}
                                                                         volume={0.0}
                                                                         repeat
+                                                                        selectedVideoTrack={{
+                                                                            type: "resolution",
+                                                                            value: 144
+                                                                        }}
                                                                         key={index}
                                                                         ignoreSilentSwitch="ignore"
                                                                         // paused={!this.state.shouldPlay}
@@ -440,11 +482,11 @@ export default class HomeScreen extends React.Component {
                                                             )}
                                                         />
                                                     }
-                                                </View> : ((i.post_type === 'image') ? <View>
+                                                </View> : ((i.item.post_type === 'image') ? <View>
                                                     {
-                                                        i.post_img_video_live.length > 0 &&
+                                                        i.item.post_img_video_live.length > 0 &&
                                                         <FlatList
-                                                            data={i.post_img_video_live}
+                                                            data={i.item.post_img_video_live}
                                                             horizontal={true}
                                                             contentContainerStyle={{
                                                                 paddingHorizontal: widthToDp("4%")
@@ -454,7 +496,7 @@ export default class HomeScreen extends React.Component {
                                                             renderItem={({ item, index }) => (
                                                                 <TouchableOpacity
                                                                     activeOpacity={0.7}
-                                                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.post_id } })}
+                                                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.item.post_id } })}
                                                                     style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
                                                                     key={index}
                                                                 >
@@ -482,7 +524,7 @@ export default class HomeScreen extends React.Component {
                                                     activeOpacity={0.7}
                                                 >
                                                     {
-                                                        i.log_user_like_status === "No" ?
+                                                        i.item.log_user_like_status === "No" ?
                                                             <Icon
                                                                 name="heart"
                                                                 color="#69abff"
@@ -496,7 +538,7 @@ export default class HomeScreen extends React.Component {
                                                     }
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
-                                                    onPress={() => this.props.navigation.navigate("PostLikedUsersList", {postId: i.post_id})}
+                                                    onPress={() => this.props.navigation.navigate("PostLikedUsersList", {postId: i.item.post_id})}
                                                 >
                                                     <Text
                                                         style={{
@@ -505,10 +547,10 @@ export default class HomeScreen extends React.Component {
                                                             paddingLeft: widthToDp("1%"),
                                                             fontFamily: "Poppins-Regular"
                                                         }}
-                                                    >{i.number_of_like}</Text>
+                                                    >{i.item.number_of_like}</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
-                                                    onPress={() => this.props.navigation.navigate("CommentScreen", { post: i, type: "otherUserPost" })}
+                                                    onPress={() => this.props.navigation.navigate("CommentScreen", { post: i.item, type: "otherUserPost" })}
                                                 >
                                                     <Icon
                                                         name="comment"
@@ -524,22 +566,18 @@ export default class HomeScreen extends React.Component {
                                                         paddingLeft: widthToDp("1%"),
                                                         fontFamily: "Poppins-Regular"
                                                     }}
-                                                >{i.number_of_comment}</Text>
+                                                >{i.item.number_of_comment}</Text>
                                                 <Icon2
                                                     name={Platform.OS === 'android' ? 'md-arrow-redo-outline' : 'ios-arrow-redo-outline'}
                                                     color="#69abff"
                                                     size={Platform.isPad ? 40 : 25}
                                                     style={{ paddingLeft: widthToDp("4%") }}
-                                                    onPress={() => this.sharePostMethod(i.post_id)}
+                                                    onPress={() => this.sharePostMethod(i.item.post_id)}
                                                 />
                                             </View>
-                                            {
-                                                key !== postDetails.length - 1 &&
-                                                <View style={{ borderWidth: 0.5, borderColor: '#cdcdcd', marginHorizontal: widthToDp("4%") }} />
-                                            }
                                         </View>
-                                    ))
-                                }
+                                    )}
+                                />
                             </View>
                         )
                 }

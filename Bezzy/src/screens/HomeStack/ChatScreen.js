@@ -31,8 +31,16 @@ export default class ChatScreen extends React.Component {
     }
 
     componentDidMount() {
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.RBSheet.open()
+            this.getChatList("")
+        })
         this.RBSheet.open()
         this.getChatList("")
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe()
     }
 
 

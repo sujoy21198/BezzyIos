@@ -49,10 +49,20 @@ export default class ProfileScreen extends React.Component {
     )
 
     componentDidMount() {
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.RBSheet.open();
+            this.setState({ isLoading: true })
+            this.getProfileData();
+            this.getSharedMediaData()
+        })
         this.RBSheet.open();
         this.setState({ isLoading: true })
         this.getProfileData();
         this.getSharedMediaData()
+    }
+    
+    componentWillUnmount() {
+        this.unsubscribe()
     }
 
     getSharedMediaData = async () => {
@@ -346,7 +356,8 @@ export default class ProfileScreen extends React.Component {
                         <TouchableOpacity
                             style={{
                                 width: widthToDp("48.8%"),
-                                // padding: widthToDp("1%"),
+                                height: heightToDp('5%'),
+                                justifyContent: "center",
                                 backgroundColor: "#fff",
                                 alignItems: 'center'
                             }}
@@ -360,13 +371,14 @@ export default class ProfileScreen extends React.Component {
                                         require("../../../assets/default_posts.png")
                                 }
                                 resizeMode="contain"
-                                style={{ height: heightToDp("6%"), width: widthToDp("6%") }}
+                                style={{ height: Platform.isPad ? 56 : 28, width: Platform.isPad ? 56 : 28 }}
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
                                 width: widthToDp("48.8%"),
-                                padding: widthToDp("2%"),
+                                height: heightToDp('5%'),
+                                justifyContent: "center",
                                 backgroundColor: "#fff",
                                 alignItems: 'center'
                             }}

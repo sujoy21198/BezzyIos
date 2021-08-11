@@ -49,7 +49,7 @@ export default class BottomTab extends React.Component {
                         style={{
                             backgroundColor: '#fff',
                             height: heightToDp("8%"),
-                            width: widthToDp("21.3%"),
+                            width: "21%",
                             justifyContent: 'center',
                             alignItems: 'center',
                             elevation: 10
@@ -95,7 +95,7 @@ export default class BottomTab extends React.Component {
                         style={{
                             backgroundColor: '#fff',
                             height: heightToDp("8%"),
-                            width: widthToDp("21.3%"),
+                            width: "21%",
                             justifyContent: 'center',
                             borderTopWidth: 1,
                             borderTopColor: '#ececec',
@@ -132,8 +132,8 @@ export default class BottomTab extends React.Component {
                     </TouchableOpacity>
                     <View
                         style={{
-                            height: heightToDp("7.5%"),
-                            width: widthToDp("14.8%"),
+                            height: heightToDp("8%"),
+                            // width: widthToDp("14.8%"),
                             backgroundColor: '#fff',
                             elevation: 10,
                             flex: 1
@@ -141,20 +141,22 @@ export default class BottomTab extends React.Component {
                     >
                         <View
                             style={{
-                                height: heightToDp("7.5%"),
+                                height: heightToDp("8%"),
                                 flex: 1,
-                                borderBottomWidth: 1,
+                                borderWidth: 1,
                                 borderBottomLeftRadius: 30,
                                 borderBottomRightRadius: 30,
-                                borderBottomColor: '#ececec',
-                                backgroundColor: '#ececec'
+                                borderColor: '#ececec',
+                                backgroundColor: '#ececec',
+                                justifyContent: "center",
+                                alignItems: 'center'
                             }}
                         />
                         <TouchableOpacity
                             style={{
                                 position: 'absolute',
                                 bottom: heightToDp("4.9%"),
-                                left: widthToDp("1.4%"),
+                                alignSelf: 'center',
                                 height: 50,
                                 width: Platform.isPad ? '80%' : 50,
                                 borderRadius: 50 / 2,
@@ -178,7 +180,7 @@ export default class BottomTab extends React.Component {
                         style={{
                             backgroundColor: '#fff',
                             height: heightToDp("8%"),
-                            width: widthToDp("21.3%"),
+                            width: "21%",
                             justifyContent: 'center',
                             alignItems: 'center',
                             elevation: 10,
@@ -228,7 +230,7 @@ export default class BottomTab extends React.Component {
                         style={{
                             backgroundColor: '#fff',
                             height: heightToDp("8%"),
-                            width: widthToDp("21.3%"),
+                            width: "21%",
                             justifyContent: 'center',
                             alignItems: 'center',
                             elevation: 10
