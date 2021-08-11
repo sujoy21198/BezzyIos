@@ -464,10 +464,6 @@ export default class HomeScreen extends React.Component {
                                                                         }}
                                                                         volume={0.0}
                                                                         repeat
-                                                                        selectedVideoTrack={{
-                                                                            type: "resolution",
-                                                                            value: 144
-                                                                        }}
                                                                         key={index}
                                                                         ignoreSilentSwitch="ignore"
                                                                         // paused={!this.state.shouldPlay}
