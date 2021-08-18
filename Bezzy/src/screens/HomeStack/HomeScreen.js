@@ -453,19 +453,28 @@ export default class HomeScreen extends React.Component {
                                                                 <TouchableOpacity
                                                                     activeOpacity={0.7}
                                                                     onPress={() => {
-                                                                        this.setState({ shouldPlay: false });
+                                                                        for(let j=0; j < i.item.post_img_video_live.length; j++) {
+                                                                            if(this[`player${j}`]) this[`player${j}`] = undefined;
+                                                                        }
+                                                                        this.setState({ shouldPlay: false, postDetails: [] });
                                                                         this.props.navigation.navigate("ImagePreviewScreen", { image: { ...item, post_id: i.item.post_id }, otherProfile: this.state.otherProfile })
                                                                     }}
                                                                 >
                                                                     <Video
                                                                         source={{ uri: item.post_url }}
                                                                         ref={(ref) => {
-                                                                            this.player = ref
+                                                                            this[`player${index}`] = ref
                                                                         }}
                                                                         volume={0.0}
                                                                         repeat
                                                                         key={index}
                                                                         ignoreSilentSwitch="ignore"
+                                                                        bufferConfig={{
+                                                                            minBufferMs: 1, 
+                                                                            maxBufferMs: 5,
+                                                                            bufferForPlaybackMs: 0,
+                                                                            bufferForPlaybackAfterRebufferMs: 5
+                                                                        }}
                                                                         // paused={!this.state.shouldPlay}
                                                                         style={{
                                                                             height: heightToDp("30%"),
@@ -492,7 +501,13 @@ export default class HomeScreen extends React.Component {
                                                             renderItem={({ item, index }) => (
                                                                 <TouchableOpacity
                                                                     activeOpacity={0.7}
-                                                                    onPress={() => this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.item.post_id } })}
+                                                                    onPress={() => {
+                                                                        for(let j=0; j < i.item.post_img_video_live.length; j++) {
+                                                                            if(this[`player${j}`]) this[`player${j}`] = undefined;
+                                                                        }
+                                                                        this.setState({ shouldPlay: false, postDetails: [] });
+                                                                        this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.item.post_id } })
+                                                                    }}
                                                                     style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
                                                                     key={index}
                                                                 >
@@ -516,7 +531,7 @@ export default class HomeScreen extends React.Component {
                                                 }}
                                             >
                                                 <TouchableOpacity
-                                                    onPress={() => this.likePost(i)}
+                                                    onPress={() => this.likePost(i.item)}
                                                     activeOpacity={0.7}
                                                 >
                                                     {
