@@ -13,7 +13,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createThumbnail } from "react-native-create-thumbnail";
 import Video from 'react-native-video'
 import RBSheet from "react-native-raw-bottom-sheet"
+import RBSheet1 from "react-native-raw-bottom-sheet"
 import PushNotificationController from '../../components/PushNotificationController';
+import DataAccess from '../../components/DataAccess';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -25,7 +27,9 @@ export default class PostScreen extends React.Component {
         caption: '',
         thumbnail: '',
         fromCamera: false,
-        cameraImagePath: ''
+        cameraImagePath: '',
+        followingList: [],
+        isLoading: false
     }
 
 
@@ -282,6 +286,32 @@ export default class PostScreen extends React.Component {
         }
     }
 
+    getFollowings = async (mention) => {
+        if(mention === "@") return;
+        this.setState({followingList: []})
+        let userId = await AsyncStorage.getItem("userId");
+        let followingList = []
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
+        if(response.data.status === "success") {
+            // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
+            // console.warn(response.data.total_feed_response.friend_list);
+            response.data && response.data.total_feed_response && response.data.total_feed_response.friend_list &&
+            response.data.total_feed_response.friend_list.length > 0 &&
+            response.data.total_feed_response.friend_list.map(element => {
+                if(element.friend_name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                    followingList.push(element.friend_name);
+                }
+            })
+        } else {
+            this.setState({followingList: []});
+        }
+
+        this.setState({followingList})
+        this.state.followingList.length > 0 && this.RBSheet1.open()
+
+        // console.warn(this.state.followingList);
+    }
+
     render() {
         var imagesArray = []
         imagesArray = this.state.imagesArray
@@ -312,7 +342,26 @@ export default class PostScreen extends React.Component {
                         placeholder="Write Something here..."
                         placeholderTextColor="#69abff"
                         multiline
-                        onChangeText={(text) => this.setState({ caption: text })}
+                        defaultValue={this.state.caption}
+                        onChangeText={(text) => {
+                            this.setState({ caption: text, followingList: [] }, () => {
+                                if(this.state.caption.split(" ") && this.state.caption.split(" ").length > 0) {
+                                    // console.warn(this.state.caption.split(" "));
+                                }
+                                if(
+                                    this.state.caption.includes("@") && this.state.caption.match(/\B@\w+/g) && 
+                                    this.state.caption.match(/\B@\w+/g).length > 0 && (
+                                        this.state.caption.split(" ") && this.state.caption.split(" ").length > 0 &&
+                                        this.state.caption.split(" ")[this.state.caption.split(" ").length - 1] !== "" &&
+                                        this.state.caption.split(" ")[this.state.caption.split(" ").length - 1] !== "@" && 
+                                        this.state.caption.split(" ")[this.state.caption.split(" ").length - 1].includes("@")
+                                    )
+                                ) {
+                                    this.getFollowings(this.state.caption.match(/\B@\w+/g)[this.state.caption.match(/\B@\w+/g).length - 1]);
+                                    // console.warn("Abc ", text.match(/\B@\w+/g) && text.match(/\B@\w+/g).length > 0 && text.match(/\B@\w+/g)[text.match(/\B@\w+/g).length - 1]);
+                                }
+                            });
+                        }}
                     />
                     <View style={{ alignItems: 'flex-end', paddingBottom: heightToDp("1%") }}>
                         <View
@@ -493,6 +542,50 @@ export default class PostScreen extends React.Component {
                         </View>
                     </View>
                 </View>
+                <RBSheet1
+                    ref={ref => {
+                        this.RBSheet1 = ref;
+                    }}
+                    closeOnPressMask={true}
+                    closeOnPressBack={true}
+                    // height={100}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingLeft: widthToDp("5%"),
+                            backgroundColor: '#fff',
+                            borderRadius: 30
+                        }
+                    }}
+                >
+                    <FlatList
+                        style={{
+                            padding: widthToDp("2%")
+                        }}
+                        data={this.state.followingList}
+                        // ListFooterComponent={<View style={{height: heightToDp("1%")}}/>}
+                        ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
+                        renderItem={({item}) => (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({
+                                        caption: this.state.caption.substring(0, this.state.caption.trim().length - this.state.caption.match(/\B@\w+/g)[this.state.caption.match(/\B@\w+/g).length - 1].length) + "@" + item + " "
+                                    })
+                                    this.RBSheet1.close()
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: widthToDp("4.6%"),
+                                        fontFamily: "Poppins-Regular",
+                                    }}
+                                >{item}</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </RBSheet1>
                 <RBSheet
                     ref={ref => {
                         this.RBSheet = ref;

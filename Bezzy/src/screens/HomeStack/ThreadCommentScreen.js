@@ -12,6 +12,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PushNotificationController from '../../components/PushNotificationController';
 import Autolink from 'react-native-autolink';
+import RBSheet1 from "react-native-raw-bottom-sheet"
 
 export default class ThreadCommentScreen extends Component {
     constructor(props) {
@@ -22,7 +23,9 @@ export default class ThreadCommentScreen extends Component {
             commentText: '',
             post_id: '',
             isSendingComment: false,
-            isKeyboardOpened: false
+            isKeyboardOpened: false,
+            followingList: [],
+            isLoading: false
         }
         this.state.comment_id = this.props.route.params.comment_id
         this.state.post_id = this.props.route.params.post_id
@@ -90,6 +93,33 @@ export default class ThreadCommentScreen extends Component {
         }
         this.RBSheet.close();
     }
+
+    getFollowings = async (mention) => {
+        if(mention === "@") return;
+        this.setState({followingList: []})
+        let userId = await AsyncStorage.getItem("userId");
+        let followingList = []
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
+        if(response.data.status === "success") {
+            // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
+            // console.warn(response.data.total_feed_response.friend_list);
+            response.data && response.data.total_feed_response && response.data.total_feed_response.friend_list &&
+            response.data.total_feed_response.friend_list.length > 0 &&
+            response.data.total_feed_response.friend_list.map(element => {
+                if(element.friend_name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                    followingList.push(element.friend_name);
+                }
+            })
+        } else {
+            this.setState({followingList: []});
+        }
+
+        this.setState({followingList})
+        this.state.followingList.length > 0 && this.RBSheet1.open()
+
+        // console.warn(this.state.followingList);
+    }
+
     render() {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
@@ -325,7 +355,26 @@ export default class ThreadCommentScreen extends Component {
                                 }}
                                 multiline
                                 ref={ref => this.refChatField = ref}
-                                onChangeText={text => this.setState({ commentText: text })}
+                                defaultValue={this.state.commentText}
+                                onChangeText={(text) => {
+                                    this.setState({ commentText: text, followingList: [] }, () => {
+                                        if(this.state.commentText.split(" ") && this.state.commentText.split(" ").length > 0) {
+                                            // console.warn(this.state.commentText.split(" "));
+                                        }
+                                        if(
+                                            this.state.commentText.includes("@") && this.state.commentText.match(/\B@\w+/g) && 
+                                            this.state.commentText.match(/\B@\w+/g).length > 0 && (
+                                                this.state.commentText.split(" ") && this.state.commentText.split(" ").length > 0 &&
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1] !== "" &&
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1] !== "@" && 
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1].includes("@")
+                                            )
+                                        ) {
+                                            this.getFollowings(this.state.commentText.match(/\B@\w+/g)[this.state.commentText.match(/\B@\w+/g).length - 1]);
+                                            // console.warn("Abc ", text.match(/\B@\w+/g) && text.match(/\B@\w+/g).length > 0 && text.match(/\B@\w+/g)[text.match(/\B@\w+/g).length - 1]);
+                                        }
+                                    });
+                                }}
                             />
                             <TouchableOpacity
                                 onPress={this.sendComment}
@@ -341,6 +390,50 @@ export default class ThreadCommentScreen extends Component {
                         </View>
                     </View>
                 </KeyboardAvoidingView>
+                <RBSheet1
+                    ref={ref => {
+                        this.RBSheet1 = ref;
+                    }}
+                    closeOnPressMask={true}
+                    closeOnPressBack={true}
+                    // height={100}
+                    // openDuration={250}
+                    customStyles={{
+                        container: {
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingLeft: widthToDp("5%"),
+                            backgroundColor: '#fff',
+                            borderRadius: 30
+                        }
+                    }}
+                >
+                    <FlatList
+                        style={{
+                            padding: widthToDp("2%")
+                        }}
+                        data={this.state.followingList}
+                        // ListFooterComponent={<View style={{height: heightToDp("1%")}}/>}
+                        ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
+                        renderItem={({item}) => (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.setState({
+                                        commentText: this.state.commentText.substring(0, this.state.commentText.trim().length - this.state.commentText.match(/\B@\w+/g)[this.state.commentText.match(/\B@\w+/g).length - 1].length) + "@" + item + " "
+                                    })
+                                    this.RBSheet1.close()
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: widthToDp("4.6%"),
+                                        fontFamily: "Poppins-Regular",
+                                    }}
+                                >{item}</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
+                </RBSheet1>
                 
                 <RBSheet
                     ref={ref => {
