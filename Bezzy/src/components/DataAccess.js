@@ -19,10 +19,13 @@ const DataAccess = {
     followUser: "followingreqsend",
     followerList: "getfollowerslist",
     friendBlockList: "friendblocklist",
+    userFollowingList: "getuserfollowinglist",
     unfollow: "unfollowuser",
     followBack: 'followingback',
     removeUser: 'removeuser',
     blockUser: 'blockuser',
+    postTaggedUserContent: 'PostOnlyContentForImage',
+    videoPostTaggedUserContent: 'PostOnlyContentForVideo',
 
     //profile api's
     getProfileDetails: 'geteditprofiledata',

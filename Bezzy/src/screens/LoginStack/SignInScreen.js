@@ -12,6 +12,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import ButtonComponent from '../../components/ButtonComponent';
 import messaging from '@react-native-firebase/messaging';
+import {
+    LoginManager,
+    LoginButton,
+    AccessToken,
+    GraphRequest,
+    GraphRequestManager,
+  } from 'react-native-fbsdk';
+import InstagramLogin from 'react-native-instagram-login';
+import CookieManager from '@react-native-community/cookies';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
@@ -22,6 +31,8 @@ export default class SignInScreen extends React.Component {
             isEmailValid: '',
             isEmailFocused: false,
             isPasswordFocused: false,
+            fbUserInfo: {},
+            instagramToken: null
         }
     }
 
@@ -115,6 +126,38 @@ export default class SignInScreen extends React.Component {
             });
             this.RBSheet.close()
         }
+    }
+
+    fbLogin = () => {
+        const infoRequest = new GraphRequest(
+            '/me', 
+            {
+              parameters: {
+                'fields': {
+                    'string' : 'id,email,name,first_name,last_name'
+                }
+              }
+            },
+            async (err, res) => {
+              console.log("Error ==> ", err, "\nUser Credentials ==> ", res);
+              this.setState({fbUserInfo: res})
+              await AsyncStorage.setItem("fbUserInfo", JSON.stringify(res))
+            }
+        );
+        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+            function(result) {
+              if (result.isCancelled) {
+                console.log("Login cancelled");
+              }
+              else {
+                console.log("Login success with permissions: " + result.grantedPermissions.toString());
+                new GraphRequestManager().addRequest(infoRequest).start();
+              }
+            },
+            function(error) {
+              console.log("Login fail with error: " + error);
+            }
+        );
     }
 
     render = () => (
@@ -262,6 +305,69 @@ export default class SignInScreen extends React.Component {
                         onPressButton={this.logIn}
                         buttonText={"Login"}
                     />
+                    {/* <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: 'center',
+                        }}
+                    >
+                        <ButtonComponent
+                            socialLogin
+                            onPressButton={
+                                Object.keys(this.state.fbUserInfo).length === 0 ? this.fbLogin : async () => {
+                                    LoginManager.logOut();
+                                    this.setState({fbUserInfo: {}})
+                                    await AsyncStorage.removeItem("fbUserInfo");
+                                }
+                            }
+                            icon="logo-facebook"
+                            buttonText={
+                                Object.keys(this.state.fbUserInfo).length === 0 ? 
+                                    "Facebook Login" :
+                                    "Facebook Log out"
+                            }
+                        />
+                        <View style={{width: "2%"}}/>
+                        <>
+                            <ButtonComponent
+                                socialLogin
+
+                                onPressButton={
+                                    this.state.instagramToken === null ?
+                                    () => this.instagramLogin.show() : async () => {
+                                        CookieManager.clearAll(true)
+                                        this.setState({ instagramToken: null })
+                                        await AsyncStorage.removeItem("instaUserInfo")
+                                    }
+                                }
+                                icon="logo-instagram"
+                                buttonText={
+                                    this.state.instagramToken === null ? 
+                                        "Instagram Login" :
+                                        "Instagram Log out"
+                                }
+                            />
+                            <InstagramLogin
+                                ref={ref => (this.instagramLogin = ref)}
+                                appId='264206822197396'
+                                appSecret='b785a00a32e043ae59a51f7b5ebb4a3c'
+                                redirectUrl='https://www.google.com/'
+                                scopes={['user_profile', 'user_media']}
+                                onLoginSuccess={async (data) => {
+                                    console.warn("token, user_id ==> ", data);
+                                    this.setState({ instagramToken: data.access_token });
+                                    await axios.get(
+                                        `https://graph.instagram.com/v11.0/${data.user_id}?fields=id,username&access_token=${data.access_token}`
+                                    )
+                                    .then(async res => await AsyncStorage.setItem("instaUserInfo", JSON.stringify(res.data)))
+                                    .catch(err => console.log("error ==> ", err));
+                                }}
+                                onLoginFailure={(data) => console.log(data)}
+                            />
+                        </>
+                    </View> */}
+
                     
                     <RBSheet
                         ref={ref => {

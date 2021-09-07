@@ -27,6 +27,7 @@ import ThreadCommentScreen from './screens/HomeStack/ThreadCommentScreen'
 import ChatImagePreviewScreen from './screens/HomeStack/ChatImagePreviewScreen'
 import VideoPlayerScreen from './screens/HomeStack/VidePlayerScreen'
 import PostLikedUsersList from './screens/HomeStack/PostLikedUsersList';
+import InviteContactScreen from './screens/HomeStack/InviteContactScreen';
 
 const Stack = createStackNavigator();
 
@@ -59,6 +60,7 @@ const Navigation = () => (
             <Stack.Screen name="ChatImagePreviewScreen" component={ChatImagePreviewScreen} options={{headerShown:false}}/>
             <Stack.Screen name="VideoPlayerScreen" component={VideoPlayerScreen} options={{headerShown : false}}/>
             <Stack.Screen name="PostLikedUsersList" component={PostLikedUsersList} options={{headerShown : false}}/>
+            <Stack.Screen name="InviteContactScreen" component={InviteContactScreen} options={{headerShown : false}}/>
         </Stack.Navigator>
     </NavigationContainer>
 )

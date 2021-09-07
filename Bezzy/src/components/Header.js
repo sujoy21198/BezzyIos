@@ -167,16 +167,35 @@ export default class Header extends React.Component {
                         {
                             this.props.isProfileFocused &&
                             <>
-                                <TouchableOpacity
-                                    // activeOpacity={0.7}
-                                    onPress={() => this.RBSheet.open()}
+                                {/* <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: 'center'
+                                    }}
                                 >
-                                    <Image
-                                        source={require("../../assets/menu.png")}
-                                        resizeMode="contain"
-                                        style={{ height: heightToDp("3.5%"), width: widthToDp("3.5%") }}
-                                    />
-                                </TouchableOpacity>
+                                    <TouchableOpacity
+                                        // activeOpacity={0.7}
+                                        onPress={() => this.props.navigation.navigate("InviteContactScreen")}
+                                        style={{
+                                            paddingRight: widthToDp("2%")
+                                        }}
+                                    >
+                                        <Icon1
+                                            name={Platform.OS === 'android' ? 'md-people-outline' : 'ios-people-outline'}
+                                            size={Platform.isPad ? 44 : 22}
+                                        />
+                                    </TouchableOpacity> */}
+                                    <TouchableOpacity
+                                        // activeOpacity={0.7}
+                                        onPress={() => this.RBSheet.open()}
+                                    >
+                                        <Image
+                                            source={require("../../assets/menu.png")}
+                                            resizeMode="contain"
+                                            style={{ height: heightToDp("3.5%"), width: widthToDp("3.5%") }}
+                                        />
+                                    </TouchableOpacity>
+                                {/* </View> */}
                                 <RBSheet
                                     ref={ref => {
                                         this.RBSheet = ref;

@@ -18,9 +18,10 @@ export default class FollowingScreen extends React.Component {
     componentDidMount = async () => {
         this.setState({isLoading: true})
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
-        if(response.data.status === "success") {
-            this.setState({followingList: response.data.total_feed_response.friend_list});
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        console.warn(response.data);
+        if(response.data.resp === "success") {
+            this.setState({followingList: response.data.following_user_list});
         } else {
             this.setState({followingList: []});
         }
@@ -32,7 +33,7 @@ export default class FollowingScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.unfollow, {
             "loginUserID" : userId,
-            "unfriendID" : item.friend_id
+            "unfriendID" : item.following_user_id
         });
         if(response.data.status === "success") {
             let followingList = this.state.followingList;
@@ -94,7 +95,7 @@ export default class FollowingScreen extends React.Component {
                                 }}
                             >
                                 <Image
-                                    source={{uri: item.friend_photo}}
+                                    source={{uri: item.image}}
                                     style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
                                 />
                                 <Text
@@ -103,7 +104,7 @@ export default class FollowingScreen extends React.Component {
                                         fontSize: widthToDp("3%"),
                                         fontFamily: "Poppins-Regular"
                                     }}
-                                >{item.friend_name}</Text>
+                                >{item.name}</Text>
                             </View>
                             <TouchableOpacity
                                 activeOpacity={0.7}

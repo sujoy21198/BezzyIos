@@ -25,7 +25,8 @@ export default class ThreadCommentScreen extends Component {
             isSendingComment: false,
             isKeyboardOpened: false,
             followingList: [],
-            isLoading: false
+            isLoading: false,
+            tagUserId: []
         }
         this.state.comment_id = this.props.route.params.comment_id
         this.state.post_id = this.props.route.params.post_id
@@ -79,14 +80,14 @@ export default class ThreadCommentScreen extends Component {
             "userID": userId,
             "PostId": this.state.post_id,
             "commentParentId": this.state.comment_id,
-            "tag_user_id": null,
+            "tag_user_id": this.state.tagUserId.length > 0 ? JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0] : null,
             "commentText": this.state.commentText.trim()
         });
         //console.log(response.data)
         this.setState({ isSendingComment: false })
         if (response.data.status === "success") {
             this.getCommentReplyList();
-            this.setState({ commentText: "" })
+            this.setState({ commentText: "", tagUserId: [] })
             this.refChatField.clear();
         } else {
             //
@@ -99,15 +100,15 @@ export default class ThreadCommentScreen extends Component {
         this.setState({followingList: []})
         let userId = await AsyncStorage.getItem("userId");
         let followingList = []
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
-        if(response.data.status === "success") {
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        if(response.data.resp === "success") {
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
             // console.warn(response.data.total_feed_response.friend_list);
-            response.data && response.data.total_feed_response && response.data.total_feed_response.friend_list &&
-            response.data.total_feed_response.friend_list.length > 0 &&
-            response.data.total_feed_response.friend_list.map(element => {
-                if(element.friend_name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
-                    followingList.push(element.friend_name);
+            response.data && response.data.following_user_list &&
+            response.data.following_user_list.length > 0 &&
+            response.data.following_user_list.map(element => {
+                if(element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                    followingList.push(element);
                 }
             })
         } else {
@@ -419,7 +420,8 @@ export default class ThreadCommentScreen extends Component {
                             <TouchableOpacity
                                 onPress={() => {
                                     this.setState({
-                                        commentText: this.state.commentText.substring(0, this.state.commentText.trim().length - this.state.commentText.match(/\B@\w+/g)[this.state.commentText.match(/\B@\w+/g).length - 1].length) + "@" + item + " "
+                                        commentText: this.state.commentText.substring(0, this.state.commentText.trim().length - this.state.commentText.match(/\B@\w+/g)[this.state.commentText.match(/\B@\w+/g).length - 1].length) + "@" + item.name + " ",
+                                        tagUserId: [...this.state.tagUserId, item.following_user_id]
                                     })
                                     this.RBSheet1.close()
                                 }}
@@ -429,7 +431,7 @@ export default class ThreadCommentScreen extends Component {
                                         fontSize: widthToDp("4.6%"),
                                         fontFamily: "Poppins-Regular",
                                     }}
-                                >{item}</Text>
+                                >{item.name}</Text>
                             </TouchableOpacity>
                         )}
                     />

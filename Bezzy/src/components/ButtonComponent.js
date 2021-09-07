@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { heightToDp, widthToDp } from './Responsive';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class ButtonComponent extends React.Component {
     render = () => (
@@ -12,7 +13,7 @@ export default class ButtonComponent extends React.Component {
                 marginTop: heightToDp(`${this.props.editProfile ? 2 : 3}%`),
                 borderRadius: 10,            
                 marginHorizontal: this.props.updateProfile ? widthToDp("2.7%") : '0%',
-                width: this.props.editProfile ? widthToDp("40%") : this.props.updateProfile ? "95%" : "100%",
+                width: this.props.socialLogin ? "48%" : this.props.editProfile ? widthToDp("40%") : this.props.updateProfile ? "95%" : "100%",
                 padding: widthToDp(`${this.props.editProfile ? 2.5 : 3}%`)
             }}
         >
@@ -21,15 +22,38 @@ export default class ButtonComponent extends React.Component {
                 onPress={this.props.onPressButton}
                 disabled={this.props.disabled}
             >
-                <Text
-                    style={[{
-                        color: "#fff",
-                        textAlign: "center",
-                        fontFamily: "ProximaNova-Black",
-                    }, Platform.isPad && {fontSize: widthToDp("3.2%")}]}
-                >
-                    {this.props.buttonText}
-                </Text>
+                {
+                    this.props.socialLogin ? 
+                    <TouchableOpacity
+                        style={{
+                            flex: 1, 
+                            flexDirection: 'row',
+                            justifyContent: 'space-between', 
+                            alignItems: "flex-end", 
+                            borderRadius: 5,
+                            // padding: 4.5
+                        }}
+                        onPress={this.props.onPressButton}
+                    >
+                        <Icon
+                            name={this.props.icon}
+                            size={Platform.isPad ? 50 : 25}
+                            color="white"
+                        />
+                        <Text style={{ color: 'white', fontWeight: "bold", alignSelf: "center", fontSize: widthToDp("4%") }}>
+                            {this.props.buttonText}
+                        </Text>
+                    </TouchableOpacity> :
+                    <Text
+                        style={[{
+                            color: "#fff",
+                            textAlign: "center",
+                            fontFamily: "ProximaNova-Black",
+                        }, Platform.isPad && {fontSize: widthToDp("3.2%")}]}
+                    >
+                        {this.props.buttonText}
+                    </Text>
+                }
             </TouchableOpacity>
         </LinearGradient>
     )

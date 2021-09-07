@@ -29,7 +29,8 @@ export default class PostScreen extends React.Component {
         fromCamera: false,
         cameraImagePath: '',
         followingList: [],
-        isLoading: false
+        isLoading: false,
+        tagUserId: []
     }
 
 
@@ -195,8 +196,20 @@ export default class PostScreen extends React.Component {
                     // formData.append('post_content', this.state.caption)
                     // console.log(formData._parts)
                     await axios.post('http://bezzy-app.com/admin/api/PostImage', formData)
-                        .then(function (response) {
+                        .then(async response => {
                             console.log(response.data)
+                            if(this.state.tagUserId.length > 0) {
+                                await axios.post(DataAccess.BaseUrl +  DataAccess.postTaggedUserContent, {
+                                    "post_id" : response.data.post_id,
+                                    "log_user_id" : userID,
+                                    "post_content" : this.state.caption,
+                                    "post_type_id" : '1',
+                                    "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
+                                }).then(res => {
+                                    console.log(res.data);
+                                    this.setState({tagUserId: []})
+                                }).catch(err => console.log(err))
+                            }
                         }).catch(function (error) {
                             console.log(error)
                         })
@@ -260,8 +273,20 @@ export default class PostScreen extends React.Component {
                 fromDataVideo.append('userID', userID)
 
                 await axios.post('http://bezzy-app.com/admin/api/PostVideo', fromDataVideo)
-                    .then(function (response) {
+                    .then(async response => {
                         console.log(response.data, "VIDEO")
+                        if(this.state.tagUserId.length > 0) {
+                            await axios.post(DataAccess.BaseUrl +  DataAccess.videoPostTaggedUserContent, {
+                                "post_id" : response.data.post_id,
+                                "log_user_id" : userID,
+                                "post_content" : this.state.caption,
+                                "post_type_id" : '3',
+                                "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
+                            }).then(res => {
+                                console.log(res.data);
+                                this.setState({tagUserId: []})
+                            }).catch(err => console.log(err))
+                        }
                     }).catch(function (error) {
                         console.log(error)
                     })
@@ -291,15 +316,15 @@ export default class PostScreen extends React.Component {
         this.setState({followingList: []})
         let userId = await AsyncStorage.getItem("userId");
         let followingList = []
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.friendBlockList + "/" + userId);
-        if(response.data.status === "success") {
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        if(response.data.resp === "success") {
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
             // console.warn(response.data.total_feed_response.friend_list);
-            response.data && response.data.total_feed_response && response.data.total_feed_response.friend_list &&
-            response.data.total_feed_response.friend_list.length > 0 &&
-            response.data.total_feed_response.friend_list.map(element => {
-                if(element.friend_name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
-                    followingList.push(element.friend_name);
+            response.data && response.data.following_user_list &&
+            response.data.following_user_list.length > 0 &&
+            response.data.following_user_list.map(element => {
+                if(element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                    followingList.push(element);
                 }
             })
         } else {
@@ -571,7 +596,10 @@ export default class PostScreen extends React.Component {
                             <TouchableOpacity
                                 onPress={() => {
                                     this.setState({
-                                        caption: this.state.caption.substring(0, this.state.caption.trim().length - this.state.caption.match(/\B@\w+/g)[this.state.caption.match(/\B@\w+/g).length - 1].length) + "@" + item + " "
+                                        caption: this.state.caption.substring(0, this.state.caption.trim().length - this.state.caption.match(/\B@\w+/g)[this.state.caption.match(/\B@\w+/g).length - 1].length) + "@" + item.name + " ",
+                                        tagUserId: [...this.state.tagUserId, item.following_user_id]
+                                    }, () => {
+                                        console.log("Tagged IDs => ", this.state.tagUserId)
                                     })
                                     this.RBSheet1.close()
                                 }}
@@ -581,7 +609,7 @@ export default class PostScreen extends React.Component {
                                         fontSize: widthToDp("4.6%"),
                                         fontFamily: "Poppins-Regular",
                                     }}
-                                >{item}</Text>
+                                >{item.name}</Text>
                             </TouchableOpacity>
                         )}
                     />

@@ -36,6 +36,7 @@ export default class InboxScreen extends Component {
       imagesArray: [],
       isKeyboardOpened: false
     }
+    setInterval(() => this.getInboxChats("0"), 4000)
     this.state.friendsId = this.props.route.params.friendId
     this.state.friendImage = this.props.route.params.friendImage
     this.state.friendName = this.props.route.params.friendName
@@ -59,7 +60,7 @@ export default class InboxScreen extends Component {
   componentDidMount() {
     this.getUserId()
     //this.imageToBase64Converter()
-    setInterval(() => this.getInboxChats("0"), 4000)
+    
 
   }
 
@@ -82,7 +83,9 @@ export default class InboxScreen extends Component {
   }
 
   getInboxChats = async (value) => {
+    this.setState({isFetching: false})
     if (value === '0') {
+      this.state.message.length === 0 && this.setState({isFetching: true});
       var messages = []
       await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/1")
         .then(function (response) {
@@ -256,188 +259,200 @@ export default class InboxScreen extends Component {
           </Text>
         </TouchableOpacity>
         <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
-            <View style={{flex: 0.935}}>
-              <FlatList
-                data={this.state.message}
-                keyExtractor={(item, index) => String(index)}
-                inverted={true}
-                ListFooterComponent={<View style={{height: heightToDp("5%")}}/>}
-                style={{ backgroundColor: '#fff', height: heightToDp("80%"), padding: widthToDp("2%") }}
-                // onRefresh={() => this.onRefresh()}
-                // refreshing={this.state.isFetching}
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
-                //ListFooterComponent={this.renderFooter}
-                renderItem={({ item }) =>
-                  item &&
-                  <View>
+            {
+              this.state.isFetching ?
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <ActivityIndicator size="large" color="#69abff"/>
+              </View> :
+              <View style={{flex: 0.935}}>
+                <FlatList
+                  data={this.state.message}
+                  keyExtractor={(item, index) => String(index)}
+                  inverted={true}
+                  ListFooterComponent={<View style={{height: heightToDp("5%")}}/>}
+                  style={{ backgroundColor: '#fff', height: heightToDp("80%"), padding: widthToDp("2%") }}
+                  // onRefresh={() => this.onRefresh()}
+                  // refreshing={this.state.isFetching}
+                  onEndReached={this.handleLoadMore}
+                  onEndReachedThreshold={0}
+                  //ListFooterComponent={this.renderFooter}
+                  renderItem={({ item }) =>
+                    item &&
+                    <View>
 
-                    {
-                      item.message_by === 'self' && item.type === 'text' ? 
-                      <View style={{ 
-                        backgroundColor: '#007dfe',
-                        paddingVertical: heightToDp('0.5%'),
-                        width: widthToDp("40%"), 
-                        borderTopLeftRadius: 10,
-                        borderTopRightRadius: 10,
-                        borderBottomLeftRadius: 10, 
-                        marginBottom: heightToDp("2%"), 
-                        alignSelf: 'flex-end', 
-                        marginBottom: heightToDp("2%") 
-                      }}>
-                        <Autolink
-                          component={Text}
-                          text={item.chat_message}
-                          style={{ 
-                            marginLeft: widthToDp("2%"), 
-                            color: 'white', 
-                            fontSize: widthToDp("3.3%"), 
-                            fontFamily: "Poppins-Regular" 
-                          }}
-                          email
-                          url
-                          linkStyle={{
-                            marginLeft: widthToDp("2%"), 
-                            color: 'white', 
-                            fontSize: widthToDp("3.3%"), 
-                            fontFamily: "Poppins-Regular", 
-                            textDecorationLine: "underline",
-                          }}
-                        />
-                        {/* <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
-                        <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
-                        <Ionicons
-                        name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                        size={Platform.isPad ? 30 : 15}
-                        color="#fff"
-                        style={{alignSelf: 'flex-end', marginRight: widthToDp("2%")}}
-                        />
-                      </View> : ((item.message_by === 'self' && item.type === 'image') ?
-                        <View 
-                          style={{ 
-                            backgroundColor: '#007dfe',
+                      {
+                        item.message_by === 'self' && item.type === 'text' ? 
+                        <View style={{ 
+                          backgroundColor: '#007dfe',
+                          paddingVertical: heightToDp('0.5%'),
+                          width: widthToDp("40%"), 
+                          borderTopLeftRadius: 10,
+                          borderTopRightRadius: 10,
+                          borderBottomLeftRadius: 10, 
+                          marginBottom: heightToDp("2%"), 
+                          alignSelf: 'flex-end', 
+                          marginBottom: heightToDp("2%") 
+                        }}>
+                          <Autolink
+                            component={Text}
+                            text={item.chat_message}
+                            style={{ 
+                              marginLeft: widthToDp("2%"), 
+                              color: 'white', 
+                              fontSize: widthToDp("3.3%"), 
+                              fontFamily: "Poppins-Regular" 
+                            }}
+                            email
+                            url
+                            linkStyle={{
+                              marginLeft: widthToDp("2%"), 
+                              color: 'white', 
+                              fontSize: widthToDp("3.3%"), 
+                              fontFamily: "Poppins-Regular", 
+                              textDecorationLine: "underline",
+                            }}
+                          />
+                          {/* <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
+                          <Text style={{ marginRight: widthToDp("3%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
+                          <Ionicons
+                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                          size={Platform.isPad ? 30 : 15}
+                          color="#fff"
+                          style={{alignSelf: 'flex-end', marginRight: widthToDp("2%")}}
+                          />
+                        </View> : ((item.message_by === 'self' && item.type === 'image') ?
+                          <View 
+                            style={{ 
+                              backgroundColor: '#007dfe',
+                              marginBottom: heightToDp("2%"), 
+                              width: widthToDp("50%"), 
+                              alignSelf: 'flex-end',
+                              borderTopLeftRadius: 20,
+                              borderTopRightRadius: 20,
+                              borderBottomLeftRadius: 20,  
+                            }}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
+                              <Image
+                                source={{ uri: item.chat_message }}
+                                resizeMode="contain"
+                                style={{ 
+                                  height: heightToDp("20%"), 
+                                  width: widthToDp("50%"), 
+                                  borderTopLeftRadius: 20,
+                                  borderTopRightRadius: 20,
+                                  borderBottomLeftRadius: 20, 
+                                }}
+                              />
+                            </TouchableOpacity>
+
+                            <Text style={{ 
+                              position: 'absolute',
+                              bottom: 20,
+                              right: 5,
+                              color: 'white', 
+                              fontFamily: "Poppins-Regular"
+                            }}>{item.chat_msg_time}</Text>
+                            <Ionicons
+                            name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                            size={Platform.isPad ? 30 : 15}
+                            color="#fff"
+                            style={{
+                              position: 'absolute',
+                              bottom: 5,
+                              right: 5,
+                              color: 'white', 
+                            }}
+                            />
+                          </View> : ((item.message_by === 'other' && item.type === 'text') ? 
+                          <View 
+                            style={{ 
+                              backgroundColor: '#ececec', 
+                              paddingVertical: heightToDp('0.5%'),
+                              width: widthToDp("40%"), 
+                              borderTopRightRadius: 20,
+                              borderBottomLeftRadius: 20,
+                              borderBottomRightRadius: 20,
+                              marginBottom: heightToDp("2%"), 
+                              alignSelf: 'flex-start' 
+                            }}>
+                              <Autolink
+                                component={Text}
+                                text={item.chat_message}
+                                style={{ 
+                                  marginLeft: widthToDp("2%"), 
+                                  fontSize: widthToDp("3.3%"), 
+                                  fontFamily: "Poppins-Regular" 
+                                }}
+                                email
+                                url
+                                linkStyle={{
+                                  marginLeft: widthToDp("2%"), 
+                                  fontSize: widthToDp("3.3%"), 
+                                  fontFamily: "Poppins-Regular", 
+                                  textDecorationLine: "underline",
+                                }}
+                              />
+                            {/* <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
+                            <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
+                            <Ionicons
+                            name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                            size={Platform.isPad ? 30 : 15}
+                            color="#1b1b1b"
+                            style={{alignSelf: 'flex-start', marginLeft: widthToDp("2%")}}
+                            />
+                          </View> : (((item.message_by === 'other' && item.type === 'image') ? 
+                          <View style={{ 
+                            backgroundColor: '#ececec',
                             marginBottom: heightToDp("2%"), 
                             width: widthToDp("50%"), 
-                            alignSelf: 'flex-end',
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20,
-                            borderBottomLeftRadius: 20,  
+                            alignSelf: 'flex-start', 
                           }}>
-                          <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
-                            <Image
-                              source={{ uri: item.chat_message }}
-                              resizeMode="contain"
-                              style={{ 
-                                height: heightToDp("20%"), 
-                                width: widthToDp("50%"), 
-                                borderTopLeftRadius: 20,
-                                borderTopRightRadius: 20,
-                                borderBottomLeftRadius: 20, 
-                              }}
-                            />
-                          </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
+                              <Image
+                                source={{ uri: item.chat_message }}
+                                style={{ 
+                                  height: heightToDp("20%"), 
+                                  width: widthToDp("50%"),
+                                  borderTopRightRadius: 20,
+                                  borderBottomLeftRadius: 20,
+                                  borderBottomRightRadius: 20,
+                                }}
+                                resizeMode="contain"
+                              />
+                            </TouchableOpacity>
 
-                          <Text style={{ 
-                            position: 'absolute',
-                            bottom: 20,
-                            right: 5,
-                            color: 'white', 
-                            fontFamily: "Poppins-Regular"
-                          }}>{item.chat_msg_time}</Text>
-                          <Ionicons
-                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={Platform.isPad ? 30 : 15}
-                          color="#fff"
-                          style={{
-                            position: 'absolute',
-                            bottom: 5,
-                            right: 5,
-                            color: 'white', 
-                          }}
-                          />
-                        </View> : ((item.message_by === 'other' && item.type === 'text') ? 
-                        <View 
-                          style={{ 
-                            backgroundColor: '#ececec', 
-                            paddingVertical: heightToDp('0.5%'),
-                            width: widthToDp("40%"), 
-                            borderTopRightRadius: 20,
-                            borderBottomLeftRadius: 20,
-                            borderBottomRightRadius: 20,
-                            marginBottom: heightToDp("2%"), 
-                            alignSelf: 'flex-start' 
-                          }}>
-                            <Autolink
-                              component={Text}
-                              text={item.chat_message}
-                              style={{ 
-                                marginLeft: widthToDp("2%"), 
-                                fontSize: widthToDp("3.3%"), 
-                                fontFamily: "Poppins-Regular" 
-                              }}
-                              email
-                              url
-                              linkStyle={{
-                                marginLeft: widthToDp("2%"), 
-                                fontSize: widthToDp("3.3%"), 
-                                fontFamily: "Poppins-Regular", 
-                                textDecorationLine: "underline",
-                              }}
+                            <Text style={{ 
+                              position: 'absolute',
+                              bottom: 20,
+                              left: 5,
+                              color: 'white', 
+                              fontFamily: "Poppins-Regular"
+                            }}>{item.chat_msg_time}</Text>
+                            <Ionicons
+                            name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                            size={Platform.isPad ? 30 : 15}
+                            color="#fff"
+                            style={{
+                              position: 'absolute',
+                              bottom: 5,
+                              left: 5,
+                              color: 'white', 
+                            }}
                             />
-                          {/* <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
-                          <Text style={{ marginRight: widthToDp("3%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("2.5%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
-                          <Ionicons
-                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={Platform.isPad ? 30 : 15}
-                          color="#1b1b1b"
-                          style={{alignSelf: 'flex-start', marginLeft: widthToDp("2%")}}
-                          />
-                        </View> : (((item.message_by === 'other' && item.type === 'image') ? 
-                        <View style={{ 
-                          backgroundColor: '#ececec',
-                          marginBottom: heightToDp("2%"), 
-                          width: widthToDp("50%"), 
-                          alignSelf: 'flex-start', 
-                        }}>
-                          <TouchableOpacity onPress={() => this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })}>
-                            <Image
-                              source={{ uri: item.chat_message }}
-                              style={{ 
-                                height: heightToDp("20%"), 
-                                width: widthToDp("50%"),
-                                borderTopRightRadius: 20,
-                                borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20,
-                              }}
-                              resizeMode="contain"
-                            />
-                          </TouchableOpacity>
+                          </View> : null))))
+                      }
+                    </View>
 
-                          <Text style={{ 
-                            position: 'absolute',
-                            bottom: 20,
-                            left: 5,
-                            color: 'white', 
-                            fontFamily: "Poppins-Regular"
-                          }}>{item.chat_msg_time}</Text>
-                          <Ionicons
-                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
-                          size={Platform.isPad ? 30 : 15}
-                          color="#fff"
-                          style={{
-                            position: 'absolute',
-                            bottom: 5,
-                            left: 5,
-                            color: 'white', 
-                          }}
-                          />
-                        </View> : null))))
-                    }
-                  </View>
-
-                }
-              />
-            </View>
+                  }
+                />
+              </View>
+            }
             <View
               style={{
                 flex: 0.065,
