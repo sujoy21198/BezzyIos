@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Toast} from 'native-base';
 import DataAccess from '../../components/DataAccess';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
@@ -26,7 +27,10 @@ export default class CommentScreen extends React.Component {
             isKeyboardOpened: false,
             followingList: [],
             isLoading: false,
-            tagUserId: []
+            tagUserId: [],
+            isSelected: false, 
+            deleteIds: [], 
+            userDetails: {}
         }
         this.state.post_id = typeof this.props.route.post === "object" ? this.props.route.post.post_id : this.props.route.params.post.post_id
     }
@@ -46,6 +50,7 @@ export default class CommentScreen extends React.Component {
     }
 
     componentDidMount = async () => {
+        this.setState({userDetails: JSON.parse(await AsyncStorage.getItem("userDetails"))});
         this.getPostCommentedUsers();
     }    
     
@@ -60,6 +65,7 @@ export default class CommentScreen extends React.Component {
             if(response.data.message === "No comment found") {
                 this.setState({comments: []});
             } else {
+                response.data.comment_list.Parent.map(item => item.isSelected = false);
                 this.setState({
                     comments: response.data.comment_list.Parent, 
                 })
@@ -68,6 +74,7 @@ export default class CommentScreen extends React.Component {
         } else {
             this.setState({comments: []});
         }
+        console.warn(this.state.comments, JSON.parse(await AsyncStorage.getItem("userDetails")));
         this.RBSheet.close()
     }
 
@@ -153,10 +160,104 @@ export default class CommentScreen extends React.Component {
         // console.warn(this.state.followingList);
     }
 
+    deleteMessage = async (deleteFromIcon) => {
+      console.log(this.state.deleteIds, DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment));
+      Alert.alert(
+        "Are you sure?",
+        this.state.deleteIds.length + ` ${this.state.deleteIds.length === 1 ? "comment" : "comments"} will be deleted`, [
+          {
+            text: "Cancel",
+            onPress: () => {
+                if(deleteFromIcon) {
+                    this.setState({deleteIds: []});
+                }
+            }
+          },
+          {
+            text: "Ok", 
+            onPress: async () => {
+                this.RBSheet.open();
+                this.setState({comments: [], isSendingComment: true, isSelected: false})
+                await axios.post(DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment), {
+                    "cmnt_id": this.state.deleteIds.length === 1 ? this.state.deleteIds[0] : this.state.deleteIds
+                }).then(response => {
+                    console.log("Comment delete success response :- ", response);
+                    if(response.data.status === "success") {
+                    this.state.comments.map(item => item.isSelected = false);
+                    this.setState({deleteIds: []});
+                    this.getPostCommentedUsers();
+                    this.setState({isSendingComment: false});
+                    } else {
+                    //
+                    }
+                }).catch(error => {
+                    console.log("Comment delete error response :- ", error)
+                })
+            }
+          }
+        ]
+      )
+    }
+
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(220,220,220,0)'}}>
             <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />
+            {!this.state.isSelected && 
+            <Header isBackButton isHomeStackInnerPage headerText={"Comments"} navigation={this.props.navigation} commentCount={(this.props.route.params && this.props.route.params.type !== "otherUserPost") ? this.state.comments.length : undefined} />}
+            {
+                this.state.isSelected &&
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        backgroundColor: this.state.isSelected ? "rgba(0, 125, 254, 0.2)" : undefined,
+                        paddingHorizontal: widthToDp("2%"),
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#ececec",
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            paddingVertical: heightToDp("1%"),
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}
+                        activeOpacity={0.7}
+                        onPress={this.state.isSelected ? () => {
+                        let comments = this.state.comments;
+                        comments.map(i => i.isSelected = false)
+                        this.setState({comments: comments, isSelected: false, deleteIds: []})
+                        } : () => this.props.navigation.goBack()}
+                    >
+                        <Icon 
+                            name="chevron-left"
+                            size={Platform.isPad ? 40 : 20}
+                            color={"#808080"}                        
+                        />
+                        <Text
+                            style={{
+                                marginLeft: widthToDp("2%"),
+                                fontSize: widthToDp("4.5%"),
+                                fontFamily: "ProximaNova-Black",
+                                color: "#808080"
+                            }}
+                        >
+                            {this.state.deleteIds.length}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={this.deleteMessage}
+                    >
+                        <Ionicons 
+                            name={Platform.OS==='android' ? 'md-trash' : 'ios-trash'}
+                            size={Platform.isPad ? 40 : 20}
+                            color={"#808080"}                        
+                        />
+                    </TouchableOpacity>
+                </View>
+            }
             <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
                 <View style={{flex: 0.965}}>
                     {
@@ -169,12 +270,73 @@ export default class CommentScreen extends React.Component {
                         ListFooterComponent={<View style={{height: heightToDp("2%")}}/>}
                         ListHeaderComponent={<View style={{height: heightToDp("3%")}}/>}
                         renderItem={({item, index}) => (
-                            <>
+                            <TouchableOpacity
+                                style={
+                                    item.isSelected ? {
+                                        backgroundColor: "rgba(0, 125, 254, 0.1)",
+                                        paddingVertical: widthToDp("1%")
+                                    } : {}
+                                }
+                                activeOpacity={0.7}
+                                onLongPress={() => {
+                                    if(item.userimage !== this.state.userDetails.profile_pic) {
+                                        Toast.show({
+                                            style: {
+                                                backgroundColor: '#777',
+                                            },
+                                            text: "Only Self Comments can be deleted",
+                                            duration: 3000
+                                        });
+                                        return;
+                                    }
+                                    let comments = this.state.comments;
+                                    comments.map(i => {
+                                        if(i.comment_id === item.comment_id) {
+                                            i.isSelected = true
+                                        }
+                                    })
+                                    this.setState({comments: comments, isSelected: true, deleteIds: [...this.state.deleteIds, item.comment_id]})
+                                }}
+                                onPress={async() => {
+                                    if(this.state.isSelected && item.userimage !== this.state.userDetails.profile_pic) {
+                                        Toast.show({
+                                            style: {
+                                                backgroundColor: '#777',
+                                            },
+                                            text: "Only Self Comments can be deleted",
+                                            duration: 3000
+                                        })
+                                        return;
+                                    }
+                                    if(this.state.isSelected) {
+                                        let comments = this.state.comments;
+                                        comments.map(i => {
+                                        if(i.comment_id === item.comment_id) {
+                                            if(i.isSelected) {
+                                                this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.comment_id), 1)
+                                                this.setState({deleteIds: this.state.deleteIds})
+                                            } else {
+                                                this.setState({deleteIds: [...this.state.deleteIds, item.comment_id]})
+                                            }
+                                            i.isSelected = !i.isSelected
+                                        }
+                                        })
+                                        if(!comments.find(item => item.isSelected)) {
+                                            this.setState({isSelected: false})
+                                        } 
+                                        this.setState({comments: comments})
+                                    } else {
+            
+                                        // this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+            
+                                    }
+                                }}
+                            >
                                 <View
                                     style={{
                                         flexDirection: 'row',
                                         alignItems: 'flex-start',
-                                        paddingHorizontal: widthToDp("2%")
+                                        paddingHorizontal: widthToDp("2%"),
                                     }}
                                 >
                                     <Image
@@ -256,6 +418,7 @@ export default class CommentScreen extends React.Component {
                                         <TouchableOpacity
                                             activeOpacity={0.7}
                                             onPress={() => this.likeDislikeComment(item)}
+                                            disabled={this.state.isSelected}
                                         >
                                             {
                                                 item.login_user_like_comment === "Yes" ?
@@ -284,7 +447,7 @@ export default class CommentScreen extends React.Component {
                                             color="#69abff"
                                             size={Platform.isPad ? 30 : 15}
                                             style={{paddingLeft: widthToDp("4%")}}
-                                            onPress={() => this.threadComment(item)}
+                                            onPress={() => this.state.isSelected ? undefined : this.threadComment(item)}
                                         />
                                         <Text
                                             style={{
@@ -294,9 +457,39 @@ export default class CommentScreen extends React.Component {
                                                 fontFamily: "Poppins-Regular"
                                             }}
                                         >{item.total_comment_on_comment}</Text>
+                                        {
+                                            !this.state.isSelected && item.userimage === this.state.userDetails.profile_pic &&
+                                            <TouchableOpacity
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    justifyContent: "space-between"
+                                                }}
+                                                onPress={() => {
+                                                    !this.state.deleteIds.includes(item.comment_id) &&
+                                                    this.state.deleteIds.push(item.comment_id);
+                                                    this.deleteMessage(true);
+                                                }}
+                                            >
+                                                <Ionicons
+                                                    name={Platform.OS==='android' ? "md-trash" : "ios-trash"}
+                                                    color="#69abff"
+                                                    size={Platform.isPad ? 30 : 15}
+                                                    style={{paddingLeft: widthToDp("2%")}}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        color: "#777",
+                                                        fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
+                                                        paddingLeft: widthToDp("0.5%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                >Delete</Text>
+                                            </TouchableOpacity>
+                                        }
                                     </View> 
                                 </View>
-                            </>
+                            </TouchableOpacity>
                         )}
                         />
                     }  

@@ -50,6 +50,8 @@ const DataAccess = {
     getPostDetails: 'friendsingleblockdetails',
     commentReplyList : 'comment-reply-list',
     reportPost: 'report-to-block-post', 
+    deleteSingleComment: 'deletecommentsmsg', //delete single comment/reply
+    deleteMultipleComment: 'deletecommentsmsgmultiple', //delete multiple comment/reply
 
     //notification api's
     fetchNotifications: 'Notificationlist',
@@ -62,6 +64,8 @@ const DataAccess = {
     chatList:'chat-notification-list', //get chat list    
     addChatDataImage:'add-chat-data-image', //post image to chat
     readUnreadChats: 'click-on-chat-notification', //read unread chats
+    deleteSingleMessage: 'deletechatmsg', //delete single chat message
+    deleteMultipleMessage: 'deletechatmsgmultiple', //delete multiple chat message
 
     //share api's
     getSharePostData: 'getshare-postdata', //share post view

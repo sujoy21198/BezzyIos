@@ -16,6 +16,7 @@ import RBSheet from "react-native-raw-bottom-sheet"
 import RBSheet1 from "react-native-raw-bottom-sheet"
 import PushNotificationController from '../../components/PushNotificationController';
 import DataAccess from '../../components/DataAccess';
+import PushNotification from 'react-native-push-notification';
 
 export default class PostScreen extends React.Component {
     state = {
@@ -135,7 +136,8 @@ export default class PostScreen extends React.Component {
             width: 300,
             height: 200,
             cropping: true,
-            multiple: true
+            multiple: true,
+            maxFiles: 30
         })
             .then(images => {
                 this.state.imagePath = images.path
@@ -174,7 +176,19 @@ export default class PostScreen extends React.Component {
                 if (this.state.imagesArray.length <= 0) {
                     alert('Please upload image')
                 } else {
-                    this.RBSheet.open();
+                    // this.RBSheet.open();
+                    // await AsyncStorage.setItem("upload", JSON.stringify({
+                    //     type: "image",
+                    //     isUploading: true,
+                    //     errorText: "",
+                    //     uploadSuccess: false,
+                    // }))
+                    PushNotification.localNotification({
+                        title: "Image Upload",
+                        channelId: "imageupload",
+                        id: "imageupload",
+                        message: "Your image is uploading. Please wait..."
+                    })
                     var filePaths = this.state.imagesArray.map((i) => i.path)
                     var formData = new FormData()
                     filePaths.forEach((element, i) => {
@@ -210,21 +224,61 @@ export default class PostScreen extends React.Component {
                                     this.setState({tagUserId: []})
                                 }).catch(err => console.log(err))
                             }
-                        }).catch(function (error) {
+                            // await AsyncStorage.setItem("upload", JSON.stringify({
+                            //     type: "image",
+                            //     isUploading: false,
+                            //     errorText: "",
+                            //     uploadSuccess: true,
+                            // }))
+                            PushNotification.deleteChannel("imageupload")
+                            PushNotification.removeDeliveredNotifications(["imageupload"])
+                            PushNotification.localNotification({
+                                title: "Image Upload",
+                                channelId: "imageupload",
+                                id: "imageupload",
+                                message: "Your image has been uploaded successfully."
+                            })
+                        }).catch(async function (error) {
                             console.log(error)
+                            // await AsyncStorage.setItem("upload", JSON.stringify({
+                            //     type: "image",
+                            //     isUploading: false,
+                            //     errorText: JSON.stringify(error),
+                            //     uploadSuccess: false,
+                            // }))
+                            PushNotification.localNotification({
+                                title: "Image Upload",
+                                channelId: "imageupload",
+                                id: "imageupload",
+                                message: JSON.stringify(error)
+                            })
                         })
 
 
-                    this.RBSheet.close();
-                    this.props.navigation.reset({
-                        index: 0,
-                        routes: [
-                            { name: "HomeScreen" }
-                        ]
-                    });
+                    // this.RBSheet.close();
+                    // this.props.navigation.reset({
+                    //     index: 0,
+                    //     routes: [
+                    //         { name: "HomeScreen" }
+                    //     ]
+                    // });
                 }
             } else if (this.state.fromCamera === true) {
-                this.RBSheet.open();
+                // this.RBSheet.open();
+                // await AsyncStorage.setItem("upload", JSON.stringify({
+                //     upload: {
+                //         type: "image",
+                //         isUploading: true,
+                //         errorText: "",
+                //         uploadSuccess: false,
+                //     }
+                // }))
+                PushNotification.localNotification({
+                    title: "Image Upload",
+                    channelId: "imageupload",
+                    id: "imageupload",
+                    message: "Your image is uploading. Please wait..."
+                })
                 var formDataCamera = new FormData()
                 formDataCamera.append('post_image[]', {
                     uri: this.state.cameraImagePath,
@@ -236,19 +290,55 @@ export default class PostScreen extends React.Component {
                 console.log(formDataCamera._parts)
 
                 await axios.post('http://bezzy-app.com/admin/api/PostImage', formDataCamera)
-                    .then(function (response) {
-                        console.log(response.data, "CAMERA")
-                    }).catch(function (error) {
+                    .then(async response => {
+                        console.log(response.data, "CAMERA", this.state, this.state.tagUserId)
+                        if(this.state.tagUserId.length > 0) {
+                            await axios.post(DataAccess.BaseUrl +  DataAccess.postTaggedUserContent, {
+                                "post_id" : response.data.post_id,
+                                "log_user_id" : userID,
+                                "post_content" : this.state.caption,
+                                "post_type_id" : '1',
+                                "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
+                            }).then(res => {
+                                console.log(res.data);
+                                this.setState({tagUserId: []})
+                            }).catch(err => console.log(err))
+                        }
+                        // await AsyncStorage.setItem("upload", JSON.stringify({
+                        //     type: "image",
+                        //     isUploading: false,
+                        //     errorText: "",
+                        //     uploadSuccess: true,
+                        // }))
+                        PushNotification.localNotification({
+                            title: "Image Upload",
+                            channelId: "imageupload",
+                            id: "imageupload",
+                            message: "Your image has been uploaded successfully."
+                        })
+                    }).catch(async error => {
                         console.log(error)
+                
+                        // await AsyncStorage.setItem("upload", JSON.stringify({
+                        //     type: "image",
+                        //     isUploading: false,
+                        //     errorText: JSON.stringify(error),
+                        //     uploadSuccess: false,
+                        // }))
+                        PushNotification.localNotification({
+                            title: "Image Upload",
+                            channelId: "imageupload",
+                            id: "imageupload",
+                            message: JSON.stringify(error)
+                        })
                     })
-
-                this.RBSheet.close();
-                this.props.navigation.reset({
-                    index: 0,
-                    routes: [
-                        { name: "HomeScreen" }
-                    ]
-                });
+                // this.RBSheet.close();
+                // this.props.navigation.reset({
+                //     index: 0,
+                //     routes: [
+                //         { name: "HomeScreen" }
+                //     ]
+                // });
             }
             if(this.state.imagesArray.length > 0 || this.state.cameraImagePath !== "") {
                 Toast.show({
@@ -262,7 +352,20 @@ export default class PostScreen extends React.Component {
             if(this.state.thumbnail === "") {
                 alert('Please upload video')
             } else {
-                this.RBSheet.open();
+                // this.RBSheet.open();
+                
+                // await AsyncStorage.setItem("upload", JSON.stringify({
+                //     type: "video",
+                //     isUploading: true,
+                //     errorText: "",
+                //     uploadSuccess: false,
+                // }))
+                PushNotification.localNotification({
+                    title: "Video Upload",
+                    channelId: "videoupload",
+                    id: "videoupload",
+                    message: "Your video is uploading. Please wait..."
+                })
                 var fromDataVideo = new FormData()
                 fromDataVideo.append('post_video', {
                     name: 'name.mp4',
@@ -287,16 +390,42 @@ export default class PostScreen extends React.Component {
                                 this.setState({tagUserId: []})
                             }).catch(err => console.log(err))
                         }
-                    }).catch(function (error) {
+                
+                        // await AsyncStorage.setItem("upload", JSON.stringify({
+                        //     type: "video",
+                        //     isUploading: false,
+                        //     errorText: "",
+                        //     uploadSuccess: true,
+                        // }))
+                        PushNotification.localNotification({
+                            title: "Video Upload",
+                            channelId: "videoupload",
+                            id: "videoupload",
+                            message: "Your video has been uploaded successfully."
+                        })
+                    }).catch(async function (error) {
                         console.log(error)
+                
+                        // await AsyncStorage.setItem("upload", JSON.stringify({
+                        //     type: "video",
+                        //     isUploading: false,
+                        //     errorText: JSON.stringify(error),
+                        //     uploadSuccess: false,
+                        // }))
+                        PushNotification.localNotification({
+                            title: "Video Upload",
+                            channelId: "videoupload",
+                            id: "videoupload",
+                            message: JSON.stringify(error)
+                        })
                     })
-                    this.RBSheet.close();
-                this.props.navigation.reset({
-                    index: 0,
-                    routes: [
-                        { name: "HomeScreen" }
-                    ]
-                });
+                // this.RBSheet.close();
+                // this.props.navigation.reset({
+                //     index: 0,
+                //     routes: [
+                //         { name: "HomeScreen" }
+                //     ]
+                // });
             }
 
             if(this.state.thumbnail !== "") {
