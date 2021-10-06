@@ -34,8 +34,6 @@ export default class PostScreen extends React.Component {
         tagUserId: []
     }
 
-
-
     uploadButtonFunction = async () => {
         if (this.state.buttonText === 'UPLOAD PHOTO') {
             const buttons = ['Camera', 'Photo Library', 'Cancel'];
@@ -96,14 +94,19 @@ export default class PostScreen extends React.Component {
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
     takePhotoFromCamera = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        if(Platform.OS === "ios") {
+            checkMultiple([
+                PERMISSIONS.IOS.CAMERA,
+                PERMISSIONS.ANDROID.CAMERA, 
+            ])
             .then((result) => {
                 if (RESULTS.DENIED) {
                     this.askPermission();
                 } else if (RESULTS.GRANTED) {
-                    return;
+                    // return;
                 }
             })
+        }
         if (this.state.focusedTab === 'photo') {
             ImagePicker.openCamera({
                 width: Dimensions.get("window").width,
@@ -123,7 +126,15 @@ export default class PostScreen extends React.Component {
 
     //OPEN GALLERY TO SELECT IMAGE
     choosePhotosFromGallery = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        if(Platform.OS === 'ios') {
+            checkMultiple([
+                PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, 
+                PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, 
+                PERMISSIONS.ANDROID.READ_PHONE_STATE, 
+                PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, 
+                PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, 
+                PERMISSIONS.IOS.READ_PHONE_STATE, 
+            ])
             .then((result) => {
                 if (RESULTS.DENIED) {
                     this.askPermission();
@@ -131,6 +142,7 @@ export default class PostScreen extends React.Component {
                     return;
                 }
             })
+        }
 
         ImagePicker.openPicker({
             width: 300,
@@ -155,7 +167,16 @@ export default class PostScreen extends React.Component {
 
     //GRANT PERMISSION FUNCTION
     askPermission = async () => {
-        requestMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE, PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, PERMISSIONS.IOS.READ_PHONE_STATE, PERMISSIONS.IOS.CAMERA]).then((result) => {
+        requestMultiple([
+            PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, 
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, 
+            PERMISSIONS.ANDROID.READ_PHONE_STATE, 
+            PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, 
+            PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, 
+            PERMISSIONS.IOS.READ_PHONE_STATE, 
+            PERMISSIONS.IOS.CAMERA,
+            PERMISSIONS.ANDROID.CAMERA, 
+        ]).then((result) => {
             console.log(result)
             return;
         }).catch((error) => {
@@ -183,12 +204,46 @@ export default class PostScreen extends React.Component {
                     //     errorText: "",
                     //     uploadSuccess: false,
                     // }))
-                    PushNotification.localNotification({
-                        title: "Image Upload",
-                        channelId: "imageupload",
-                        id: "imageupload",
-                        message: "Your image is uploading. Please wait..."
+                    this.props.navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: "HomeScreen" }
+                        ]
                     })
+                    if(Platform.OS==='android') {
+                        PushNotification.getChannels(channelIds => {
+                            if(channelIds.length === 0) {
+                                PushNotification.createChannel({
+                                    channelId: Date.now().toString(),
+                                    channelName: "Channel"
+                                }, (created) => {
+                                    PushNotification.getChannels(channelIds => {
+                                        PushNotification.localNotification({
+                                            channelId: channelIds[0],
+                                            title: "Image Upload",
+                                            message: "Your image is uploading. Please wait..."
+                                        })
+                                    })
+                                })
+                            } else {
+                                PushNotification.getChannels(channelIds => {
+                                    PushNotification.localNotification({
+                                        channelId: channelIds[0],
+                                        title: "Image Upload",
+                                        message: "Your image is uploading. Please wait..."
+                                    })
+                                })
+                            }
+                        })
+                    } else {
+                        PushNotification.localNotification({
+                            title: "Image Upload",
+                            channelId: Platform.OS==="android" ? undefined : "imageupload",
+                            id: Platform.OS==="android" ? undefined : "imageupload",
+                            message: "Your image is uploading. Please wait..."
+                        })
+                    }
+
                     var filePaths = this.state.imagesArray.map((i) => i.path)
                     var formData = new FormData()
                     filePaths.forEach((element, i) => {
@@ -230,14 +285,41 @@ export default class PostScreen extends React.Component {
                             //     errorText: "",
                             //     uploadSuccess: true,
                             // }))
-                            PushNotification.deleteChannel("imageupload")
-                            PushNotification.removeDeliveredNotifications(["imageupload"])
-                            PushNotification.localNotification({
-                                title: "Image Upload",
-                                channelId: "imageupload",
-                                id: "imageupload",
-                                message: "Your image has been uploaded successfully."
-                            })
+                            Platform.OS==="android" ? undefined : PushNotification.deleteChannel("imageupload")
+                            Platform.OS==="android" ? undefined : PushNotification.removeDeliveredNotifications(["imageupload"])
+                            if(Platform.OS === "android") {
+                                PushNotification.getChannels(channelIds => {
+                                    if(channelIds.length === 0) {
+                                        PushNotification.createChannel({
+                                            channelId: Date.now().toString(),
+                                            channelName: "Channel"
+                                        }, (created) => {
+                                            PushNotification.getChannels(channelIds => {
+                                                PushNotification.localNotification({
+                                                    channelId: channelIds[0],
+                                                    title: "Image Upload",
+                                                    message: "Your image has been uploaded successfully."
+                                                })
+                                            })
+                                        })
+                                    } else {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Image Upload",
+                                                message: "Your image has been uploaded successfully."
+                                            })
+                                        })
+                                    }
+                                })
+                            } else {
+                                PushNotification.localNotification({
+                                    title: "Image Upload",
+                                    channelId: Platform.OS==="android" ? undefined : "imageupload",
+                                    id: Platform.OS==="android" ? undefined : "imageupload",
+                                    message: "Your image has been uploaded successfully."
+                                })
+                            }
                         }).catch(async function (error) {
                             console.log(error)
                             // await AsyncStorage.setItem("upload", JSON.stringify({
@@ -246,12 +328,39 @@ export default class PostScreen extends React.Component {
                             //     errorText: JSON.stringify(error),
                             //     uploadSuccess: false,
                             // }))
-                            PushNotification.localNotification({
-                                title: "Image Upload",
-                                channelId: "imageupload",
-                                id: "imageupload",
-                                message: JSON.stringify(error)
-                            })
+                            if(Platform.OS === "android") {
+                                PushNotification.getChannels(channelIds => {
+                                    if(channelIds.length === 0) {
+                                        PushNotification.createChannel({
+                                            channelId: Date.now().toString(),
+                                            channelName: "Channel"
+                                        }, (created) => {
+                                            PushNotification.getChannels(channelIds => {
+                                                PushNotification.localNotification({
+                                                    channelId: channelIds[0],
+                                                    title: "Image Upload",
+                                                    message: JSON.stringify(error)
+                                                })
+                                            })
+                                        })
+                                    } else {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Image Upload",
+                                                message: JSON.stringify(error)
+                                            })
+                                        })
+                                    }
+                                })
+                            } else {
+                                PushNotification.localNotification({
+                                    title: "Image Upload",
+                                    channelId: Platform.OS==="android" ? undefined : "imageupload",
+                                    id: Platform.OS==="android" ? undefined : "imageupload",
+                                    message: JSON.stringify(error)
+                                })
+                            }
                         })
 
 
@@ -273,12 +382,45 @@ export default class PostScreen extends React.Component {
                 //         uploadSuccess: false,
                 //     }
                 // }))
-                PushNotification.localNotification({
-                    title: "Image Upload",
-                    channelId: "imageupload",
-                    id: "imageupload",
-                    message: "Your image is uploading. Please wait..."
+                this.props.navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: "HomeScreen" }
+                    ]
                 })
+                if(Platform.OS==='android') {
+                    PushNotification.getChannels(channelIds => {
+                        if(channelIds.length === 0) {
+                            PushNotification.createChannel({
+                                channelId: Date.now().toString(),
+                                channelName: "Channel"
+                            }, (created) => {
+                                PushNotification.getChannels(channelIds => {
+                                    PushNotification.localNotification({
+                                        channelId: channelIds[0],
+                                        title: "Image Upload",
+                                        message: "Your image is uploading. Please wait..."
+                                    })
+                                })
+                            })
+                        } else {
+                            PushNotification.getChannels(channelIds => {
+                                PushNotification.localNotification({
+                                    channelId: channelIds[0],
+                                    title: "Image Upload",
+                                    message: "Your image is uploading. Please wait..."
+                                })
+                            })
+                        }
+                    })
+                } else {
+                    PushNotification.localNotification({
+                        title: "Image Upload",
+                        channelId: Platform.OS==="android" ? undefined : "imageupload",
+                        id: Platform.OS==="android" ? undefined : "imageupload",
+                        message: "Your image is uploading. Please wait..."
+                    })
+                }
                 var formDataCamera = new FormData()
                 formDataCamera.append('post_image[]', {
                     uri: this.state.cameraImagePath,
@@ -310,12 +452,39 @@ export default class PostScreen extends React.Component {
                         //     errorText: "",
                         //     uploadSuccess: true,
                         // }))
-                        PushNotification.localNotification({
-                            title: "Image Upload",
-                            channelId: "imageupload",
-                            id: "imageupload",
-                            message: "Your image has been uploaded successfully."
-                        })
+                        if(Platform.OS === "android") {
+                            PushNotification.getChannels(channelIds => {
+                                if(channelIds.length === 0) {
+                                    PushNotification.createChannel({
+                                        channelId: Date.now().toString(),
+                                        channelName: "Channel"
+                                    }, (created) => {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Image Upload",
+                                                message: "Your image has been uploaded successfully."
+                                            })
+                                        })
+                                    })
+                                } else {
+                                    PushNotification.getChannels(channelIds => {
+                                        PushNotification.localNotification({
+                                            channelId: channelIds[0],
+                                            title: "Image Upload",
+                                            message: "Your image has been uploaded successfully."
+                                        })
+                                    })
+                                }
+                            })
+                        } else {
+                            PushNotification.localNotification({
+                                title: "Image Upload",
+                                channelId: Platform.OS==="android" ? undefined : "imageupload",
+                                id: Platform.OS==="android" ? undefined : "imageupload",
+                                message: "Your image has been uploaded successfully."
+                            })
+                        }
                     }).catch(async error => {
                         console.log(error)
                 
@@ -325,12 +494,39 @@ export default class PostScreen extends React.Component {
                         //     errorText: JSON.stringify(error),
                         //     uploadSuccess: false,
                         // }))
-                        PushNotification.localNotification({
-                            title: "Image Upload",
-                            channelId: "imageupload",
-                            id: "imageupload",
-                            message: JSON.stringify(error)
-                        })
+                        if(Platform.OS === "android") {
+                            PushNotification.getChannels(channelIds => {
+                                if(channelIds.length === 0) {
+                                    PushNotification.createChannel({
+                                        channelId: Date.now().toString(),
+                                        channelName: "Channel"
+                                    }, (created) => {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Image Upload",
+                                                message: JSON.stringify(error)
+                                            })
+                                        })
+                                    })
+                                } else {
+                                    PushNotification.getChannels(channelIds => {
+                                        PushNotification.localNotification({
+                                            channelId: channelIds[0],
+                                            title: "Image Upload",
+                                            message: JSON.stringify(error)
+                                        })
+                                    })
+                                }
+                            })
+                        } else {
+                            PushNotification.localNotification({
+                                title: "Image Upload",
+                                channelId: Platform.OS==="android" ? undefined : "imageupload",
+                                id: Platform.OS==="android" ? undefined : "imageupload",
+                                message: JSON.stringify(error)
+                            })
+                        }
                     })
                 // this.RBSheet.close();
                 // this.props.navigation.reset({
@@ -360,12 +556,45 @@ export default class PostScreen extends React.Component {
                 //     errorText: "",
                 //     uploadSuccess: false,
                 // }))
-                PushNotification.localNotification({
-                    title: "Video Upload",
-                    channelId: "videoupload",
-                    id: "videoupload",
-                    message: "Your video is uploading. Please wait..."
+                this.props.navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: "HomeScreen" }
+                    ]
                 })
+                if(Platform.OS === "android") {
+                    PushNotification.getChannels(channelIds => {
+                        if(channelIds.length === 0) {
+                            PushNotification.createChannel({
+                                channelId: Date.now().toString(),
+                                channelName: "Channel"
+                            }, (created) => {
+                                PushNotification.getChannels(channelIds => {
+                                    PushNotification.localNotification({
+                                        channelId: channelIds[0],
+                                        title: "Video Upload",
+                                        message: "Your video is uploading. Please wait..."
+                                    })
+                                })
+                            })
+                        } else {
+                            PushNotification.getChannels(channelIds => {
+                                PushNotification.localNotification({
+                                    channelId: channelIds[0],
+                                    title: "Video Upload",
+                                    message: "Your video is uploading. Please wait..."
+                                })
+                            })
+                        }
+                    })
+                } else {
+                    PushNotification.localNotification({
+                        title: "Video Upload",
+                        channelId: Platform.OS==="android" ? undefined : "videoupload",
+                        id: Platform.OS==="android" ? undefined : "videoupload",
+                        message: "Your video is uploading. Please wait..."
+                    })
+                }
                 var fromDataVideo = new FormData()
                 fromDataVideo.append('post_video', {
                     name: 'name.mp4',
@@ -397,12 +626,39 @@ export default class PostScreen extends React.Component {
                         //     errorText: "",
                         //     uploadSuccess: true,
                         // }))
-                        PushNotification.localNotification({
-                            title: "Video Upload",
-                            channelId: "videoupload",
-                            id: "videoupload",
-                            message: "Your video has been uploaded successfully."
-                        })
+                        if(Platform.OS === "android") {
+                            PushNotification.getChannels(channelIds => {
+                                if(channelIds.length === 0) {
+                                    PushNotification.createChannel({
+                                        channelId: Date.now().toString(),
+                                        channelName: "Channel"
+                                    }, (created) => {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Video Upload",
+                                                message: "Your video has been uploaded successfully."
+                                            })
+                                        })
+                                    })
+                                } else {
+                                    PushNotification.getChannels(channelIds => {
+                                        PushNotification.localNotification({
+                                            channelId: channelIds[0],
+                                            title: "Video Upload",
+                                            message: "Your video has been uploaded successfully."
+                                        })
+                                    })
+                                }
+                            })
+                        } else {
+                            PushNotification.localNotification({
+                                title: "Video Upload",
+                                channelId: Platform.OS==="android" ? undefined : "videoupload",
+                                id: Platform.OS==="android" ? undefined : "videoupload",
+                                message: "Your video has been uploaded successfully."
+                            })
+                        }
                     }).catch(async function (error) {
                         console.log(error)
                 
@@ -412,12 +668,39 @@ export default class PostScreen extends React.Component {
                         //     errorText: JSON.stringify(error),
                         //     uploadSuccess: false,
                         // }))
-                        PushNotification.localNotification({
-                            title: "Video Upload",
-                            channelId: "videoupload",
-                            id: "videoupload",
-                            message: JSON.stringify(error)
-                        })
+                        if(Platform.OS === "android") {
+                            PushNotification.getChannels(channelIds => {
+                                if(channelIds.length === 0) {
+                                    PushNotification.createChannel({
+                                        channelId: Date.now().toString(),
+                                        channelName: "Channel"
+                                    }, (created) => {
+                                        PushNotification.getChannels(channelIds => {
+                                            PushNotification.localNotification({
+                                                channelId: channelIds[0],
+                                                title: "Video Upload",
+                                                message: JSON.stringify(error)
+                                            })
+                                        })
+                                    })
+                                } else {
+                                    PushNotification.getChannels(channelIds => {
+                                        PushNotification.localNotification({
+                                            channelId: channelIds[0],
+                                            title: "Video Upload",
+                                            message: JSON.stringify(error)
+                                        })
+                                    })
+                                }
+                            })
+                        } else {
+                            PushNotification.localNotification({
+                                title: "Video Upload",
+                                channelId: Platform.OS==="android" ? undefined : "videoupload",
+                                id: Platform.OS==="android" ? undefined : "videoupload",
+                                message: JSON.stringify(error)
+                            })
+                        }
                     })
                 // this.RBSheet.close();
                 // this.props.navigation.reset({
@@ -447,12 +730,13 @@ export default class PostScreen extends React.Component {
         let followingList = []
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
         if(response.data.resp === "success") {
+            console.warn(response.data);
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
             // console.warn(response.data.total_feed_response.friend_list);
             response.data && response.data.following_user_list &&
             response.data.following_user_list.length > 0 &&
             response.data.following_user_list.map(element => {
-                if(element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                if(element.name && element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
                     followingList.push(element);
                 }
             })
@@ -471,7 +755,7 @@ export default class PostScreen extends React.Component {
         imagesArray = this.state.imagesArray
         return (
             <SafeAreaView style={{ flex: 1 }}>
-                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+                <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"}/>
                 <Header isHomeStackInnerPage isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
 
                 <View
@@ -589,6 +873,7 @@ export default class PostScreen extends React.Component {
                         </View> : ((this.state.focusedTab === 'photo' && this.state.fromCamera === false) ? <FlatList
                             data={imagesArray}
                             numColumns={2}
+                            ListFooterComponent={<View style={{height: heightToDp("10%")}} />}
                             ItemSeparatorComponent={() => <View style={{ width: widthToDp("0.5%") }} />}
                             renderItem={({ index, item }) => (
                                 <View style={{ paddingHorizontal: widthToDp("1%"), paddingVertical: heightToDp("0.5%") }}>
@@ -608,11 +893,11 @@ export default class PostScreen extends React.Component {
                                 onError={this.videoError}
                                 controls={true}
                                 style={{
-                                    height: heightToDp("20%"),
-                                    width: widthToDp("70%"),
+                                    height: "50%",
+                                    width: "90%",
                                     alignSelf: 'center'
                                 }}
-
+                                resizeMode="contain"
                             />
                         </View> : null))
                 }

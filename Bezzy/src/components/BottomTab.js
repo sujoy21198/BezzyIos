@@ -139,7 +139,7 @@ export default class BottomTab extends React.Component {
                             flex: 1
                         }}
                     >
-                        <View
+                        <TouchableOpacity
                             style={{
                                 height: heightToDp("8%"),
                                 flex: 1,
@@ -151,6 +151,12 @@ export default class BottomTab extends React.Component {
                                 justifyContent: "center",
                                 alignItems: 'center'
                             }}
+                            onPress={() => this.props.navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: "PostScreen" }
+                                ]
+                            })}
                         />
                         <TouchableOpacity
                             style={{
@@ -165,8 +171,12 @@ export default class BottomTab extends React.Component {
                                 alignItems: 'center',
                                 elevation: 2
                             }}
-                            activeOpacity={0.7}
-                            onPress={() => this.props.navigation.navigate("PostScreen")}
+                            onPress={() => this.props.navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: "PostScreen" }
+                                ]
+                            })}
                         >
                             <Icon
                                 name={Platform.OS === 'android' ? 'md-add' : 'ios-add'}
@@ -174,7 +184,15 @@ export default class BottomTab extends React.Component {
                                 color="#fff"
                             />
                         </TouchableOpacity>
-                        <View style={{ height: heightToDp("3.8%"), backgroundColor: '#fff' }} />
+                        <TouchableOpacity 
+                            style={{ height: heightToDp("3.8%"), backgroundColor: '#fff' }}
+                            onPress={() => this.props.navigation.reset({
+                                index: 0,
+                                routes: [
+                                    { name: "PostScreen" }
+                                ]
+                            })} 
+                        />
                     </View>
                     <TouchableOpacity
                         style={{

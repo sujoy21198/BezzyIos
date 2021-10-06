@@ -10,7 +10,8 @@ import axios from 'axios';
 
 export default class Header extends React.Component {
     state = {
-        openUserModal: false
+        openUserModal: false,
+        notificationCount: 0
     }
     navigateToOtherScreen = async (type) => {
         this.RBSheet.close();
@@ -54,6 +55,17 @@ export default class Header extends React.Component {
                 }
             ]
             )
+        }
+    }
+
+    componentDidMount = async() => {
+        let userId = await AsyncStorage.getItem("userId");
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId);
+        if(response.data.status === "success") {
+            console.log(response.data.notification_list);
+            this.setState({notificationCount: response.data.notification_list.length});
+        } else {
+            this.setState({notificationCount: 0});
         }
     }
 
@@ -153,16 +165,44 @@ export default class Header extends React.Component {
                         }
                         {
                             this.props.isHomeScreen &&
-                            <TouchableOpacity
-                                activeOpacity={0.7}
-                                onPress={() => this.props.navigation.navigate("NotificationScreen")}
-                            >
+                            <>
                                 <Icon1
                                     name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
-                                    color={"#777"}
+                                    color={"#1b1b1b"}
                                     size={Platform.isPad ? 40 : 22}
+                                    style={{
+                                        position: "absolute",
+                                        top: 4,
+                                        right: this.state.notificationCount > 0 ? 8 : 0,
+                                    }}
+                                    onPress={() => this.props.navigation.navigate("NotificationScreen")}
                                 />
-                            </TouchableOpacity>
+                                {
+                                    <TouchableOpacity
+                                        style={{
+                                            position: "absolute",
+                                            bottom: Platform.OS==='android' ? 11 : "30%",
+                                            right: Platform.OS==='android' ? 0 : "0%",
+                                            backgroundColor: "#ff0000",
+                                            borderRadius: Platform.isPad ? 36 / 2 : 18 / 2,
+                                            height: Platform.isPad ? 36 : 18,
+                                            width: Platform.isPad ? 36 : 18,
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}
+                                        onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                                    >
+                                        <Text
+                                            style={[{
+                                                color: "#fff",
+                                                fontSize: widthToDp("2.8%"),
+                                                fontFamily: "Poppins-Regular",
+                                                textAlign: "center"
+                                            }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
+                                        >{this.state.notificationCount > 99 ? String(this.state.notificationCount) + "+" : this.state.notificationCount}</Text>
+                                    </TouchableOpacity>
+                                }
+                            </>
                         }
                         {
                             this.props.isProfileFocused &&

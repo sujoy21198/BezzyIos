@@ -16,7 +16,7 @@ import RBSheet2 from 'react-native-raw-bottom-sheet';
 import DataAccess from '../../components/DataAccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FlatGrid } from 'react-native-super-grid'
-import { element } from 'prop-types';
+import { element, number } from 'prop-types';
 import Share from 'react-native-share'
 import Video from 'react-native-video'
 import PushNotificationController from '../../components/PushNotificationController';
@@ -87,6 +87,7 @@ export default class HomeScreen extends React.Component {
                 // console.warn(response.data.total_feed_response)
                 if (response.data.status === "success") {
                     userList = [];
+                    response.data.total_feed_response.friend_list.map(item => item.expand = false);
                     followingList = response.data.total_feed_response.friend_list;
                     console.log(response.data.total_feed_response.friend_list);
                 } else if (response.data.status === "error") {
@@ -259,7 +260,13 @@ export default class HomeScreen extends React.Component {
                         
                         <TouchableOpacity
                             activeOpacity={0.7}
-                            onPress={() => this.props.navigation.navigate("InboxScreen", { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name })}
+                            onPress={() => this.props.navigation.reset({
+                                index: 0,
+                                routes: [{
+                                    name: "InboxScreen", 
+                                    params: { friendId: section.friend_id, friendImage: section.friend_photo, friendName: section.friend_name }
+                                }]
+                            })}
                             style={{ position: 'absolute', bottom: heightToDp("1%"), right: widthToDp('1%') }}>
                             <Icon2
                                 name={Platform.OS === "android" ? 'md-chatbox-ellipses-outline' : 'ios-chatbox-ellipses-outline'}
@@ -355,14 +362,22 @@ export default class HomeScreen extends React.Component {
             <View >
                 {
                     this.state.isAccordianOpening ?
-                        <View style={{ paddingVertical: heightToDp("25%"), backgroundColor: "#fff", width: widthToDp("95%"), alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ 
+                            height: Platform.OS==='android' ? heightToDp("100%") : undefined, 
+                            paddingVertical: Platform.OS==='android' ? undefined : heightToDp("25%"), 
+                            backgroundColor: "#fff", 
+                            width: widthToDp("95%"), 
+                            alignSelf: 'center', 
+                            justifyContent: 'center', 
+                            borderRadius: 10 
+                        }}>
                             <ActivityIndicator size="large" color="#69abff" />
                         </View> : (
-                            this.state.expand &&
+                            section.expand &&
                             postDetails && postDetails.length > 0 &&
                             <View style={{
                                 paddingHorizontal: widthToDp("2%"),
-                                // height: `30%`,
+                                // height: "auto",
                                 width: widthToDp("95%"),
                                 alignSelf: 'center',
                                 borderRadius: 10,
@@ -371,7 +386,9 @@ export default class HomeScreen extends React.Component {
                                 <FlatList
                                     data={postDetails}
                                     keyExtractor={i => i.post_id}
-                                    style={{height: heightToDp("55%")}}
+                                    style={{height: Platform.OS==='ios' ? heightToDp("55%") : heightToDp("100%")}}
+                                    nestedScrollEnabled
+                                    showsVerticalScrollIndicator={true}
                                     ItemSeparatorComponent={() => <View style={{ borderWidth: 0.5, borderColor: '#cdcdcd', marginHorizontal: widthToDp("4%") }} />}
                                     renderItem={(i, key) => (
                                         <View style={{ width: widthToDp("95%"), paddingVertical: heightToDp('1%'), alignSelf: 'center' }} key={key}>
@@ -449,6 +466,7 @@ export default class HomeScreen extends React.Component {
                                                             style={{
                                                                 padding: widthToDp("2%")
                                                             }}
+                                                            showsHorizontalScrollIndicator={true}
                                                             renderItem={({ item, index }) => (
                                                                 <TouchableOpacity
                                                                     activeOpacity={0.7}
@@ -496,7 +514,7 @@ export default class HomeScreen extends React.Component {
                                                             contentContainerStyle={{
                                                                 paddingHorizontal: widthToDp("4%")
                                                             }}
-                                                            showsHorizontalScrollIndicator={false}
+                                                            showsHorizontalScrollIndicator={true}
                                                             ItemSeparatorComponent={() => <View style={{ width: widthToDp("2%") }} />}
                                                             renderItem={({ item, index }) => (
                                                                 <TouchableOpacity
@@ -506,7 +524,7 @@ export default class HomeScreen extends React.Component {
                                                                             if(this[`player${j}`]) this[`player${j}`] = undefined;
                                                                         }
                                                                         this.setState({ shouldPlay: false, postDetails: [] });
-                                                                        this.props.navigation.navigate("ImagePreviewScreen", { type: "otherUserPost", image: { ...item, post_id: i.item.post_id } })
+                                                                        this.props.navigation.navigate("ImagePreviewScreen", { image: { ...item, post_id: i.item.post_id }, otherProfile: this.state.otherProfile })
                                                                     }}
                                                                     style={{ alignSelf: 'center', marginTop: heightToDp("2%") }}
                                                                     key={index}
@@ -583,7 +601,7 @@ export default class HomeScreen extends React.Component {
                                                     color="#69abff"
                                                     size={Platform.isPad ? 40 : 25}
                                                     style={{ paddingLeft: widthToDp("4%") }}
-                                                    onPress={() => this.sharePostMethod(i.item.post_id)}
+                                                    onPress={() => this.setState({ sharepostID: i.item }, () => this.RBSheet2.open())}
                                                 />
                                             </View>
                                         </View>
@@ -603,39 +621,27 @@ export default class HomeScreen extends React.Component {
     };
 
     _updateSections = activeSections => {
-        this.setState({ activeSections });
-
-        console.log(activeSections)
-
         if (activeSections.length <= 0) {
             console.log("empty press")
+            this.setState({ isAccordianOpening: false, shouldPlay: false, postDetails: [] });
+            this.state.followingList.map(item => item.expand = false);
         } else {
+            console.log(activeSections, this.state.postDetails.length + " posts contained")
             var friends_id = this.state.followingList[activeSections].friend_id
             if (this.state.followingList[activeSections].have_post === "Yes") {
+                this.setState({loadingPosts: true})
                 this.friendsBlockDetails(friends_id);
             } else {
-                this.setState({ postDetails: [] })
+                this.state.followingList.map(item => item.expand = false);
+                this.setState({ isAccordianOpening: false, shouldPlay: false, postDetails: [] })
+                console.log("No Posts Contained", activeSections);
             }
         }
 
     };
 
-    sharePostMethod = async (value) => {
-        this.setState({ sharepostID: value })
-        // const ShareOptions = {
-        //     message : "hi check this from link : https://bezzyapp.page.link/appadmin"
-        // }
-
-        // try{
-        //     const ShareResponse = await Share.open(ShareOptions)
-        // }catch(error){
-        //     console.log(error)
-        // }
-        this.RBSheet2.open()
-    }
-
     friendsBlockDetails = async (id) => {
-        this.setState({ isAccordianOpening: true, expand: false, shouldPlay: false });
+        this.setState({ isAccordianOpening: true, shouldPlay: false });
         let userID = await AsyncStorage.getItem('userId')
         var status
         var postDetails
@@ -654,17 +660,19 @@ export default class HomeScreen extends React.Component {
         })
         this.setState({ postDetails, isAccordianOpening: false });
         if (status === 'success') {
-            this.setState({ expand: true, shouldPlay: true })
+            this.setState({ shouldPlay: true })
         } else {
-            this.setState({ expand: false, shouldPlay: false })
+            this.setState({ shouldPlay: false })
         }
+        this.setState({loadingPosts: false})
+        // console.warn(this.state.postDetails.length);
     }
 
     shareImageInternally = async () => {
         this.RBSheet2.close()
         var resp, msg
         let value = await AsyncStorage.getItem('userId')
-        await axios.get(DataAccess.BaseUrl + DataAccess.sharePostInternally + "/" + this.state.sharepostID + "/" + value + "/1")
+        await axios.get(DataAccess.BaseUrl + DataAccess.sharePostInternally + "/" + this.state.sharepostID.post_id + "/" + value + `/${this.state.sharepostID.post_type === 'image' ? 1 : 2}`)
             .then(function (response) {
                 resp = response.data.resp
                 msg = response.data.message
@@ -685,7 +693,7 @@ export default class HomeScreen extends React.Component {
     shareImageExternally = async () => {
         this.RBSheet2.close()
         const ShareOptions = {
-            message: "hi check this from link : https://bezzyapp.page.link/appadmin"
+            message: `hi check this from link : ${this.state.sharepostID.post_img_video_live[0].post_url}`
         }
 
         try {
@@ -701,7 +709,7 @@ export default class HomeScreen extends React.Component {
         followingList = this.state.followingList;
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
-                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+                <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
                 <Header isHomeScreen navigation={this.props.navigation} />
                 {
                     this.state.isLoading ? 
@@ -736,7 +744,33 @@ export default class HomeScreen extends React.Component {
                                 //renderSectionTitle={this._renderSectionTitle}
                                 renderHeader={this._renderHeader}
                                 renderContent={this._renderContent}
-                                onChange={this._updateSections}
+                                onChange={activeSections => {
+                                    if(this.state.loadingPosts) {
+                                        let postsRequested = this.state.followingList.find(item => item.expand);
+                                        if(typeof postsRequested === "object") {
+                                            Toast.show({
+                                                text: "Posts of " + postsRequested.friend_name + " are fetching. Please wait.",
+                                                style: {
+                                                    backgroundColor: "#777"
+                                                },
+                                                duration: 1500
+                                            })
+                                        }
+                                        return;
+                                    }
+                                    for(let i=0; i<5; i++) {
+                                        if(this[`player${i}`]) this[`player${i}`] = undefined;
+                                    }
+                                    this.setState({ postDetails: [], activeSections, isAccordianOpening: true, shouldPlay: false });
+                                    this.state.followingList.map((item, index) => {
+                                        if(index === activeSections[0]) {
+                                            item.expand = true;
+                                        } else {
+                                            item.expand = false;
+                                        }
+                                    })
+                                    this._updateSections(activeSections);
+                                }}
                             />
                             <View style={{ marginBottom: heightToDp("10%") }}></View>
                         </ScrollView> :

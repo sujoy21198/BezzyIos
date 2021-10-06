@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, Image, View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StatusBar, Image, View, Text, ImageBackground, TouchableOpacity, Platform } from 'react-native';
 import { heightToDp, widthToDp } from '../components/Responsive';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -34,7 +34,7 @@ export default class LandingScreen extends React.Component {
                 resizeMode="stretch"
                 style={{ flex: 1 }}
             >
-                <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+                <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
                 <View
                     style={{
                         flex: 1,

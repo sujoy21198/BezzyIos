@@ -121,7 +121,7 @@ export default class ChangePassword extends React.Component {
                 flex: 1,
             }}
         >       
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header isHomeStackInnerPage isBackButton block={true} navigation={this.props.navigation} headerText="Change Password"/>
             <View style={{height: heightToDp("2%")}}/>
             <KeyboardAwareScrollView
@@ -169,7 +169,8 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    fontFamily: "Poppins-Regular"
+                                    fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 secureTextEntry={!this.state.showOldPassword}
                                 onChangeText={(text) => this.setState({ currentPassword: text.trim() })}
@@ -221,7 +222,8 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    fontFamily: "Poppins-Regular"
+                                    fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 secureTextEntry={!this.state.showNewPassword}
                                 onChangeText={(text) => this.setState({ newPassword: text.trim() })}
@@ -283,7 +285,8 @@ export default class ChangePassword extends React.Component {
                                     borderWidth: 0,
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
-                                    fontFamily: "Poppins-Regular"
+                                    fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}

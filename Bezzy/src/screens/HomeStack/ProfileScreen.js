@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Linking, Platform, RefreshControl, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { FlatGrid } from 'react-native-super-grid';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -30,7 +30,8 @@ export default class ProfileScreen extends React.Component {
             userDetails: {},
             otherProfile: false,
             friendsProfileId: '',
-            sharePost: []
+            sharePost: [],
+            links: []
         }
         this.state.friendsProfileId = this.props.route.params.profile_id
         if (this.state.friendsProfileId != '') {
@@ -74,7 +75,7 @@ export default class ProfileScreen extends React.Component {
             }).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function (error) {
-                console.log(error)
+                console.log(error + " " + DataAccess.BaseUrl + DataAccess.getSharePostData)
             })
 
             this.setState({ sharePost: sharedMedia })
@@ -84,10 +85,18 @@ export default class ProfileScreen extends React.Component {
             }).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function (error) {
-                console.log(error)
+                console.log(error + " " + DataAccess.BaseUrl + DataAccess.getSharePostData)
             })
 
             this.setState({ sharePost: sharedMedia })
+        }
+    }
+
+    detectUrls = (text) => {
+        var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+        if(text) {
+            let linksAvailable = text.match(urlRegex);
+            this.setState({links: linksAvailable});
         }
     }
 
@@ -113,7 +122,8 @@ export default class ProfileScreen extends React.Component {
                 userDetails = res.data.usedetails;
                 userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             }).catch(err => console.log(err))
-            this.setState({ userDetails, userPosts })
+            this.setState({ userDetails, userPosts }, () => this.detectUrls(this.state.userDetails.bio))
+            await AsyncStorage.setItem("userDetails", JSON.stringify(this.state.userDetails))
             this.setState({ isLoading: false, isRefreshing: false })
             this.RBSheet.close()
         }
@@ -121,7 +131,7 @@ export default class ProfileScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header isHomeStackInnerPage isProfileFocused={!this.state.otherProfile} block={true} isBackButton={this.state.otherProfile} headerText={this.state.otherProfile ? (this.state.userDetails.get_name || "View Profile") : "Profile"} navigation={this.props.navigation} />
 
             {
@@ -174,11 +184,47 @@ export default class ProfileScreen extends React.Component {
                                     this.state.userDetails.bio &&
                                     <Text
                                         style={{
-                                            // paddingVertical: heightToDp('0%'),
-                                            fontSize: widthToDp("4%"),
-                                            fontFamily: "Poppins-Regular"
+                                            paddingHorizontal: widthToDp("2%"),
+                                            fontSize: widthToDp("3.5%"),
+                                            fontFamily: "Poppins-Regular",
+                                            color: (this.state.links && this.state.links.length > 0) ? "#777" : "#1b1b1b"
                                         }}
-                                    >{this.state.userDetails.bio}</Text>
+                                    >{(this.state.userDetails.bio !== "" || this.state.userDetails.bio !== undefined) ? this.state.userDetails.bio : "No bio yet"}</Text>
+                                }
+                                {
+                                    (this.state.links && this.state.links.length > 0) &&
+                                    <FlatList
+                                        data={this.state.links}
+                                        contentContainerStyle={{
+                                            paddingVertical: "2%"
+                                        }}
+                                        ItemSeparatorComponent={() => <View style={{height: "1%"}} />}
+                                        renderItem={({item, index}) => (
+                                            <TouchableOpacity
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    paddingHorizontal: "2%",
+                                                    width: "98%"
+                                                }}
+                                                onPress={() => Linking.openURL(item.startsWith("www") ? "https://" + item : item)}
+                                            >
+                                                <Icon
+                                                    name="link"
+                                                    size={10}
+                                                    color="#1b1b1b"
+                                                />
+                                                <Text
+                                                    style={{
+                                                        paddingHorizontal: widthToDp("2%"),
+                                                        fontSize: widthToDp("3.3%"),
+                                                        fontFamily: "Poppins-Regular",
+                                                        color: "#1b1b1b"
+                                                    }}
+                                                >{item}</Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    />
                                 }
                             </View>
                         }
@@ -192,7 +238,7 @@ export default class ProfileScreen extends React.Component {
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     paddingHorizontal: widthToDp("10%"),
-                                    paddingVertical: heightToDp("0.5%")
+                                    paddingBottom: heightToDp("0.5%")
                                 }}
                             >
                                 <TouchableOpacity
@@ -532,10 +578,10 @@ export default class ProfileScreen extends React.Component {
                 // openDuration={250}
                 customStyles={{
                     container: {
-                        width: widthToDp("15%"),
+                        width: "14%",
                         position: 'absolute',
-                        top: heightToDp("45%"),
-                        left: widthToDp("40%"),
+                        top: "40%",
+                        alignSelf: "center",
                         alignItems: 'center',
                         justifyContent: 'center',
                         backgroundColor: '#fff',

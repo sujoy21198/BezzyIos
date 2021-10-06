@@ -170,7 +170,7 @@ export default class EditProfileScreen extends React.Component {
             "user_bio" : this.state.bio.trim()
         });
         if(response.data.resp === "success") {           
-
+            console.warn(response.data);
             if(this.state.image.startsWith("http://")) {
                 Toast.show({
                     text: "Profile has been updated successfully",
@@ -311,7 +311,7 @@ export default class EditProfileScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1}}>       
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             {/* <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/> */}
             <Header isHomeStackInnerPage isBackButton block={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
             <KeyboardAwareScrollView
@@ -363,7 +363,8 @@ export default class EditProfileScreen extends React.Component {
                             width: widthToDp("95%"),
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
-                            fontFamily: "Poppins-Regular"
+                            fontFamily: "Poppins-Regular",
+                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                         }}
                         defaultValue={this.state.name}
                         placeholder="Name"
@@ -386,7 +387,8 @@ export default class EditProfileScreen extends React.Component {
                             borderBottomWidth: 1,
                             borderBottomColor: '#a9a9a9',
                             width: widthToDp("95%"),
-                            fontFamily: "Poppins-Regular"
+                            fontFamily: "Poppins-Regular",
+                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                         }}
                         defaultValue={this.state.email}
                         placeholder="Email Address"
@@ -478,7 +480,8 @@ export default class EditProfileScreen extends React.Component {
                             paddingBottom: heightToDp("1%"),
                             borderBottomColor: '#a9a9a9',
                             width: widthToDp("95%"),
-                            fontFamily: "Poppins-Regular"
+                            fontFamily: "Poppins-Regular",
+                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                         }}
                         defaultValue={this.state.bio}
                         placeholder="Bio"
@@ -502,10 +505,10 @@ export default class EditProfileScreen extends React.Component {
                     // openDuration={250}
                     customStyles={{
                         container: {
-                            width: widthToDp("15%"),
+                            width: "14%",
                             position: 'absolute',
-                            top: heightToDp("45%"),
-                            left: widthToDp("40%"),
+                            top: "40%",
+                            alignSelf: "center",
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor: '#fff',

@@ -35,6 +35,8 @@
 	<string>394846825403325</string>
 	<key>FacebookDisplayName</key>
 	<string>Bezzy</string>
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<string>NO</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>

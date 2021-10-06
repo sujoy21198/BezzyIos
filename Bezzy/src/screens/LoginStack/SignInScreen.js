@@ -12,15 +12,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import ButtonComponent from '../../components/ButtonComponent';
 import messaging from '@react-native-firebase/messaging';
-import {
-    LoginManager,
-    LoginButton,
-    AccessToken,
-    GraphRequest,
-    GraphRequestManager,
-  } from 'react-native-fbsdk';
-import InstagramLogin from 'react-native-instagram-login';
-import CookieManager from '@react-native-community/cookies';
+// import {
+//     LoginManager,
+//     LoginButton,
+//     AccessToken,
+//     GraphRequest,
+//     GraphRequestManager,
+//   } from 'react-native-fbsdk';
+// import InstagramLogin from 'react-native-instagram-login';
+// import CookieManager from '@react-native-community/cookies';
 
 export default class SignInScreen extends React.Component {
     constructor(props) {
@@ -128,43 +128,43 @@ export default class SignInScreen extends React.Component {
         }
     }
 
-    fbLogin = () => {
-        const infoRequest = new GraphRequest(
-            '/me', 
-            {
-              parameters: {
-                'fields': {
-                    'string' : 'id,email,name,first_name,last_name'
-                }
-              }
-            },
-            async (err, res) => {
-              console.log("Error ==> ", err, "\nUser Credentials ==> ", res);
-              this.setState({fbUserInfo: res})
-              await AsyncStorage.setItem("fbUserInfo", JSON.stringify(res))
-            }
-        );
-        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
-            function(result) {
-              if (result.isCancelled) {
-                console.log("Login cancelled");
-              }
-              else {
-                console.log("Login success with permissions: " + result.grantedPermissions.toString());
-                new GraphRequestManager().addRequest(infoRequest).start();
-              }
-            },
-            function(error) {
-              console.log("Login fail with error: " + error);
-            }
-        );
-    }
+    // fbLogin = () => {
+    //     const infoRequest = new GraphRequest(
+    //         '/me', 
+    //         {
+    //           parameters: {
+    //             'fields': {
+    //                 'string' : 'id,email,name,first_name,last_name'
+    //             }
+    //           }
+    //         },
+    //         async (err, res) => {
+    //           console.log("Error ==> ", err, "\nUser Credentials ==> ", res);
+    //           this.setState({fbUserInfo: res})
+    //           await AsyncStorage.setItem("fbUserInfo", JSON.stringify(res))
+    //         }
+    //     );
+    //     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+    //         function(result) {
+    //           if (result.isCancelled) {
+    //             console.log("Login cancelled");
+    //           }
+    //           else {
+    //             console.log("Login success with permissions: " + result.grantedPermissions.toString());
+    //             new GraphRequestManager().addRequest(infoRequest).start();
+    //           }
+    //         },
+    //         function(error) {
+    //           console.log("Login fail with error: " + error);
+    //         }
+    //     );
+    // }
 
     render = () => (
         <SafeAreaView
             style={{ flex: 1, backgroundColor: '#69abff' }}
         >
-            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+            <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header headerText={"Welcome to Bezzy"} />
             <KeyboardAwareScrollView                
                 keyboardShouldPersistTaps='handled'
@@ -230,6 +230,7 @@ export default class SignInScreen extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
@@ -285,6 +286,7 @@ export default class SignInScreen extends React.Component {
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
                                         fontFamily: "Poppins-Regular",
+                                        paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                     }}
                                     secureTextEntry={!this.state.showPassword}
                                     onChangeText={(text) => this.setState({ password: text.trim() })}

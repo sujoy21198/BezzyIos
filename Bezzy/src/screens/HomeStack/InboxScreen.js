@@ -17,6 +17,7 @@ import PushNotificationController from '../../components/PushNotificationControl
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Autolink from 'react-native-autolink';
 import PushNotification from 'react-native-push-notification';
+import {Toast} from "native-base"
 
 export default class InboxScreen extends Component {
   constructor(props) {
@@ -39,15 +40,49 @@ export default class InboxScreen extends Component {
       isSelected: false, 
       deleteIds: []
     }
-    setInterval(() => {
-      console.log("chat refreshed");
-      this.setState({page: 1});
-      this.getInboxChats("0");
-    }, 4000)
+    this.interval = setInterval(() => {
+      this.getIncomingMessage();
+    }, 3000)
     this.state.friendsId = this.props.route.params.friendId
     this.state.friendImage = this.props.route.params.friendImage
     this.state.friendName = this.props.route.params.friendName
     //alert(this.state.friendName)
+  }
+
+  getIncomingMessage = async () => {
+    // this.setState({page: this.state.page + 1})
+    // console.log("re-render");
+    let message = this.state.message;
+    let userId = await AsyncStorage.getItem("userId");
+    await axios.get(DataAccess.BaseUrl + DataAccess.instantMessage + "/" + userId + "/" +  this.props.route.params.friendId + "/1")
+    .then(response => {
+      console.log(response.data, "response");
+      if(response.data.status === 'success') {
+        this.setState({page: 1, message: []});
+        this.getInboxChats("0");
+        // response.data.chat_history_list.forEach(item => {
+        //   item.isSelected = false;
+        //   item.type = item.chat_message.endsWith(".jpg") ? "image" : "text";
+        //   item.chat_message = item.chat_message.endsWith(".jpg") ? "http://bezzy-app.com/admin/public/chat/image/" + item.chat_message : item.chat_message
+        // });
+        // // console.log(message.reverse());
+        // console.log(this.state.message.reverse(), "before");
+        // this.setState({message: this.state.message.concat(response.data.chat_history_list).reverse()})
+        // console.log(this.state.message, "after");
+
+
+      }
+    })
+    .catch(err => {
+      // console.log(err.data, "err");
+      Toast.show({
+        type: "danger",
+        text: "Network Error!!!",
+        duration: 3000
+      })
+    })
+    // console.log(this.state.message)
+    this.readChats()
   }
 
   UNSAFE_componentWillMount () {
@@ -62,6 +97,7 @@ export default class InboxScreen extends Component {
   componentWillUnmount () {
       this.keyboardDidShowListener.remove();
       this.keyboardDidHideListener.remove();
+      clearInterval(this.interval);
   }
 
   componentDidMount() {
@@ -82,14 +118,15 @@ export default class InboxScreen extends Component {
     let userId = await AsyncStorage.getItem("userId");
     await axios.get(DataAccess.BaseUrl + DataAccess.readUnreadChats + "/" + userId + "/" + this.props.route.params.friendId)
     .then(res => {
-      console.log(res);
+      // console.log(res);
     })
     .catch(err => {
-      console.log(err);
+      // console.log(err);
     })
   }
 
   getInboxChats = async (value) => {
+    if(this.state.isFetching || this.state.isFetchingMore) return;
     // console.log("chat refreshed", this.state.page);
     let existingMessages = this.state.message.length > 0 ? this.state.message : [];
     this.setState({isFetching: false})
@@ -111,12 +148,26 @@ export default class InboxScreen extends Component {
           // console.log(response.data.chat_history_list)
         }).catch(error => {
           messages = this.state.message.length > 0 ? this.state.message : [];
-          console.log(error)
+          // if(JSON.stringify(error).includes("Request failed with status code 429")) {
+          //   Toast.show({
+          //     text: "Network Error!", 
+          //     duration: 3000,
+          //     style: {
+          //       backgroundColor: "#777"
+          //     }
+          //   })
+          // }
+          Toast.show({
+            type: "danger",
+            text: "Network Error!!!",
+            duration: 3000
+          })
         })
       this.setState({ message: messages })
       //this.setState({ message: this.state.message.concat(messages) })
       //this.state.message = this.state.message.concat(messages)
       this.setState({ isFetching: false })
+      console.log(this.state.message);
     }
   }
 
@@ -129,14 +180,19 @@ export default class InboxScreen extends Component {
           item.isSelected = false;
         })
         messages = response.data.chat_history_list
-        console.log(response.data.chat_history_list)
+        // console.log(response.data.chat_history_list)
       }).catch(function (error) {
         console.log(error)
+        Toast.show({
+          type: "danger",
+          text: "Network Error!!!",
+          duration: 3000
+        })
       })
     //this.setState({ message: messages })
     this.setState({ message: this.state.message.concat(messages) })
     //this.state.message = this.state.message.concat(messages)
-    this.setState({ isFetching: false })
+    this.setState({ isFetchingMore: false })
   }
 
   sendMessage = async () => {
@@ -146,11 +202,20 @@ export default class InboxScreen extends Component {
       "from_userID": this.state.userId,
       "to_userID": this.state.friendsId,
       "chat_message": this.state.myMessage
-    }).then(function (response) {
+    }).then(response => {
       console.log(response.data)
-    }).catch(function (error) {
+      if(response.data.status === "success") {
+        this.setState({message: response.data.chat_history_list})
+      }
+    }).catch(error => {
       console.log(error)
+      Toast.show({
+        type: "danger",
+        text: "Network Error!!!",
+        duration: 3000
+      })
     })
+    this.setState({page: 1, message: []});
     this.getInboxChats("0")
     this.state.myMessage = ""
     this.RBSheet.close()
@@ -165,7 +230,7 @@ export default class InboxScreen extends Component {
   }
 
   endEmoji = (value) => {
-    console.log(value.code, "fuck me")
+    // console.log(value.code, "fuck me")
     this.setState({ myMessage: this.state.myMessage + value.code })
     this.setState({ show: false })
 
@@ -174,7 +239,7 @@ export default class InboxScreen extends Component {
   //   this.setState({ isFetching: true }, function () { this.getInboxChats() });
   // }
   handleLoadMore = () => {
-    this.setState({ page: this.state.page + 1 }, this.pagination)
+    this.setState({ page: this.state.page + 1, isFetchingMore: true }, this.pagination)
   }
 
   // renderFooter = () => {
@@ -196,7 +261,7 @@ export default class InboxScreen extends Component {
         this.setState({ isImagePathPresent: true })
         this.setState({ imagesArray: images })
         this.postImageToChat()
-        console.log(this.state.imagesArray, "imageArray")
+        // console.log(this.state.imagesArray, "imageArray")
       })
       .catch(err => {
         console.log(' Error fetching images from gallery ', err);
@@ -209,12 +274,38 @@ export default class InboxScreen extends Component {
     if (this.state.imagesArray.length <= 0) {
       //alert('please enter image and caption')
     } else {
-      PushNotification.localNotification({
-        title: "Image Upload",
-        channelId: "imageupload",
-        id: "imageupload",
-        message: "Your image is uploading. Please wait..."
-      })
+      console.warn("abc");
+      if(Platform.OS === "android") {
+        PushNotification.getChannels(channelIds => {
+            if(channelIds.length === 0) {
+                PushNotification.createChannel({
+                    channelId: Date.now().toString(),
+                    channelName: "Channel"
+                }, (created) => {
+                    PushNotification.getChannels(channelIds => {
+                        PushNotification.localNotification({
+                            channelId: channelIds[0],
+                            title: "Image Upload",
+                            message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image is sending. Please wait..." : " images are sending. Please wait...")
+                        })
+                    })
+                })
+            } else {
+              PushNotification.localNotification({
+                channelId: channelIds[0],
+                title: "Image Upload",
+                message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image is sending. Please wait..." : " images are sending. Please wait...")
+              })
+            }
+        })
+      } else {
+        PushNotification.localNotification({
+            title: "Image Upload",
+            channelId: Platform.OS==="android" ? undefined : "videoupload",
+            id: Platform.OS==="android" ? undefined : "videoupload",
+            message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image is sending. Please wait..." : " images are sending. Please wait...")
+        })
+      }
       var filePaths = this.state.imagesArray.map((i) => i.path)
       var formData = new FormData()
       filePaths.forEach((element, i) => {
@@ -229,23 +320,87 @@ export default class InboxScreen extends Component {
       await axios.post(DataAccess.BaseUrl + DataAccess.addChatDataImage, formData)
         .then(response => {
           console.log(response.data, "HOHOHO HAHAHAHAHAHA")
-          PushNotification.localNotification({
-            title: "Image Upload",
-            channelId: "imageupload",
-            id: "imageupload",
-            message: "The image has been sent successfully"
+          Toast.show({
+            type: "success", 
+            text: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image has been sent successfully." : " images have been sent successfully."),
+            duration: 2000
           })
+          if(Platform.OS === "android") {
+            PushNotification.getChannels(channelIds => {
+                if(channelIds.length === 0) {
+                    PushNotification.createChannel({
+                        channelId: Date.now().toString(),
+                        channelName: "Channel"
+                    }, (created) => {
+                        PushNotification.getChannels(channelIds => {
+                            PushNotification.localNotification({
+                                channelId: channelIds[0],
+                                title: "Image Upload",
+                                message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image has been sent successfully." : " images have been sent successfully.")
+                            })
+                        })
+                    })
+                } else {
+                    PushNotification.getChannels(channelIds => {
+                        PushNotification.localNotification({
+                            channelId: channelIds[0],
+                            title: "Image Upload",
+                            message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image has been sent successfully." : " images have been sent successfully.")
+                        })
+                    })
+                }
+            })
+          } else {
+            PushNotification.localNotification({
+                title: "Image Upload",
+                channelId: Platform.OS==="android" ? undefined : "videoupload",
+                id: Platform.OS==="android" ? undefined : "videoupload",
+                message: this.state.imagesArray.length + (this.state.imagesArray.length === 1 ? " image has been sent successfully." : " images have been sent successfully.")
+            })
+          }
         }).catch(function (error) {
           console.log(error)
-          PushNotification.localNotification({
-            title: "Image Upload",
-            channelId: "imageupload",
-            id: "imageupload",
-            message: JSON.stringify(error)
+          Toast.show({
+            type: "danger", 
+            text: "Image Sending Error! Please try again.",
+            duration: 2000
           })
+          if(Platform.OS === "android") {
+            PushNotification.getChannels(channelIds => {
+                if(channelIds.length === 0) {
+                    PushNotification.createChannel({
+                        channelId: Date.now().toString(),
+                        channelName: "Channel"
+                    }, (created) => {
+                        PushNotification.getChannels(channelIds => {
+                            PushNotification.localNotification({
+                                channelId: channelIds[0],
+                                title: "Image Upload",
+                                message: JSON.stringify(error)
+                            })
+                        })
+                    })
+                } else {
+                    PushNotification.getChannels(channelIds => {
+                        PushNotification.localNotification({
+                            channelId: channelIds[0],
+                            title: "Image Upload",
+                            message: JSON.stringify(error)
+                        })
+                    })
+                }
+            })
+          } else {
+            PushNotification.localNotification({
+                title: "Image Upload",
+                channelId: Platform.OS==="android" ? undefined : "videoupload",
+                id: Platform.OS==="android" ? undefined : "videoupload",
+                message: JSON.stringify(error)
+            })
+          }
         })
 
-
+      this.setState({page: 1, message: []})
       this.getInboxChats("0")
     }
   }
@@ -266,17 +421,17 @@ export default class InboxScreen extends Component {
           text: "Cancel",
         },
         {
-          text: "Ok", 
+          text: "Yes", 
           onPress: async () => {
             this.setState({message: [], isFetching: true, isSelected: false})
             await axios.post(DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleMessage : DataAccess.deleteMultipleMessage), {
               "chat_id": this.state.deleteIds.length === 1 ? this.state.deleteIds[0] : this.state.deleteIds,
               "user_id": await AsyncStorage.getItem("userId")
             }).then(response => {
-              console.log("Chat message delete success response :- ", response);
+              console.log("Chat message delete success response :- ", response.data, typeof response.data);
               if(response.data.status === "success") {
                 this.state.message.map(item => item.isSelected = false);
-                this.setState({deleteIds: [], page: 1});
+                this.setState({deleteIds: [], page: 1, message: [], isFetching: false});
                 this.getInboxChats("0")
               } else {
                 //
@@ -298,7 +453,7 @@ export default class InboxScreen extends Component {
           backgroundColor: '#fff'
         }}        
       >
-        <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+        <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
         <View
           style={{
             flexDirection: "row",
@@ -321,7 +476,7 @@ export default class InboxScreen extends Component {
               let messages = this.state.message;
               messages.map(i => i.isSelected = false)
               this.setState({message: messages, isSelected: false, deleteIds: []})
-            } : () => this.props.navigation.goBack()}
+            } : () => this.props.navigation.navigate("ChatScreen")}
           >
             <Icon 
               name="chevron-left"
@@ -358,7 +513,9 @@ export default class InboxScreen extends Component {
             </TouchableOpacity>
           }
         </View>
-        <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+        {
+          Platform.OS === 'ios' &&
+          <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
             {
               this.state.isFetching ?
               <View
@@ -375,7 +532,18 @@ export default class InboxScreen extends Component {
                   data={this.state.message}
                   keyExtractor={(item, index) => String(index)}
                   inverted={true}
-                  ListFooterComponent={<View style={{height: heightToDp("5%")}}/>}
+                  ListFooterComponent={
+                    !this.state.isFetchingMore ?
+                    <View style={{height: heightToDp("5%")}}/> :
+                    <ActivityIndicator 
+                      style={{
+                        alignSelf: "center",
+                        paddingTop: heightToDp("2%")
+                      }}
+                      color="#69abff"
+                      size="small"
+                    />
+                  }
                   style={{ backgroundColor: '#fff', height: heightToDp("80%"), paddingVertical: widthToDp("2%") }}
                   // onRefresh={() => this.onRefresh()}
                   // refreshing={this.state.isFetching}
@@ -607,7 +775,8 @@ export default class InboxScreen extends Component {
                                 component={Text}
                                 text={item.chat_message}
                                 style={{ 
-                                  marginLeft: widthToDp("2%"), 
+                                  marginLeft: widthToDp("2%"),
+                                  color: "#1b1b1b", 
                                   fontSize: widthToDp("3.3%"), 
                                   fontFamily: "Poppins-Regular" 
                                 }}
@@ -616,6 +785,7 @@ export default class InboxScreen extends Component {
                                 linkStyle={{
                                   marginLeft: widthToDp("2%"), 
                                   fontSize: widthToDp("3.3%"), 
+                                  color: "#1b1b1b",
                                   fontFamily: "Poppins-Regular", 
                                   textDecorationLine: "underline",
                                 }}
@@ -721,10 +891,12 @@ export default class InboxScreen extends Component {
             <View
               style={{
                 flex: 0.065,
+                position: Platform.OS==='android' ? "absolute" : undefined,
+                bottom: Platform.OS==='android' ? 0 : undefined,
                 borderTopWidth: 1,
                 borderTopColor: '#ececec',
                 paddingHorizontal: widthToDp('1%'),
-                paddingVertical: this.state.isKeyboardOpened ? heightToDp("1%") : heightToDp("0%"),
+                paddingVertical: this.state.isKeyboardOpened ? heightToDp("1%") : heightToDp(Platform.OS==='android' ? "0.5%" : "0%"),
                 flexDirection: 'row',
                 alignItems: 'center',
               }}
@@ -747,7 +919,7 @@ export default class InboxScreen extends Component {
                   style={{
                       marginLeft: widthToDp("1%"),
                       paddingHorizontal: widthToDp("2%"),
-                      height: heightToDp(`4%`),
+                      // height: heightToDp(`0%`),
                       width: Platform.isPad ? widthToDp("87%") : widthToDp("85%"),
                       borderWidth: 1,
                       borderRadius: 5,
@@ -778,8 +950,445 @@ export default class InboxScreen extends Component {
                   onPress={() => this.sendMessage()}
                   />
               </View>
-          </View>    
-        </KeyboardAvoidingView> 
+            </View>    
+          </KeyboardAvoidingView> 
+        }
+        {
+          Platform.OS==='android' &&
+          <>
+            {
+              this.state.isFetching ?
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <ActivityIndicator size="large" color="#69abff"/>
+              </View> :
+              <FlatList
+              data={this.state.message}
+              keyExtractor={(item, index) => String(index)}
+              inverted={true}
+              ListFooterComponent={
+                !this.state.isFetchingMore ?
+                <View style={{height: heightToDp("5%")}}/> :
+                <ActivityIndicator 
+                  style={{
+                    alignSelf: "center",
+                    paddingTop: heightToDp("2%")
+                  }}
+                  color="#69abff"
+                  size="small"
+                />
+              }
+              style={{ backgroundColor: '#fff', height: heightToDp("80%"), paddingVertical: widthToDp("2%"), marginBottom: Platform.OS === "android" ? this.state.isKeyboardOpened ? heightToDp("6%") : heightToDp("5%") : undefined}}
+              // onRefresh={() => this.onRefresh()}
+              // refreshing={this.state.isFetching}
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0}
+              //ListFooterComponent={this.renderFooter}
+              renderItem={({ item }) =>
+                item &&
+                <View
+                  style={{
+                    backgroundColor: item.isSelected ? "rgba(0, 125, 254, 0.2)" : undefined,
+                    marginBottom: heightToDp("2%"), 
+                  }}
+                >
+
+                  {
+                    item.message_by === 'self' && item.type === 'text' ? 
+                    <TouchableOpacity 
+                    style={{paddingHorizontal: widthToDp("2%")}}
+                    onLongPress={() => {
+                      let messages = this.state.message;
+                      messages.map(i => {
+                        if(i.id === item.id) {
+                          i.isSelected = true
+                        }
+                      })
+                      this.setState({message: messages, isSelected: true, deleteIds: [...this.state.deleteIds, item.id]})
+                    }}
+                    onPress={() => {
+                      if(this.state.isSelected) {
+                        let messages = this.state.message;
+                        messages.map(i => {
+                          if(i.id === item.id) {
+                            if(i.isSelected) {
+                              this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.id), 1)
+                              this.setState({deleteIds: this.state.deleteIds})
+                            } else {
+                              this.setState({deleteIds: [...this.state.deleteIds, item.id]})
+                            }
+                            i.isSelected = !i.isSelected
+                          }
+                        })
+                        if(!messages.find(item => item.isSelected)) {
+                          this.setState({isSelected: false})
+                        } 
+                        this.setState({message: messages})
+                      } else {
+
+                        // this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+
+                      }
+                    }}
+                    >
+                      <View
+                        style={{
+                          alignSelf: 'flex-end', 
+                          backgroundColor: '#007dfe',
+                          width: widthToDp("40%"), 
+                          paddingVertical: heightToDp('0.5%'),
+                          borderTopLeftRadius: 10,
+                          borderTopRightRadius: 10,
+                          borderBottomLeftRadius: 10, 
+                        }}
+                      >
+                        <Autolink
+                          component={Text}
+                          text={item.chat_message}
+                          style={{ 
+                            marginLeft: widthToDp("2%"), 
+                            color: 'white', 
+                            fontSize: widthToDp("3.3%"), 
+                            fontFamily: "Poppins-Regular",
+                            alignSelf: 'flex-end', 
+                            paddingHorizontal: widthToDp("2%")
+                          }}
+                          email
+                          url
+                          linkStyle={{
+                            marginLeft: widthToDp("2%"), 
+                            color: 'white', 
+                            fontSize: widthToDp("3.3%"), 
+                            fontFamily: "Poppins-Regular", 
+                            textDecorationLine: "underline",
+                          }}
+                        />
+                        {/* <Text style={{ marginLeft: widthToDp("2%"), color: 'white', fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
+                        <Text style={{ marginRight: widthToDp("2%"), color: 'white', alignSelf: 'flex-end', fontSize: widthToDp("3%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
+                        <Ionicons
+                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                          size={Platform.isPad ? 30 : 15}
+                          color="#fff"
+                          style={{alignSelf: 'flex-end', marginRight: widthToDp("2%")}}
+                        />
+                      </View>
+                    </TouchableOpacity> : ((item.message_by === 'self' && item.type === 'image') ?
+                      <TouchableOpacity 
+                        style={{ 
+                          paddingHorizontal: widthToDp('2%')
+                        }}
+                        onLongPress={() => {
+                          let messages = this.state.message;
+                          messages.map(i => {
+                            if(i.id === item.id) {
+                              i.isSelected = true
+                            }
+                          })
+                          this.setState({message: messages, isSelected: true, deleteIds: [...this.state.deleteIds, item.id]})
+                        }}
+                        onPress={() => {
+                          if(this.state.isSelected) {
+                            let messages = this.state.message;
+                            messages.map(i => {
+                              if(i.id === item.id) {
+                                if(i.isSelected) {
+                                  this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.id), 1)
+                                  this.setState({deleteIds: this.state.deleteIds})
+                                } else {
+                                  this.setState({deleteIds: [...this.state.deleteIds, item.id]})
+                                }
+                                i.isSelected = !i.isSelected
+                              }
+                            })
+                            if(!messages.find(item => item.isSelected)) {
+                              this.setState({isSelected: false})
+                            } 
+                            this.setState({message: messages})
+                          } else {
+
+                            this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+
+                          }
+                        }}
+                        >
+                        <View
+                          style={{
+                            alignSelf: 'flex-end', 
+                            backgroundColor: '#007dfe',
+                            width: widthToDp("40%"), 
+                            paddingVertical: heightToDp('0.5%'),
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            borderBottomLeftRadius: 10, 
+                          }}
+                        >
+                          <Image
+                            source={{ uri: item.chat_message }}
+                            resizeMode="contain"
+                            style={{ 
+                              alignSelf: 'center',
+                              height: heightToDp("20%"), 
+                              width: widthToDp("40%"), 
+                              borderTopLeftRadius: 20,
+                              borderTopRightRadius: 20,
+                              borderBottomLeftRadius: 20, 
+                            }}
+                          />
+
+                          <Text style={{ 
+                            position: 'absolute',
+                            bottom: 20,
+                            right: 5,
+                            color: 'white', 
+                            fontFamily: "Poppins-Regular",
+                            fontSize: widthToDp("3%"), 
+                          }}>{item.chat_msg_time}</Text>
+                          <Ionicons
+                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                          size={Platform.isPad ? 30 : 15}
+                          color="#fff"
+                          style={{
+                            position: 'absolute',
+                            bottom: 5,
+                            right: 5,
+                            color: 'white', 
+                          }}
+                          />
+                        </View>
+                      </TouchableOpacity> : ((item.message_by === 'other' && item.type === 'text') ? 
+                      <TouchableOpacity 
+                        style={{ 
+                          paddingHorizontal: widthToDp("2%")
+                        }}
+                        onLongPress={() => {
+                          let messages = this.state.message;
+                          messages.map(i => {
+                            if(i.id === item.id) {
+                              i.isSelected = true
+                            }
+                          })
+                          this.setState({message: messages, isSelected: true, deleteIds: [...this.state.deleteIds, item.id]})
+                        }}
+                        onPress={() => {
+                          if(this.state.isSelected) {
+                            let messages = this.state.message;
+                            messages.map(i => {
+                              if(i.id === item.id) {
+                                if(i.isSelected) {
+                                  this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.id), 1)
+                                  this.setState({deleteIds: this.state.deleteIds})
+                                } else {
+                                  this.setState({deleteIds: [...this.state.deleteIds, item.id]})
+                                }
+                                i.isSelected = !i.isSelected
+                              }
+                            })
+                            if(!messages.find(item => item.isSelected)) {
+                              this.setState({isSelected: false})
+                            } 
+                            this.setState({message: messages})
+                          } else {
+
+                            // this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+
+                          }
+                        }}
+                      >
+                        <View
+                          style={{
+                            alignSelf: 'flex-start', 
+                            backgroundColor: '#ececec',
+                            width: widthToDp("40%"), 
+                            paddingVertical: heightToDp('0.5%'),
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            borderBottomLeftRadius: 10, 
+                          }}
+                        >
+                          <Autolink
+                            component={Text}
+                            text={item.chat_message}
+                            style={{ 
+                              marginLeft: widthToDp("2%"), 
+                              fontSize: widthToDp("3.3%"), 
+                              fontFamily: "Poppins-Regular" 
+                            }}
+                            email
+                            url
+                            linkStyle={{
+                              marginLeft: widthToDp("2%"), 
+                              fontSize: widthToDp("3.3%"), 
+                              fontFamily: "Poppins-Regular", 
+                              textDecorationLine: "underline",
+                            }}
+                          />
+                          {/* <Text style={{ marginLeft: widthToDp("2%"), fontSize: widthToDp("3.3%"), fontFamily: "Poppins-Regular" }}>{item.chat_message}</Text> */}
+                          <Text style={{ marginRight: widthToDp("2%"), color: 'black', alignSelf: 'flex-start', fontSize: widthToDp("3%"), marginLeft: widthToDp("2%"), marginTop: heightToDp("1%"), fontFamily: "Poppins-Regular" }}>{item.chat_msg_time}</Text>
+                          <Ionicons
+                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                          size={Platform.isPad ? 30 : 15}
+                          color="#1b1b1b"
+                          style={{alignSelf: 'flex-start', marginLeft: widthToDp("2%")}}
+                          />
+                        </View>
+                      </TouchableOpacity> : (((item.message_by === 'other' && item.type === 'image') ? 
+                      <TouchableOpacity style={{ 
+                        paddingHorizontal: widthToDp("2%")
+                      }}
+                      onLongPress={() => {
+                        let messages = this.state.message;
+                        messages.map(i => {
+                          if(i.id === item.id) {
+                            i.isSelected = true
+                          }
+                        })
+                        this.setState({message: messages, isSelected: true, deleteIds: [...this.state.deleteIds, item.id]})
+                      }}
+                      onPress={() => {
+                        if(this.state.isSelected) {
+                          let messages = this.state.message;
+                          messages.map(i => {
+                            if(i.id === item.id) {
+                              if(i.isSelected) {
+                                this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.id), 1)
+                                this.setState({deleteIds: this.state.deleteIds})
+                              } else {
+                                this.setState({deleteIds: [...this.state.deleteIds, item.id]})
+                              }
+                              i.isSelected = !i.isSelected
+                            }
+                          })
+                          if(!messages.find(item => item.isSelected)) {
+                            this.setState({isSelected: false})
+                          } 
+                          this.setState({message: messages})
+                        } else {
+
+                          this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+
+                        }
+                      }}
+                      >
+                        <View
+                          style={{
+                            alignSelf: 'flex-start', 
+                            backgroundColor: '#ececec',
+                            width: widthToDp("40%"), 
+                            paddingVertical: heightToDp('0.5%'),
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                            borderBottomLeftRadius: 10, 
+                          }}
+                        >
+                          <Image
+                            source={{ uri: item.chat_message }}
+                            style={{ 
+                              height: heightToDp("20%"), 
+                              width: widthToDp("40%"),
+                              borderTopRightRadius: 20,
+                              borderBottomLeftRadius: 20,
+                              borderBottomRightRadius: 20,
+                            }}
+                            resizeMode="contain"
+                          />
+
+                          <Text style={{ 
+                            position: 'absolute',
+                            bottom: 20,
+                            left: 5,
+                            color: '#1b1b1b', 
+                            fontSize: widthToDp("3%"), 
+                            fontFamily: "Poppins-Regular"
+                          }}>{item.chat_msg_time}</Text>
+                          <Ionicons
+                          name={Platform.OS==='android' ? 'md-checkmark-done-outline' : 'ios-checkmark-done-outline'}
+                          size={Platform.isPad ? 30 : 15}
+                          color="#fff"
+                          style={{
+                            position: 'absolute',
+                            bottom: 5,
+                            left: 5,
+                            color: '#1b1b1b', 
+                          }}
+                          />
+                        </View>
+                      </TouchableOpacity> : null))))
+                    }
+                  </View>
+
+                }
+              />
+            }
+            <View
+              style={{
+                position: Platform.OS==='android' ? "absolute" : undefined,
+                bottom: Platform.OS==='android' ? 0 : undefined,
+                borderTopWidth: 1,
+                borderTopColor: '#ececec',
+                paddingHorizontal: widthToDp('1%'),
+                paddingVertical: this.state.isKeyboardOpened ? heightToDp("1%") : heightToDp(Platform.OS==='android' ? "0.5%" : "0%"),
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Icon
+                name="smile"
+                size={Platform.isPad ? 40 : 20}
+                color="#69abff"
+                onPress={() => this.startEmoji()}
+                style={{paddingTop: this.state.isKeyboardOpened ? heightToDp("0.5%") : heightToDp("0%")}}
+              />
+              <Ionicons
+                name={Platform.OS==='android' ? 'md-image' : 'ios-image'}
+                size={Platform.isPad ? 50 : 25}
+                color="#69abff"
+                style={{paddingLeft: widthToDp("1%")}}
+                onPress={() => this.openImageSelection()}
+              />
+              <View
+                  style={{
+                      marginLeft: widthToDp("1%"),
+                      paddingHorizontal: widthToDp("2%"),
+                      paddingHorizontal: 3,
+                      paddingVertical: 0,
+                      width: Platform.isPad ? widthToDp("87%") : widthToDp("85%"),
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      borderColor: "#69abff",
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                  }}
+              >
+                  <TextInput
+                    placeholder="Enter message"
+                    value={this.state.myMessage}
+                    placeholderTextColor="#808080"
+                    style={{
+                        padding: widthToDp("1%"),
+                        fontSize: widthToDp("4%"),
+                        width: widthToDp("75%"),
+                        color: '#777',
+                        fontFamily: "Poppins-Regular"
+                    }}
+                    onChangeText={(text) => this.setState({ myMessage: text })}
+                    multiline
+                  />
+                  <Ionicons
+                  name={Platform.OS==='android' ? 'md-send' : 'ios-send'}
+                  size={Platform.isPad ? 40 : 20}
+                  color="#69abff"
+                  onPress={() => this.sendMessage()}
+                  />
+              </View>
+            </View>
+          </>
+        }
         <EmojiBoard showBoard={this.state.show} onClick={(value) => this.endEmoji(value)} />
         <PushNotificationController navigation={this.props.navigation}/>
         <RBSheet

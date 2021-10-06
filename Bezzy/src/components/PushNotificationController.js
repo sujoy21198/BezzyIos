@@ -63,16 +63,24 @@ const PushNotificationController = (props) => {
                 let notificationData = JSON.parse(await AsyncStorage.getItem("notification")) || [];
 
                 if(notification.userInteraction) {  
-                    
+                    if(notification.title === "Image Upload"){
+                        props.navigation.navigate("HomeScreen");
+                    }
                     if(!notification.foreground ? notification.data.type === "post" : notificationData.type === "post") {
                         props.navigation.navigate("ImagePreviewScreen", {
                             image: {post_id: !notification.foreground ? notification.data.respostID : notificationData.respostID}
                         });
                     } else if(!notification.foreground ? notification.data.type === "chat_box_msg" : notificationData.type === "chat_box_msg") {
-                        props.navigation.navigate("InboxScreen", {
-                            friendId: !notification.foreground ? notification.data.from_userid : notificationData.from_userid,
-                            friendName: !notification.foreground ? notification.data.from_usernam : notificationData.from_usernam,
-                            friendImage: !notification.foreground ? notification.data.from_userimage : notificationData.from_userimage
+                        props.navigation.reset({
+                            index: 0,
+                            routes: [{
+                                name: "InboxScreen", 
+                                params: {
+                                    friendId: !notification.foreground ? notification.data.from_userid : notificationData.from_userid,
+                                    friendName: !notification.foreground ? notification.data.from_usernam : notificationData.from_usernam,
+                                    friendImage: !notification.foreground ? notification.data.from_userimage : notificationData.from_userimage
+                                }
+                            }]
                         });
                     } else {
                         props.navigation.navigate("HomeScreen")

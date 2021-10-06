@@ -57,7 +57,7 @@ export default class FollowingScreen extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1}}>       
-            <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header isHomeStackInnerPage isBackButton block={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
             {
                 this.state.isLoading ?

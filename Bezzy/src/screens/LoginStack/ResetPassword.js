@@ -105,7 +105,7 @@ export default class ResetPassword extends React.Component {
                 backgroundColor: '#69abff'
             }}
         >
-            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+            <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header isBackButton navigation={this.props.navigation} loginStack={true} headerText="Create New Password"/>
             
             <KeyboardAwareScrollView
@@ -159,6 +159,7 @@ export default class ResetPassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 secureTextEntry={!this.state.showPassword}
                                 onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -221,6 +222,7 @@ export default class ResetPassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 secureTextEntry={!this.state.showConfirmPassword}
                                 onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}

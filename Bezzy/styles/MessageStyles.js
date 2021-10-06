@@ -39,6 +39,17 @@ export const TextSection = styled.View`
   border-bottom-color: #cccccc;
 `;
 
+export const TextSectionAndroid = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+  padding-left: 0;
+  margin-left: 1px;
+  width: 321px;
+  border-bottom-width: 1px;
+  border-bottom-color: #cccccc;
+`;
+
 export const UserInfoText = styled.View`
   flex-direction: row;
   justify-content: space-between;

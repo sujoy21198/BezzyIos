@@ -94,9 +94,9 @@ export default class SearchScreen extends React.Component {
         userList = this.state.userList
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
-                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
-                <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row' }}>
-                    <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("37%") }}>
+                <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
+                <View style={{ height: heightToDp("5%"), backgroundColor: "#fff", flexDirection: 'row', justifyContent: "space-between" }}>
+                    <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("65%") }}>
                         <Text style={{ fontSize: widthToDp("4.5%"), color: '#007dfe', fontFamily: "ProximaNova-Black", }}>Search for friends</Text>
                     </View>
                     <TouchableOpacity
@@ -105,7 +105,7 @@ export default class SearchScreen extends React.Component {
                     >
                         <Image
                             source={require("../../../assets/search.png")}
-                            style={{ height: heightToDp("6%"), width: widthToDp("6%"), marginLeft: widthToDp("50%") }}
+                            style={{ height: heightToDp("6%"), width: widthToDp("6%"), marginRight: widthToDp("4%") }}
                             resizeMode="contain"
                         />
                     </TouchableOpacity>
@@ -203,10 +203,10 @@ export default class SearchScreen extends React.Component {
                                 // openDuration={250}
                                 customStyles={{
                                     container: {
-                                        width: widthToDp("15%"),
+                                        width: "14%",
                                         position: 'absolute',
-                                        top: heightToDp("45%"),
-                                        left: widthToDp("40%"),
+                                        top: "40%",
+                                        alignSelf: "center",
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         backgroundColor: '#fff',
@@ -232,10 +232,10 @@ export default class SearchScreen extends React.Component {
                     // openDuration={250}
                     customStyles={{
                         container: {
-                            width: widthToDp("15%"),
+                            width: "14%",
                             position: 'absolute',
-                            top: heightToDp("45%"),
-                            left: widthToDp("40%"),
+                            top: "40%",
+                            alignSelf: "center",
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor: '#fff',

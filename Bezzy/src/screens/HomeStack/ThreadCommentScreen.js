@@ -112,7 +112,7 @@ export default class ThreadCommentScreen extends Component {
             response.data && response.data.following_user_list &&
             response.data.following_user_list.length > 0 &&
             response.data.following_user_list.map(element => {
-                if(element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
+                if(element.name && element.name.toLowerCase().startsWith(mention.split("@")[1].toLowerCase())) {
                     followingList.push(element);
                 }
             })
@@ -163,7 +163,7 @@ export default class ThreadCommentScreen extends Component {
     render() {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(220,220,220,0)' }}>
-                <StatusBar backgroundColor="#69abff" barStyle="light-content" />
+                <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
                 {!this.state.isSelected && 
                 <Header isBackButton threadCommentReload isHomeStackInnerPage headerText={"Replies"} navigation={this.props.navigation} post={{post_id: this.props.route.params.post_id}} />}
                 {
@@ -220,7 +220,7 @@ export default class ThreadCommentScreen extends Component {
                         </TouchableOpacity>
                     </View>
                 }
-                <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+                {Platform.OS === 'ios' && <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
                     <View style={{paddingVertical: heightToDp('2%'), flex: 0.135}}>
                         <View
                             style={{
@@ -544,7 +544,334 @@ export default class ThreadCommentScreen extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-                </KeyboardAvoidingView>
+                </KeyboardAvoidingView>}
+                {Platform.OS==='android' &&
+                <>
+                    <View style={{paddingVertical: heightToDp('2%'), flex: 0.135}}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: "flex-start",
+                                paddingHorizontal: widthToDp("2%")
+                            }}
+                        >
+                            <Image
+                                source={{ uri: this.props.route.params.userimage }}
+                                style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                            />
+                            <View
+                                style={{
+                                    marginLeft: widthToDp("3%"),
+                                    padding: widthToDp("2%"),
+                                    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                    borderRadius: 10,
+                                    width: Platform.isPad ? widthToDp("84%") : widthToDp("82.5%")
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        width: widthToDp("100%"),
+                                        color: '#1b1b1b',
+                                        fontFamily: "ProximaNova-Black",
+                                        fontSize: widthToDp("3.5%")
+                                    }}
+                                >{this.props.route.params.username}</Text>
+                                <Autolink
+                                    component={Text}
+                                    text={this.props.route.params.commentText}
+                                    style={{
+                                        color: '#1b1b1b',
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
+                                    }}
+                                    email
+                                    url
+                                    linkStyle={{
+                                        color: '#0000ff', 
+                                        textDecorationLine: "underline",
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
+                                    }}
+                                />
+                                {/* <Text
+                                    style={{
+                                        color: '#1b1b1b',
+                                        fontSize: widthToDp("3%"),
+                                        marginTop: heightToDp("1%"),
+                                        fontFamily: "Poppins-Regular"
+                                    }}
+                                >{this.props.route.params.commentText}</Text> */}
+                            </View>
+                        </View>
+                        <View
+                            style={{
+                                marginLeft: widthToDp("16%"),
+                                marginTop: heightToDp("0.8%"),
+                                width: widthToDp("82%"),
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: '#808080',
+                                    fontSize: widthToDp("3%"),
+                                    fontFamily: "Poppins-Regular"
+                                }}
+                            >{this.props.route.params.postcomment_time}</Text>
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    top: heightToDp("0%"),
+                                    right: widthToDp("0%"),
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}
+                            >
+
+                            </View>
+                        </View>
+                    </View>
+                    <View style={{
+                        flex: 0.815, 
+                        marginTop: heightToDp(`${this.state.isKeyboardOpened ? 4 : 2}%`),
+                        marginLeft: this.state.isSelected ? 0 : widthToDp("4%")
+                    }}>
+                        {
+                            this.state.comments.length > 0 &&
+                            <FlatList
+                                data={this.state.comments}
+                                keyExtractor={item => item.comment_id}
+                                ItemSeparatorComponent={() => <View style={{ height: heightToDp("3%") }} />}
+                                ListFooterComponent={<View style={{ height: heightToDp("2%") }} />}
+                                renderItem={({ item, index }) => (
+                                    <TouchableOpacity 
+                                        style={{
+                                            paddingLeft: widthToDp("10%"),
+                                            paddingVertical: item.isSelected ? heightToDp("1%") : 0,
+                                            backgroundColor: item.isSelected ? "rgba(0, 125, 254, 0.1)" : undefined,
+                                        }}
+                                        activeOpacity={0.7}
+                                        onLongPress={() => {
+                                            if(item.userimage !== this.state.userDetails.profile_pic) {
+                                                Toast.show({
+                                                    style: {
+                                                        backgroundColor: '#777',
+                                                    },
+                                                    text: "Only Self Comments can be deleted",
+                                                    duration: 3000
+                                                });
+                                                return;
+                                            }
+                                            let comments = this.state.comments;
+                                            comments.map(i => {
+                                                if(i.comment_id === item.comment_id) {
+                                                i.isSelected = true
+                                                }
+                                            })
+                                            this.setState({comments: comments, isSelected: true, deleteIds: [...this.state.deleteIds, item.comment_id]})
+                                        }}
+                                        onPress={() => {
+                                            if(item.userimage !== this.state.userDetails.profile_pic) {
+                                                Toast.show({
+                                                    style: {
+                                                        backgroundColor: '#777',
+                                                    },
+                                                    text: "Only Self Comments can be deleted",
+                                                    duration: 3000
+                                                });
+                                                return;
+                                            }
+                                            if(this.state.isSelected) {
+                                                let comments = this.state.comments;
+                                                comments.map(i => {
+                                                if(i.comment_id === item.comment_id) {
+                                                    if(i.isSelected) {
+                                                        this.state.deleteIds.splice(this.state.deleteIds.findIndex(element => element === item.comment_id), 1)
+                                                        this.setState({deleteIds: this.state.deleteIds})
+                                                    } else {
+                                                        this.setState({deleteIds: [...this.state.deleteIds, item.comment_id]})
+                                                    }
+                                                    i.isSelected = !i.isSelected
+                                                }
+                                                })
+                                                if(!comments.find(item => item.isSelected)) {
+                                                this.setState({isSelected: false})
+                                                } 
+                                                this.setState({comments: comments})
+                                            } else {
+                    
+                                                // this.props.navigation.navigate('ChatImagePreviewScreen', { imageUrl: item.chat_message })
+                    
+                                            }
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                alignItems: "flex-start",
+                                                paddingHorizontal: widthToDp("2%")
+                                            }}
+                                        >
+                                            <Image
+                                                source={{ uri: item.userimage }}
+                                                style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 2 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
+                                            />
+                                            <View
+                                                style={{
+                                                    marginLeft: widthToDp("3%"),
+                                                    padding: widthToDp("2%"),
+                                                    backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                                    borderRadius: 10,
+                                                    width: widthToDp("68.5%")
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        width: widthToDp("90%"),
+                                                        color: '#1b1b1b',
+                                                        fontFamily: "ProximaNova-Black",
+                                                        fontSize: widthToDp("3.5%")
+                                                    }}
+                                                >{item.username}</Text>
+                                                <Autolink
+                                                    component={Text}
+                                                    text={item.commentText}
+                                                    style={{
+                                                        color: '#1b1b1b',
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                    email
+                                                    url
+                                                    linkStyle={{
+                                                        color: '#0000ff', 
+                                                        textDecorationLine: "underline",
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                />
+                                                {/* <Text
+                                                    style={{
+                                                        color: '#1b1b1b',
+                                                        fontSize: widthToDp("3%"),
+                                                        marginTop: heightToDp("1%"),
+                                                        fontFamily: "Poppins-Regular"
+                                                    }}
+                                                >{item.commentText}</Text> */}
+                                            </View>
+                                        </View>
+                                        <View
+                                            style={{
+                                                marginLeft: widthToDp("16%"),
+                                                marginTop: heightToDp("0.8%"),
+                                                width: widthToDp("82%"),
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: '#808080',
+                                                    fontSize: widthToDp("3%"),
+                                                    fontFamily: "Poppins-Regular"
+                                                }}
+                                            >{item.postcomment_time}</Text>
+                                            <View
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: heightToDp("0%"),
+                                                    right: widthToDp("0%"),
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
+
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                            />
+                        }
+                    </View>    
+                    <View
+                        style={{
+                            backgroundColor: '#fff',
+                            position: Platform.OS==='android' ? "absolute" : undefined,
+                            bottom: Platform.OS==='android' ? 0 : undefined,
+                            paddingHorizontal: widthToDp("1%"),
+                            paddingBottom: heightToDp("2%"),
+                            paddingTop: heightToDp("1%"),
+                            marginBottom: Platform.OS==='android' ? undefined : heightToDp(`${this.state.isKeyboardOpened ? 2 : 1}%`)
+                        }}
+                    >
+                        <View
+                            style={{
+                                padding: widthToDp("2%"),
+                                width: widthToDp("98%"),
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                borderColor: "#69abff",
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <TextInput
+                                placeholder="Enter message"
+                                placeholderTextColor="#808080"
+                                style={{
+                                    width: Platform.isPad ? widthToDp("90%") : widthToDp("88%"),
+                                    paddingHorizontal: widthToDp("1%"),
+                                    paddingVertical: heightToDp("0%"),
+                                    fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("4.3%"),
+                                    color: '#777',
+                                    height: heightToDp("3%"),
+                                    fontFamily: "Poppins-Regular"
+                                }}
+                                multiline
+                                ref={ref => this.refChatField = ref}
+                                defaultValue={this.state.commentText}
+                                onChangeText={(text) => {
+                                    this.setState({ commentText: text, followingList: [] }, () => {
+                                        if(this.state.commentText.split(" ") && this.state.commentText.split(" ").length > 0) {
+                                            // console.warn(this.state.commentText.split(" "));
+                                        }
+                                        if(
+                                            this.state.commentText.includes("@") && this.state.commentText.match(/\B@\w+/g) && 
+                                            this.state.commentText.match(/\B@\w+/g).length > 0 && (
+                                                this.state.commentText.split(" ") && this.state.commentText.split(" ").length > 0 &&
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1] !== "" &&
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1] !== "@" && 
+                                                this.state.commentText.split(" ")[this.state.commentText.split(" ").length - 1].includes("@")
+                                            )
+                                        ) {
+                                            this.getFollowings(this.state.commentText.match(/\B@\w+/g)[this.state.commentText.match(/\B@\w+/g).length - 1]);
+                                            // console.warn("Abc ", text.match(/\B@\w+/g) && text.match(/\B@\w+/g).length > 0 && text.match(/\B@\w+/g)[text.match(/\B@\w+/g).length - 1]);
+                                        }
+                                    });
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={this.sendComment}
+                                style={{ width: widthToDp("12%") }}
+                                disabled={this.state.commentText.trim() === "" || this.state.isSendingComment}
+                            >
+                                <Ionicons
+                                    name={Platform.OS === 'android' ? 'md-send' : 'ios-send'}
+                                    size={Platform.isPad ? 40 : 20}
+                                    color="#69abff"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </>}
                 <RBSheet1
                     ref={ref => {
                         this.RBSheet1 = ref;

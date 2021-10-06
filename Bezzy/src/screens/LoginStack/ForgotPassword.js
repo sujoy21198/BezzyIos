@@ -95,7 +95,7 @@ export default class ForgotPassword extends React.Component {
     render = () => (
         <SafeAreaView 
         style={{flex: 1, backgroundColor: '#69abff'}}>
-            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+            <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header headerText={"Forgot Password"} isBackButton loginStack={true} navigation={this.props.navigation}/>
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps='handled'
@@ -153,6 +153,7 @@ export default class ForgotPassword extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}

@@ -26,7 +26,7 @@ export default class Terms extends React.Component {
 
     render = () => (
         <SafeAreaView style={{flex: 1, backgroundColor: '#69abff'}}>
-            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+            <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header isBackButton loginStack={true} headerText={"Terms & Conditions"} navigation={this.props.navigation} />
             <View
                 style={{

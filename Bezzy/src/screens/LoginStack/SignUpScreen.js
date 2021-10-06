@@ -89,7 +89,11 @@ export default class SignUpScreen extends React.Component {
 
     //OPEN CAMERA TO SELECT IMAGE FUNCTION
     takePhotoFromCamera = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        if(Platform.OS==="ios") {
+            checkMultiple([
+                PERMISSIONS.ANDROID.CAMERA, 
+                PERMISSIONS.IOS.CAMERA
+            ])
             .then((result) => {
                 if (RESULTS.DENIED) {
                     this.askPermission();
@@ -97,6 +101,7 @@ export default class SignUpScreen extends React.Component {
                     return;
                 }
             })
+        }
         ImagePicker.openCamera({
             width: 300,
             height: 400,
@@ -118,7 +123,15 @@ export default class SignUpScreen extends React.Component {
 
     //OPEN GALLERY TO SELECT IMAGE
     choosePhotosFromGallery = async () => {
-        checkMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE])
+        if(Platform.OS==='ios') {
+            checkMultiple([
+                PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, 
+                PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, 
+                PERMISSIONS.ANDROID.READ_PHONE_STATE, 
+                PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, 
+                PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, 
+                PERMISSIONS.IOS.READ_PHONE_STATE, 
+            ])
             .then((result) => {
                 if (RESULTS.DENIED) {
                     this.askPermission();
@@ -126,6 +139,7 @@ export default class SignUpScreen extends React.Component {
                     return;
                 }
             })
+        }
 
         ImagePicker.openPicker({
             width: 300,
@@ -147,7 +161,16 @@ export default class SignUpScreen extends React.Component {
 
     //GRANT PERMISSION FUNCTION
     askPermission = async () => {
-        requestMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE, PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, PERMISSIONS.IOS.READ_PHONE_STATE, PERMISSIONS.IOS.CAMERA]).then((result) => {
+        requestMultiple([
+            PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, 
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, 
+            PERMISSIONS.ANDROID.READ_PHONE_STATE, 
+            PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, 
+            PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, 
+            PERMISSIONS.IOS.READ_PHONE_STATE, 
+            PERMISSIONS.ANDROID.CAMERA, 
+            PERMISSIONS.IOS.CAMERA
+          ]).then((result) => {
             console.log(result)
             return;
         }).catch((error) => {
@@ -300,7 +323,7 @@ export default class SignUpScreen extends React.Component {
         <SafeAreaView
             style={{ flex: 1, backgroundColor: '#69abff' }}
         >
-            <StatusBar backgroundColor="#007dfe" barStyle="light-content" />
+            <StatusBar backgroundColor="#007dfe" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
             <Header headerText={"Go Login"} isBackButton loginStack={true} navigation={this.props.navigation} />
             <KeyboardAwareScrollView                
                 keyboardShouldPersistTaps='handled'
@@ -387,6 +410,7 @@ export default class SignUpScreen extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 onChangeText={(text) => this.setState({ name: text.trim() })}
                                 onFocus={() => this.setState({ isNameFocused: true, isEmailFocused: false, isPasswordFocused: false, isConfirmPasswordFocused: false })}
@@ -423,6 +447,7 @@ export default class SignUpScreen extends React.Component {
                                     fontSize: widthToDp("3.6%"),
                                     color: '#1b1b1b',
                                     fontFamily: "Poppins-Regular",
+                                    paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                 }}
                                 keyboardType="email-address"
                                 onChangeText={(text) => this.setEmail(text)}
@@ -478,6 +503,7 @@ export default class SignUpScreen extends React.Component {
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
                                         fontFamily: "Poppins-Regular",
+                                        paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                     }}
                                     secureTextEntry={!this.state.showPassword}
                                     onChangeText={(text) => this.setState({ password: text.trim() })}
@@ -540,6 +566,7 @@ export default class SignUpScreen extends React.Component {
                                         fontSize: widthToDp("3.6%"),
                                         color: '#1b1b1b',
                                         fontFamily: "Poppins-Regular",
+                                        paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
                                     }}
                                     secureTextEntry={!this.state.showConfirmPassword}
                                     onChangeText={(text) => this.setState({ confirmPassword: text.trim() })}

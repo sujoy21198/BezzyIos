@@ -66,6 +66,7 @@ const DataAccess = {
     readUnreadChats: 'click-on-chat-notification', //read unread chats
     deleteSingleMessage: 'deletechatmsg', //delete single chat message
     deleteMultipleMessage: 'deletechatmsgmultiple', //delete multiple chat message
+    instantMessage: 'get-last-unread_msg',
 
     //share api's
     getSharePostData: 'getshare-postdata', //share post view
