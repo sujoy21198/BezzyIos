@@ -32,7 +32,8 @@ export default class SignInScreen extends React.Component {
             isEmailFocused: false,
             isPasswordFocused: false,
             fbUserInfo: {},
-            instagramToken: null
+            instagramToken: null,
+            checkTerms: false,
         }
     }
 
@@ -84,6 +85,15 @@ export default class SignInScreen extends React.Component {
                 }
             })
         }
+        if(!this.state.checkTerms) {
+            return Toast.show({
+                text: "Please agree the Terms & Conditions.",
+                style: {
+                    backgroundColor: '#777',
+                }
+            })
+        }
+        
         let deviceId = await messaging().getToken();
         this.RBSheet.open();
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.SignIn, {
@@ -307,6 +317,29 @@ export default class SignInScreen extends React.Component {
                             />
                         </View>
                     </Form>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: "center",
+                            borderBottomWidth: 0,
+                            marginTop: heightToDp("3%"),
+                        }}
+                    >
+                        <Icon
+                            name={this.state.checkTerms ? "checkbox" : "square-outline"}
+                            color="#808080"
+                            size={Platform.isPad ? 40 : 20}
+                            onPress={() => this.setState({ checkTerms: !this.state.checkTerms })}
+                        />
+                        <Text
+                            style={[{
+                                marginLeft: widthToDp("1%"),
+                                fontFamily: "Poppins-Regular",
+                            }, Platform.isPad && {fontSize: widthToDp("3%")}]}
+                        >
+                            I accept the <Text style={{ color: "#69abff" }} onPress={() => this.props.navigation.navigate("Terms")}>Terms & Conditions</Text>
+                        </Text>
+                    </View>
                     <ButtonComponent
                         onPressButton={this.logIn}
                         buttonText={"Login"}

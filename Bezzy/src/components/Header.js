@@ -59,6 +59,16 @@ export default class Header extends React.Component {
     }
 
     componentDidMount = async() => {
+        this.unsubscribe = this.props.navigation.addListener("focus", () => {
+            this.getNotificationCount();
+        })        
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe && this.unsubscribe();
+    }
+
+    getNotificationCount = async() => {
         let userId = await AsyncStorage.getItem("userId");
         let notifications = [];
         let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId, DataAccess.AuthenticationHeader);

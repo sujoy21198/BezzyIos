@@ -90,7 +90,7 @@ export default class HomeScreen extends React.Component {
                     userList = [];
                     response.data.total_feed_response.friend_list.map(item => item.expand = false);
                     followingList = response.data.total_feed_response.friend_list;
-                    console.log(response.data.total_feed_response.friend_list);
+                    // console.log(response.data.total_feed_response.friend_list);
                     if(this.state.activeSections.length > 0) {
                         followingList.map((item, index) => {
                             if(index === this.state.activeSections[0]) {
@@ -343,7 +343,7 @@ export default class HomeScreen extends React.Component {
                         let userId = await AsyncStorage.getItem("userId");
                         await axios.get(DataAccess.BaseUrl + DataAccess.reportPost + "/" + userId + "/" + i.post_id, DataAccess.AuthenticationHeader)
                             .then(res => {
-                                console.log("Report Post Response ==> ", res.data);
+                                // console.log("Report Post Response ==> ", res.data);
                                 if(res.data.resp === "true") {
                                     let posts = this.state.postDetails;
                                     posts.map((item, index) => {
@@ -388,7 +388,7 @@ export default class HomeScreen extends React.Component {
     _renderContent = section => {
         var postDetails = []
         postDetails = this.state.postDetails
-        console.log(postDetails);
+        // console.log(postDetails);
         return (
             <View >
                 {
@@ -952,7 +952,7 @@ export default class HomeScreen extends React.Component {
             this.setState({ isAccordianOpening: false, shouldPlay: false, postDetails: [] });
             this.state.followingList.map(item => item.expand = false);
         } else {
-            console.log(activeSections, this.state.postDetails.length + " posts contained")
+            // console.log(activeSections, this.state.postDetails.length + " posts contained")
             var friends_id = this.state.followingList[activeSections].friend_id
             if (this.state.followingList[activeSections].have_post === "Yes") {
                 this.setState({loadingPosts: true})
@@ -1011,7 +1011,7 @@ export default class HomeScreen extends React.Component {
             .then(function (response) {
                 resp = response.data.resp
                 msg = response.data.message
-                console.log(response.data, "KPKPKPKPKP")
+                // console.log(response.data, "KPKPKPKPKP")
             }).catch(function (error) {
                 console.log(error)
             })
