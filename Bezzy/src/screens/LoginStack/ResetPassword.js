@@ -68,7 +68,7 @@ export default class ResetPassword extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.ResetPassword, {
             "userID": this.props.route.params.userId,
             "password": this.state.password
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.resp === "true"){
             Toast.show({
                 text: response.data.reg_msg,

@@ -13,7 +13,7 @@ export default class PostLikedUsersList extends React.Component {
 
     async componentDidMount() {
         this.setState({isLoading: true})
-        await axios.get(DataAccess.BaseUrl + DataAccess.postLikedUsers + "/" + this.props.route.params.postId)
+        await axios.get(DataAccess.BaseUrl + DataAccess.postLikedUsers + "/" + this.props.route.params.postId, DataAccess.AuthenticationHeader)
         .then(res => {
             if(res.data.status === "success") {
                 this.setState({likedUsers: res.data.userlist});

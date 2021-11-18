@@ -35,8 +35,6 @@
 	<string>394846825403325</string>
 	<key>FacebookDisplayName</key>
 	<string>Bezzy</string>
-	<key>FirebaseAutomaticScreenReportingEnabled</key>
-	<string>NO</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -60,33 +58,29 @@
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>It is needed to access to the user's media library.</string>
-	<key>NSBlueToothAlwaysUsageDescription</key>
-	<string>It needs access to Bluetooth.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>It is needed for the ability to connect to Bluetooth peripherals.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>It is needed to capture a new photo by your device camera.</string>
+	<string>Camera permission is required to set profile picture and update news feeds. Camera pictures will not be shared to any 3rd party and users will be able to delete pictures whenever they want.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>It is needed to access to the user's contacts.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>It is needed to access to the user's location at all times.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>It is needed to access to the user's location information while the app is in use.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>It is needed to access to the device's microphone.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>It is needed to access to the device's motion data.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>It is needed to select an existing photo from your device storage.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>It is needed to select an existing photo from your device storage.</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>It is needed to access to the user's reminders.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSSiriUsageDescription</key>
-	<string>It is needed to send user data to Siri.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>It is needed to send user data to Apple's speech recognition servers.</string>
+	<string>Our app does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes some library, which references this permission in its code.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>proxima_nova_black.otf</string>

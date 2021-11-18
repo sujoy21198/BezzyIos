@@ -1,5 +1,10 @@
 const DataAccess = {
-    BaseUrl : 'http://bezzy-app.com/admin/api/',
+    BaseUrl : 'https://bezzy-app.com/admin/api/',
+    AuthenticationHeader: {
+        headers: {
+            "APPKEY":"BZZY#$%*OM||" + Math.floor((Math.random() * 100000000))
+        }
+    },
 
     //login api's
     SignIn: 'login',
@@ -56,6 +61,7 @@ const DataAccess = {
     //notification api's
     fetchNotifications: 'Notificationlist',
     clearNotification: 'ClearNotificationlist',
+    readNotifications: "ReadNotificationData",
 
 
     //chat api's    

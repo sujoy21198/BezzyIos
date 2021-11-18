@@ -4,6 +4,7 @@ import BottomTab from '../../components/BottomTab';
 import Header from '../../components/Header';
 import { heightToDp, widthToDp } from '../../components/Responsive';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon1 from 'react-native-vector-icons/Ionicons';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import RBSheet1 from 'react-native-raw-bottom-sheet';
 import RBSheet2 from 'react-native-raw-bottom-sheet';
@@ -34,11 +35,11 @@ export default class SearchScreen extends React.Component {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.Search, {
                 searchval: text,
                 loguser_id: userId
-            })
+            }, DataAccess.AuthenticationHeader)
         } else {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.userList, {
                 log_userID: userId
-            })
+            }, DataAccess.AuthenticationHeader)
         }
         if (response.data.resp === "success") {
             if (text !== "") {
@@ -60,12 +61,12 @@ export default class SearchScreen extends React.Component {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.followUser, {
                 "user_one_id": userId,
                 "user_two_id": item.user_id
-            });
+            }, DataAccess.AuthenticationHeader);
         } else {
             response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
                 "login_userID": userId,
                 "userID": item.user_id
-            });
+            }, DataAccess.AuthenticationHeader);
         }
         if (response.data.status === "success") {
             Toast.show({
@@ -99,16 +100,32 @@ export default class SearchScreen extends React.Component {
                     <View style={{ marginTop: heightToDp("1.3%"), marginLeft: widthToDp("2%"), width: widthToDp("65%") }}>
                         <Text style={{ fontSize: widthToDp("4.5%"), color: '#007dfe', fontFamily: "ProximaNova-Black", }}>Search for friends</Text>
                     </View>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => this.RBSheet1.open()}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                        }}
                     >
-                        <Image
-                            source={require("../../../assets/search.png")}
-                            style={{ height: heightToDp("6%"), width: widthToDp("6%"), marginRight: widthToDp("4%") }}
-                            resizeMode="contain"
+                        <Icon1
+                            name={Platform.OS === 'android' ? 'md-settings-outline' : 'ios-settings-outline'}
+                            color={"#1b1b1b"}
+                            size={Platform.isPad ? 40 : 20}
+                            onPress={() => this.props.navigation.navigate("Settings")}
                         />
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={{
+                                paddingLeft: 10
+                            }}
+                            onPress={() => this.RBSheet1.open()}
+                        >
+                            <Image
+                                source={require("../../../assets/search.png")}
+                                style={{ height: heightToDp("6%"), width: widthToDp("6%"), marginRight: widthToDp("4%") }}
+                                resizeMode="contain"
+                            />
+                        </TouchableOpacity>
+                    </View>
                     <RBSheet
                         ref={ref => {
                             this.RBSheet1 = ref;

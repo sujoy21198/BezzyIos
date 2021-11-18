@@ -60,7 +60,7 @@ export default class CommentScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.postCommentedUsers, {
             "post_id" : this.state.post_id,
             "loginuserID" : userId
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.status === 'success') {
             if(response.data.message === "No comment found") {
                 this.setState({comments: []});
@@ -88,7 +88,7 @@ export default class CommentScreen extends React.Component {
             "commentParentId" : "0",
             "tag_user_id" : this.state.tagUserId.length > 0 ? JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0] : null,
             "commentText" : this.state.commentText.trim()
-        });
+        }, DataAccess.AuthenticationHeader);
         this.setState({isSendingComment: false})
         console.warn(response.data, {
             "userID" : userId,
@@ -109,7 +109,7 @@ export default class CommentScreen extends React.Component {
 
     likeDislikeComment = async (item) => {
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.likeDislikeComment + "/" + userId + "/" + item.comment_id);
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.likeDislikeComment + "/" + userId + "/" + item.comment_id, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             let comments = this.state.comments;
             comments.map(i => {
@@ -139,7 +139,7 @@ export default class CommentScreen extends React.Component {
         this.setState({followingList: []})
         let userId = await AsyncStorage.getItem("userId");
         let followingList = []
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId}, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
             // console.warn(response.data.total_feed_response.friend_list);
@@ -161,7 +161,7 @@ export default class CommentScreen extends React.Component {
     }
 
     deleteMessage = async (deleteFromIcon) => {
-      console.log(this.state.deleteIds, DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment));
+      console.log(this.state.deleteIds, DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment), DataAccess.AuthenticationHeader);
       Alert.alert(
         "Are you sure?",
         this.state.deleteIds.length + ` ${this.state.deleteIds.length === 1 ? "comment" : "comments"} will be deleted`, [
@@ -180,7 +180,7 @@ export default class CommentScreen extends React.Component {
                 this.setState({comments: [], isSendingComment: true, isSelected: false})
                 await axios.post(DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment), {
                     "cmnt_id": this.state.deleteIds.length === 1 ? this.state.deleteIds[0] : this.state.deleteIds
-                }).then(response => {
+                }, DataAccess.AuthenticationHeader).then(response => {
                     console.log("Comment delete success response :- ", response);
                     if(response.data.status === "success") {
                     this.state.comments.map(item => item.isSelected = false);
@@ -362,6 +362,7 @@ export default class CommentScreen extends React.Component {
                                                 }}
                                             >{item.username}</Text>
                                             <Autolink
+                                                stripPrefix={false}
                                                 component={Text}
                                                 text={item.commentText}
                                                 style={{
@@ -669,6 +670,7 @@ export default class CommentScreen extends React.Component {
                                         }}
                                     >{item.username}</Text>
                                     <Autolink
+                                        stripPrefix={false}
                                         component={Text}
                                         text={item.commentText}
                                         style={{
@@ -770,8 +772,7 @@ export default class CommentScreen extends React.Component {
                                         <TouchableOpacity
                                             style={{
                                                 flexDirection: "row",
-                                                alignItems: "center",
-                                                justifyContent: "space-between"
+                                                justifyContent: "center",
                                             }}
                                             onPress={() => {
                                                 !this.state.deleteIds.includes(item.comment_id) &&
@@ -788,7 +789,7 @@ export default class CommentScreen extends React.Component {
                                             <Text
                                                 style={{
                                                     color: "#777",
-                                                    fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
+                                                    fontSize: Platform.isPad ? widthToDp("3%") : widthToDp("3%"),
                                                     paddingLeft: widthToDp("0.5%"),
                                                     fontFamily: "Poppins-Regular"
                                                 }}

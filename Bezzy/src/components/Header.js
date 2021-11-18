@@ -11,7 +11,7 @@ import axios from 'axios';
 export default class Header extends React.Component {
     state = {
         openUserModal: false,
-        notificationCount: 0
+        notificationCount: 0,
     }
     navigateToOtherScreen = async (type) => {
         this.RBSheet.close();
@@ -36,7 +36,7 @@ export default class Header extends React.Component {
                         await axios.post(DataAccess.BaseUrl + DataAccess.setUserActiveStatus, {
                             "userID" : userID,
                             "user_active_status" : "false"
-                        }).then(res => {
+                        }, DataAccess.AuthenticationHeader).then(res => {
                             // console.log(res.data);
                         }).catch(err => {
                             // console.log(err);
@@ -60,10 +60,15 @@ export default class Header extends React.Component {
 
     componentDidMount = async() => {
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId);
+        let notifications = [];
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
-            console.log(response.data.notification_list);
-            this.setState({notificationCount: response.data.notification_list.length});
+            // console.log(response.data.notification_list);
+            response.data.notification_list.map(item => {
+                item.is_view !== "1" && 
+                notifications.push(item)
+            })
+            this.setState({notificationCount: notifications.length});
         } else {
             this.setState({notificationCount: 0});
         }
@@ -75,12 +80,10 @@ export default class Header extends React.Component {
                 paddingVertical: heightToDp("1%"),
                 backgroundColor: (this.props.isHomeScreen || this.props.isMessageScreen || this.props.isSearchFocused || this.props.isProfileFocused || this.props.isHomeStackInnerPage) ? '#fff' : '#69abff',
                 paddingHorizontal: widthToDp('3%'),
-                // paddingTop: heightToDp("1%"),
-                // paddingBottom: heightToDp("1.4%")
             }}
         >
             {
-                (this.props.isHomeScreen || this.props.isMessageScreen || this.props.isSearchFocused || this.props.isProfileFocused) ?
+                (this.props.isHomeScreen ||  this.props.isMessageScreen || this.props.isPostScreen || this.props.isProfileFocused || this.props.isHomeStackInnerPage) ?
                     <View
                         style={{
                             flexDirection: 'row',
@@ -90,206 +93,224 @@ export default class Header extends React.Component {
                         <View
                             style={{
                                 flexDirection: 'row',
+                                justifyContent: "space-between",
                                 alignItems: 'center'
                             }}
                         >
-                            {
-                                this.props.isBackButton &&
-                                <Icon
-                                    name="chevron-left"
-                                    size={Platform.isPad ? 45 : 30}
-                                    color={"#69abff"}
-                                />
-                            }
-                            {
-                                !this.props.headerText ?
-                                    <Image
-                                        source={require("../../assets/bezzy_logo.png")}
-                                        resizeMode="contain"
-                                        style={{ height: heightToDp("3%"), width: widthToDp("20%"), marginLeft: widthToDp(`${this.props.isBackButton ? 3 : Platform.isPad ? -3 : 0}%`) }}
-                                    /> :
-                                    <Text style={{
-                                        color: !this.props.headerText ? '#fff' : '#007dfe',
-                                        fontSize: widthToDp("4.5%"),
-                                        fontFamily: "ProximaNova-Black",
-                                        marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
-                                    }}>
-                                        {this.props.headerText}
-                                    </Text>
-                            }
-                        </View>
-                        {
-                            this.props.isSearchFocused &&
-                            <>
-                                <TouchableOpacity
-                                    activeOpacity={0.7}
-                                    onPress={() => this.RBSheet1.open()}
-                                >
-                                    <Icon
-                                        name={"search"}
-                                        size={20}
-                                        color="#a9a9a9"
-                                    />
-                                </TouchableOpacity>
-                                <RBSheet
-                                    ref={ref => {
-                                        this.RBSheet1 = ref;
-                                    }}
-                                    height={heightToDp("6%")}
-                                    // openDuration={250}
-                                    customStyles={{
-                                        container: {
-                                            width: widthToDp("97%"),
-                                            position: 'absolute',
-                                            top: heightToDp("5.5%"),
-                                            alignItems: 'flex-start',
-                                            justifyContent: 'center',
-                                            paddingLeft: widthToDp("5%"),
-                                            backgroundColor: '#fff',
-                                            borderRadius: 15
-                                        },
-                                    }}
-                                >
-                                    <TextInput
-                                        placeholderTextColor="#808080"
-                                        placeholder="Search by name"
-                                        style={{
-                                            width: widthToDp("97%"),
-                                            color: "#777",
-                                            fontSize: widthToDp("3.5%")
-                                        }}
-                                        onChangeText={text => console.log(text)}
-                                    />
-                                </RBSheet>
-                            </>
-                        }
-                        {
-                            this.props.isHomeScreen &&
-                            <>
-                                <Icon1
-                                    name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
-                                    color={"#1b1b1b"}
-                                    size={Platform.isPad ? 40 : 22}
-                                    style={{
-                                        position: "absolute",
-                                        top: 4,
-                                        right: this.state.notificationCount > 0 ? 8 : 0,
-                                    }}
-                                    onPress={() => this.props.navigation.navigate("NotificationScreen")}
-                                />
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: 'center'
+                                }}
+                            >
                                 {
-                                    <TouchableOpacity
-                                        style={{
-                                            position: "absolute",
-                                            bottom: Platform.OS==='android' ? 11 : "30%",
-                                            right: Platform.OS==='android' ? 0 : "0%",
-                                            backgroundColor: "#ff0000",
-                                            borderRadius: Platform.isPad ? 36 / 2 : 18 / 2,
-                                            height: Platform.isPad ? 36 : 18,
-                                            width: Platform.isPad ? 36 : 18,
-                                            alignItems: "center",
-                                            justifyContent: "center"
-                                        }}
-                                        onPress={() => this.props.navigation.navigate("NotificationScreen")}
-                                    >
-                                        <Text
-                                            style={[{
-                                                color: "#fff",
-                                                fontSize: widthToDp("2.8%"),
-                                                fontFamily: "Poppins-Regular",
-                                                textAlign: "center"
-                                            }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
-                                        >{this.state.notificationCount > 99 ? String(this.state.notificationCount) + "+" : this.state.notificationCount}</Text>
-                                    </TouchableOpacity>
-                                }
-                            </>
-                        }
-                        {
-                            this.props.isProfileFocused &&
-                            <>
-                                {/* <View
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        // activeOpacity={0.7}
-                                        onPress={() => this.props.navigation.navigate("InviteContactScreen")}
-                                        style={{
-                                            paddingRight: widthToDp("2%")
-                                        }}
-                                    >
-                                        <Icon1
-                                            name={Platform.OS === 'android' ? 'md-people-outline' : 'ios-people-outline'}
-                                            size={Platform.isPad ? 44 : 22}
-                                        />
-                                    </TouchableOpacity> */}
-                                    <TouchableOpacity
-                                        // activeOpacity={0.7}
-                                        onPress={() => this.RBSheet.open()}
-                                    >
-                                        <Image
-                                            source={require("../../assets/menu.png")}
-                                            resizeMode="contain"
-                                            style={{ height: heightToDp("3.5%"), width: widthToDp("3.5%") }}
-                                        />
-                                    </TouchableOpacity>
-                                {/* </View> */}
-                                <RBSheet
-                                    ref={ref => {
-                                        this.RBSheet = ref;
-                                    }}
-                                    height={heightToDp("22%")}
-                                    // openDuration={250}
-                                    customStyles={{
-                                        container: {
-                                            alignItems: 'flex-start',
-                                            justifyContent: 'center',
-                                            paddingLeft: widthToDp("5%"),
-                                            backgroundColor: '#fff',
-                                            borderRadius: 30
-                                        }
-                                    }}
-                                >
-                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("block")}>
-                                        <Text
-                                            style={{
-                                                fontSize: widthToDp("4.6%"),
-                                                fontFamily: "Poppins-Regular",
-                                            }}
-                                        >Block List</Text>
-                                    </TouchableOpacity>
-                                    <View style={{ height: heightToDp("3%") }} />
+                                    this.props.isBackButton &&
                                     <TouchableOpacity
                                         activeOpacity={0.7}
-                                        onPress={() => this.navigateToOtherScreen("changePassword")}>
-                                        <Text
-                                            style={{
-                                                fontSize: widthToDp("4.6%"),
-                                                fontFamily: "Poppins-Regular",
-                                            }}
-                                        >Change Password</Text>
+                                        onPress={() => this.props.isPostScreen ? this.props.navigation.navigate("HomeScreen") : this.props.navigation.goBack()}
+                                    >
+                                        <Icon
+                                            name="chevron-left"
+                                            size={this.props.isHomeStackInnerPage ? (Platform.isPad ? 30 : 20) : (Platform.isPad ? 45 : 30)}
+                                            color={"#69abff"}
+                                        />
                                     </TouchableOpacity>
-                                    <View style={{ height: heightToDp("3%") }} />
-                                    <TouchableOpacity onPress={() => this.navigateToOtherScreen("logout")}>
-                                        <Text
-                                            style={{
-                                                fontSize: widthToDp("4.6%"),
-                                                fontFamily: "Poppins-Regular",
-                                            }}
-                                        >Logout</Text>
+                                }
+                                {
+                                    !this.props.headerText ?
+                                        <Image
+                                            source={require("../../assets/bezzy_logo.png")}
+                                            resizeMode="contain"
+                                            style={{ height: heightToDp("3%"), width: widthToDp("20%"), marginLeft: widthToDp(`${this.props.isBackButton ? 3 : Platform.isPad ? -3 : 0}%`) }}
+                                        /> :
+                                        <TouchableOpacity
+                                            disabled={!this.props.isHomeStackInnerPage}
+                                            activeOpacity={0.7}
+                                            onPress={() => this.props.isPostScreen ? this.props.navigation.navigate("HomeScreen") : this.props.navigation.goBack()}
+                                        >
+                                            <Text style={{
+                                                color: !this.props.headerText ? '#fff' : '#007dfe',
+                                                fontSize: widthToDp("4.5%"),
+                                                fontFamily: "ProximaNova-Black",
+                                                marginLeft: this.props.isBackButton ? widthToDp("2%") : 0
+                                            }}>
+                                                {this.props.headerText}
+                                            </Text>
+                                        </TouchableOpacity>
+                                }
+                            </View>
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center"
+                            }}
+                        >
+                            {
+                                (this.props.isHomeScreen || this.props.isMessageScreen || this.props.isProfileFocused || (this.props.isHomeStackInnerPage && !this.props.settings)) &&
+                                <>
+                                    <TouchableOpacity
+                                        onPress={() => this.props.navigation.navigate("Settings")}
+                                    >
+                                        <Icon1
+                                            name={Platform.OS === 'android' ? 'md-settings-outline' : 'ios-settings-outline'}
+                                            color={"#1b1b1b"}
+                                            size={Platform.isPad ? 40 : 20}
+                                        />
                                     </TouchableOpacity>
-                                </RBSheet>
-                            </>
-                        }
+                                    {this.props.isHomeScreen && 
+                                    <Icon1
+                                        name={Platform.OS === 'android' ? 'md-notifications-outline' : 'ios-notifications-outline'}
+                                        color={"#1b1b1b"}
+                                        size={Platform.isPad ? 40 : 22}
+                                        style={{
+                                            marginHorizontal: 10,
+                                            marginLeft: this.state.notificationCount > 0 ? undefined : 10,
+                                            marginRight: this.state.notificationCount > 0 ? undefined : 0
+                                        }}
+                                        onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                                    />}
+                                    {
+                                        this.state.notificationCount > 0 && this.props.isHomeScreen &&
+                                        <TouchableOpacity
+                                            style={{
+                                                position: "absolute",
+                                                bottom: Platform.OS==='android' ? "50%" : "50%",
+                                                right: Platform.OS==='android' ? "0%" : "0%",
+                                                backgroundColor: "#ff0000",
+                                                borderRadius: Platform.isPad ? 36 / 2 : 18 / 2,
+                                                height: Platform.isPad ? 36 : 18,
+                                                width: Platform.isPad ? 36 : 18,
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                            onPress={() => this.props.navigation.navigate("NotificationScreen")}
+                                        >
+                                            <Text
+                                                style={[{
+                                                    color: "#fff",
+                                                    fontSize: widthToDp("2.8%"),
+                                                    fontFamily: "Poppins-Regular",
+                                                    textAlign: "center"
+                                                }, Platform.isPad && {fontSize: widthToDp('2.5%')}]}
+                                            >{this.state.notificationCount > 99 ? String(this.state.notificationCount) + "+" : this.state.notificationCount}</Text>
+                                        </TouchableOpacity>
+                                    }
+                                </>
+                            }
+                            {
+                                this.props.isSearchFocused &&
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.7}
+                                        onPress={() => this.RBSheet1.open()}
+                                    >
+                                        <Icon
+                                            name={"search"}
+                                            size={20}
+                                            color="#a9a9a9"
+                                        />
+                                    </TouchableOpacity>
+                                    <RBSheet
+                                        ref={ref => {
+                                            this.RBSheet1 = ref;
+                                        }}
+                                        height={heightToDp("6%")}
+                                        // openDuration={250}
+                                        customStyles={{
+                                            container: {
+                                                width: widthToDp("97%"),
+                                                position: 'absolute',
+                                                top: heightToDp("5.5%"),
+                                                alignItems: 'flex-start',
+                                                justifyContent: 'center',
+                                                paddingLeft: widthToDp("5%"),
+                                                backgroundColor: '#fff',
+                                                borderRadius: 15
+                                            },
+                                        }}
+                                    >
+                                        <TextInput
+                                            placeholderTextColor="#808080"
+                                            placeholder="Search by name"
+                                            style={{
+                                                width: widthToDp("97%"),
+                                                color: "#777",
+                                                fontSize: widthToDp("3.5%")
+                                            }}
+                                            onChangeText={text => console.log(text)}
+                                        />
+                                    </RBSheet>
+                                </>
+                            }
+                            {
+                                this.props.isProfileFocused &&
+                                <>
+                                        <TouchableOpacity
+                                            // activeOpacity={0.7}
+                                            style={{paddingLeft: 5}}
+                                            onPress={() => this.RBSheet.open()}
+                                        >
+                                            <Image
+                                                source={require("../../assets/menu.png")}
+                                                resizeMode="contain"
+                                                style={{ height: heightToDp("4%"), width: widthToDp("4%") }}
+                                            />
+                                        </TouchableOpacity>
+                                    <RBSheet
+                                        ref={ref => {
+                                            this.RBSheet = ref;
+                                        }}
+                                        height={heightToDp("22%")}
+                                        customStyles={{
+                                            container: {
+                                                alignItems: 'flex-start',
+                                                justifyContent: 'center',
+                                                paddingLeft: widthToDp("5%"),
+                                                backgroundColor: '#fff',
+                                                borderRadius: 30
+                                            }
+                                        }}
+                                    >
+                                        <TouchableOpacity onPress={() => this.navigateToOtherScreen("block")}>
+                                            <Text
+                                                style={{
+                                                    fontSize: widthToDp("4.6%"),
+                                                    fontFamily: "Poppins-Regular",
+                                                }}
+                                            >Block List</Text>
+                                        </TouchableOpacity>
+                                        <View style={{ height: heightToDp("3%") }} />
+                                        <TouchableOpacity
+                                            activeOpacity={0.7}
+                                            onPress={() => this.navigateToOtherScreen("changePassword")}>
+                                            <Text
+                                                style={{
+                                                    fontSize: widthToDp("4.6%"),
+                                                    fontFamily: "Poppins-Regular",
+                                                }}
+                                            >Change Password</Text>
+                                        </TouchableOpacity>
+                                        <View style={{ height: heightToDp("3%") }} />
+                                        <TouchableOpacity onPress={() => this.navigateToOtherScreen("logout")}>
+                                            <Text
+                                                style={{
+                                                    fontSize: widthToDp("4.6%"),
+                                                    fontFamily: "Poppins-Regular",
+                                                }}
+                                            >Logout</Text>
+                                        </TouchableOpacity>
+                                    </RBSheet>
+                                </>
+                            }
+                        </View>
                     </View> :
                     <TouchableOpacity
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center'
                         }}
-                        activeOpacity={0.7}
+                        activeOpacity={!this.props.clearNotifications ? 0.7 : 1}
                         //disabled={this.props.block}
                         onPress={
                             () =>
@@ -362,6 +383,7 @@ export default class Header extends React.Component {
                                     >Clear All</Text>
                                 </TouchableOpacity>
                             }
+                            
                         </View>
                     </TouchableOpacity>
             }

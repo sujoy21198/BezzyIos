@@ -20,7 +20,7 @@ export default class BlockList extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.blockList, {
             "loginuserID" : userId
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {
             if(response.data.block_user_list !== "No user found!") {
                 this.setState({blockList: response.data.block_user_list});
@@ -39,7 +39,7 @@ export default class BlockList extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.unblockUser, {
             "loginUserID" : userId,
             "unblockuserID" : item.block_user_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             let blockList = this.state.blockList;
             blockList.splice(index, 1);

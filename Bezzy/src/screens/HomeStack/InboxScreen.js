@@ -54,7 +54,7 @@ export default class InboxScreen extends Component {
     // console.log("re-render");
     let message = this.state.message;
     let userId = await AsyncStorage.getItem("userId");
-    await axios.get(DataAccess.BaseUrl + DataAccess.instantMessage + "/" + userId + "/" +  this.props.route.params.friendId + "/1")
+    await axios.get(DataAccess.BaseUrl + DataAccess.instantMessage + "/" + userId + "/" +  this.props.route.params.friendId + "/1", DataAccess.AuthenticationHeader)
     .then(response => {
       console.log(response.data, "response");
       if(response.data.status === 'success') {
@@ -82,7 +82,7 @@ export default class InboxScreen extends Component {
       })
     })
     // console.log(this.state.message)
-    this.readChats()
+    // this.readChats()
   }
 
   UNSAFE_componentWillMount () {
@@ -111,12 +111,12 @@ export default class InboxScreen extends Component {
     let value = await AsyncStorage.getItem('userId')
     this.setState({ userId: value })
     this.getInboxChats("0")
-    this.readChats()
+    // this.readChats()
   }
 
   readChats = async() => {
     let userId = await AsyncStorage.getItem("userId");
-    await axios.get(DataAccess.BaseUrl + DataAccess.readUnreadChats + "/" + userId + "/" + this.props.route.params.friendId)
+    await axios.get(DataAccess.BaseUrl + DataAccess.readUnreadChats + "/" + userId + "/" + this.props.route.params.friendId, DataAccess.AuthenticationHeader)
     .then(res => {
       // console.log(res);
     })
@@ -126,7 +126,7 @@ export default class InboxScreen extends Component {
   }
 
   getInboxChats = async (value) => {
-    if(this.state.isFetching || this.state.isFetchingMore) return;
+    // if(this.state.isFetching || this.state.isFetchingMore) return;
     // console.log("chat refreshed", this.state.page);
     let existingMessages = this.state.message.length > 0 ? this.state.message : [];
     this.setState({isFetching: false})
@@ -134,7 +134,7 @@ export default class InboxScreen extends Component {
       this.state.message.length === 0 && this.setState({isFetching: true});
       var messages = []
       console.log("API Called ==> ", DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page);
-      await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
+      await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page, DataAccess.AuthenticationHeader)
         .then(response => {
           response.data.chat_history_list.forEach(item => {
             existingMessages.forEach(element => {
@@ -174,7 +174,7 @@ export default class InboxScreen extends Component {
   pagination = async () => {
     var messages = []
     console.log("API Called ==> ", DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page);
-    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page)
+    await axios.get(DataAccess.BaseUrl + DataAccess.chatListInbox + this.state.userId + "/" + this.state.friendsId + "/" + this.state.page, DataAccess.AuthenticationHeader)
       .then(function (response) {
         response.data.chat_history_list.forEach(item => {
           item.isSelected = false;
@@ -202,7 +202,7 @@ export default class InboxScreen extends Component {
       "from_userID": this.state.userId,
       "to_userID": this.state.friendsId,
       "chat_message": this.state.myMessage
-    }).then(response => {
+    }, DataAccess.AuthenticationHeader).then(response => {
       console.log(response.data)
       if(response.data.status === "success") {
         this.setState({message: response.data.chat_history_list})
@@ -317,7 +317,7 @@ export default class InboxScreen extends Component {
         formData.append('from_userID', this.state.userId)
         formData.append('to_userID', this.state.friendsId)
       })
-      await axios.post(DataAccess.BaseUrl + DataAccess.addChatDataImage, formData)
+      await axios.post(DataAccess.BaseUrl + DataAccess.addChatDataImage, formData, DataAccess.AuthenticationHeader)
         .then(response => {
           console.log(response.data, "HOHOHO HAHAHAHAHAHA")
           Toast.show({
@@ -427,7 +427,7 @@ export default class InboxScreen extends Component {
             await axios.post(DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleMessage : DataAccess.deleteMultipleMessage), {
               "chat_id": this.state.deleteIds.length === 1 ? this.state.deleteIds[0] : this.state.deleteIds,
               "user_id": await AsyncStorage.getItem("userId")
-            }).then(response => {
+            }, DataAccess.AuthenticationHeader).then(response => {
               console.log("Chat message delete success response :- ", response.data, typeof response.data);
               if(response.data.status === "success") {
                 this.state.message.map(item => item.isSelected = false);
@@ -499,6 +499,23 @@ export default class InboxScreen extends Component {
               {this.state.isSelected ? this.state.deleteIds.length : this.state.friendName}
             </Text>
           </TouchableOpacity>
+          {
+            !this.state.isSelected &&
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: 15,
+                right: 15,
+              }}
+              onPress={() => this.props.navigation.navigate("Settings")}
+            >
+              <Ionicons
+                name={Platform.OS === 'android' ? 'md-settings-outline' : 'ios-settings-outline'}
+                color={"#1b1b1b"}
+                size={Platform.isPad ? 40 : 20}
+              />
+            </TouchableOpacity>
+          }
           {
             this.state.isSelected &&
             <TouchableOpacity
@@ -609,6 +626,7 @@ export default class InboxScreen extends Component {
                             }}
                           >
                             <Autolink
+                              stripPrefix={false}
                               component={Text}
                               text={item.chat_message}
                               style={{ 
@@ -766,13 +784,14 @@ export default class InboxScreen extends Component {
                                 backgroundColor: '#ececec',
                                 width: widthToDp("40%"), 
                                 paddingVertical: heightToDp('0.5%'),
-                                borderTopLeftRadius: 10,
+                                borderBottomRightRadius: 10,
                                 borderTopRightRadius: 10,
                                 borderBottomLeftRadius: 10, 
                               }}
                             >
                               <Autolink
                                 component={Text}
+                                stripPrefix={false}
                                 text={item.chat_message}
                                 style={{ 
                                   marginLeft: widthToDp("2%"),
@@ -843,7 +862,7 @@ export default class InboxScreen extends Component {
                                 backgroundColor: '#ececec',
                                 width: widthToDp("40%"), 
                                 paddingVertical: heightToDp('0.5%'),
-                                borderTopLeftRadius: 10,
+                                borderBottomRightRadius: 10,
                                 borderTopRightRadius: 10,
                                 borderBottomLeftRadius: 10, 
                               }}
@@ -1049,6 +1068,7 @@ export default class InboxScreen extends Component {
                       >
                         <Autolink
                           component={Text}
+                          stripPrefix={false}
                           text={item.chat_message}
                           style={{ 
                             marginLeft: widthToDp("2%"), 
@@ -1205,13 +1225,14 @@ export default class InboxScreen extends Component {
                             backgroundColor: '#ececec',
                             width: widthToDp("40%"), 
                             paddingVertical: heightToDp('0.5%'),
-                            borderTopLeftRadius: 10,
+                            borderBottomRightRadius: 10,
                             borderTopRightRadius: 10,
                             borderBottomLeftRadius: 10, 
                           }}
                         >
                           <Autolink
                             component={Text}
+                            stripPrefix={false}
                             text={item.chat_message}
                             style={{ 
                               marginLeft: widthToDp("2%"), 
@@ -1280,7 +1301,7 @@ export default class InboxScreen extends Component {
                             backgroundColor: '#ececec',
                             width: widthToDp("40%"), 
                             paddingVertical: heightToDp('0.5%'),
-                            borderTopLeftRadius: 10,
+                            borderBottomRightRadius: 10,
                             borderTopRightRadius: 10,
                             borderBottomLeftRadius: 10, 
                           }}

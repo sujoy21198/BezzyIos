@@ -47,7 +47,7 @@ export default class ChatScreen extends React.Component {
 
     getChatList = async (type) => {
         let value = await AsyncStorage.getItem('userId')
-        await axios.get(DataAccess.BaseUrl + DataAccess.chatList + "/" + value)
+        await axios.get(DataAccess.BaseUrl + DataAccess.chatList + "/" + value, DataAccess.AuthenticationHeader)
         .then(response => {
         
             console.log(response.data.chat_notification_list)
@@ -63,7 +63,7 @@ export default class ChatScreen extends React.Component {
     render = () => (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ececec' }}>
             <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
-            <Header isMessageScreen headerText="Messages" />
+            <Header isMessageScreen navigation={this.props.navigation} headerText="Messages" />
             <FlatList
                 data={this.state.Messages}
                 keyExtractor={item => item.id}

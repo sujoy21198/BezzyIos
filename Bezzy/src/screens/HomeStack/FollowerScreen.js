@@ -20,7 +20,7 @@ export default class FollowerScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.followerList, {
             "loguser_id" : userId
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {
             this.setState({followerList: response.data.follower_user_list});
         } else {
@@ -35,7 +35,7 @@ export default class FollowerScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
             "login_userID" : userId,
             "userID" : item.following_user_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             Toast.show({
                 type: "success",
@@ -59,7 +59,7 @@ export default class FollowerScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.removeUser, {
             "loginUserID" : userId,
             "removeuserID" : item.following_user_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {
             let followerList = this.state.followerList;
             followerList.splice(index, 1);
@@ -85,7 +85,7 @@ export default class FollowerScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.blockUser, {
             "loginUserID" : userId,
             "blockuserID" : item.following_user_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             let followerList = this.state.followerList;
             followerList.splice(index, 1);

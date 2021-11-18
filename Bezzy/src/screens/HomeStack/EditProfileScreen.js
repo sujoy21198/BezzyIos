@@ -16,6 +16,7 @@ import ImgToBase64 from 'react-native-image-base64';
 import ButtonComponent from '../../components/ButtonComponent';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import PushNotificationController from '../../components/PushNotificationController';
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default class EditProfileScreen extends React.Component {
     state = {
@@ -74,7 +75,7 @@ export default class EditProfileScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
             "profile_id" : userId
-        }).then(res => {
+        }, DataAccess.AuthenticationHeader).then(res => {
             image = res.data.usedetails.profile_pic;
             name = res.data.usedetails.get_name;
             email = res.data.usedetails.get_email;
@@ -149,14 +150,14 @@ export default class EditProfileScreen extends React.Component {
         //         }
         //     })
         // }
-        if(this.state.bio.trim() === "") {
-            return Toast.show({
-                text: "Please write few of your bio",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
+        // if(this.state.bio.trim() === "") {
+        //     return Toast.show({
+        //         text: "Please write few of your bio",
+        //         style: {
+        //             backgroundColor: '#777',
+        //         }
+        //     })
+        // }
         this.RBSheet.open();
         let userId = await AsyncStorage.getItem("userId");
 
@@ -167,11 +168,11 @@ export default class EditProfileScreen extends React.Component {
             "email" : this.state.email.trim(),
             "dob" : this.state.dob, 
             "gender" : this.state.gender, 
-            "user_bio" : this.state.bio.trim()
-        });
+            "user_bio" : this.state.bio !== "" ? this.state.bio.trim() : ""
+        }, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {           
-            console.warn(response.data);
-            if(this.state.image.startsWith("http://")) {
+            // console.warn(response.data);
+            if(this.state.image.startsWith("https://")) {
                 Toast.show({
                     text: "Profile has been updated successfully",
                     type: "success",
@@ -274,7 +275,7 @@ export default class EditProfileScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
             'userID' : userID,
             'profile_picture' : base64ImageName
-        })
+        }, DataAccess.AuthenticationHeader)
         this.RBSheet.close()
         if(response.data.resp === "true") {
             Toast.show({
@@ -467,7 +468,6 @@ export default class EditProfileScreen extends React.Component {
                 
                 <View
                     style={{
-                        alignItems: 'center',
                         marginTop: heightToDp("4%"),
                         marginHorizontal: widthToDp("3.5%")
                     }}
@@ -488,6 +488,27 @@ export default class EditProfileScreen extends React.Component {
                         placeholderTextColor="#808080"
                         onChangeText={text => this.setState({ bio: text })}
                     />
+                    <View 
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "flex-start",
+                            paddingTop: 10,
+                            paddingHorizontal: 5
+                        }}
+                    >
+                        <Ionicons
+                            name={Platform.OS==="android" ? "md-alert-circle" : "ios-alert-circle"}
+                            size={15}
+                            color="#a1aab8"
+                        />
+                        <Text
+                            style={{
+                                paddingLeft: 10,
+                                fontSize: 13,
+                                color: "#a1aab8"
+                            }}
+                        >For any link in bio, please add www for example www.facebook.com</Text>
+                    </View>
                 </View>
                 <View style={{height: heightToDp("1%")}}/>
                 <ButtonComponent

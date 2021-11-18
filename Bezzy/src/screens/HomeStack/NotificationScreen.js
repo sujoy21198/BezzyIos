@@ -22,19 +22,28 @@ export default class NotificationScreen extends React.Component {
 
     fetchNotifications = async () => {
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId);
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.fetchNotifications + "/" + userId, DataAccess.AuthenticationHeader);
+        console.log(response)
         if(response.data.status === "success") {
             this.setState({notificationList: response.data.notification_list});
         } else {
             this.setState({notificationList: []});
         }
+
+        let res = await axios.get(DataAccess.BaseUrl + DataAccess.readNotifications + "/" + userId, DataAccess.AuthenticationHeader);
+        console.log(res);
+        // if(response.data.status === "success") {
+        //     this.setState({notificationList: response.data.notification_list});
+        // } else {
+        //     this.setState({notificationList: []});
+        // }
         this.setState({isLoading: false})
     }
 
     clearNotifications = async () => {
         this.RBSheet.open()
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.clearNotification + "/" + userId);
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.clearNotification + "/" + userId, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             this.setState({notificationList: []})
             Toast.show({
@@ -105,7 +114,7 @@ export default class NotificationScreen extends React.Component {
                                 borderRadius: 6,
                                 elevation: 2,                            
                                 borderLeftColor: '#007dfe',
-                                borderLeftWidth: 5.5,
+                                borderLeftWidth: item.is_view === "1" ? 0 : 5.5,
                             }}
                             disabled={item.respostID === ""}
                             activeOpacity={0.7}

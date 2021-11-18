@@ -18,7 +18,7 @@ export default class FollowingScreen extends React.Component {
     componentDidMount = async () => {
         this.setState({isLoading: true})
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId}, DataAccess.AuthenticationHeader);
         console.warn(response.data);
         if(response.data.resp === "success") {
             this.setState({followingList: response.data.following_user_list});
@@ -34,7 +34,7 @@ export default class FollowingScreen extends React.Component {
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.unfollow, {
             "loginUserID" : userId,
             "unfriendID" : item.following_user_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             let followingList = this.state.followingList;
             followingList.splice(index, 1);

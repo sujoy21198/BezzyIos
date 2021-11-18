@@ -60,7 +60,7 @@ export default class ThreadCommentScreen extends Component {
         this.RBSheet.open()
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.commentReplyList, {
             "comment_id": this.state.comment_id
-        });
+        }, DataAccess.AuthenticationHeader);
         if (response.data.status === 'success') {
             if (response.data.message === "No comment found") {
                 this.setState({ comments: [] });
@@ -87,7 +87,7 @@ export default class ThreadCommentScreen extends Component {
             "commentParentId": this.state.comment_id,
             "tag_user_id": this.state.tagUserId.length > 0 ? JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0] : null,
             "commentText": this.state.commentText.trim()
-        });
+        }, DataAccess.AuthenticationHeader);
         //console.log(response.data)
         this.setState({ isSendingComment: false })
         if (response.data.status === "success") {
@@ -105,7 +105,11 @@ export default class ThreadCommentScreen extends Component {
         this.setState({followingList: []})
         let userId = await AsyncStorage.getItem("userId");
         let followingList = []
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        let response = await axios.post(
+            DataAccess.BaseUrl + DataAccess.userFollowingList, 
+            {"loguser_id" : userId}, 
+            DataAccess.AuthenticationHeader
+        );
         if(response.data.resp === "success") {
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
             // console.warn(response.data.total_feed_response.friend_list);
@@ -127,7 +131,7 @@ export default class ThreadCommentScreen extends Component {
     }
 
     deleteMessage = async () => {
-      console.log(this.state.deleteIds, DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment));
+    //   console.log(this.state.deleteIds, DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment));
       Alert.alert(
         "Are you sure?",
         this.state.deleteIds.length + ` ${this.state.deleteIds.length === 1 ? "comment" : "comments"} will be deleted`, [
@@ -141,7 +145,7 @@ export default class ThreadCommentScreen extends Component {
                 this.setState({comments: [], isSendingComment: true, isSelected: false})
                 await axios.post(DataAccess.BaseUrl + (this.state.deleteIds.length === 1 ? DataAccess.deleteSingleComment : DataAccess.deleteMultipleComment), {
                     "cmnt_id": this.state.deleteIds.length === 1 ? this.state.deleteIds[0] : this.state.deleteIds
-                }).then(response => {
+                }, DataAccess.AuthenticationHeader).then(response => {
                     console.log("Comment delete success response :- ", response);
                     if(response.data.status === "success") {
                     this.state.comments.map(item => item.isSelected = false);
@@ -252,6 +256,7 @@ export default class ThreadCommentScreen extends Component {
                                 >{this.props.route.params.username}</Text>
                                 <Autolink
                                     component={Text}
+                                    stripPrefix={false}
                                     text={this.props.route.params.commentText}
                                     style={{
                                         color: '#1b1b1b',
@@ -413,6 +418,7 @@ export default class ThreadCommentScreen extends Component {
                                                 >{item.username}</Text>
                                                 <Autolink
                                                     component={Text}
+                                                    stripPrefix={false}
                                                     text={item.commentText}
                                                     style={{
                                                         color: '#1b1b1b',
@@ -578,6 +584,7 @@ export default class ThreadCommentScreen extends Component {
                                 >{this.props.route.params.username}</Text>
                                 <Autolink
                                     component={Text}
+                                    stripPrefix={false}
                                     text={this.props.route.params.commentText}
                                     style={{
                                         color: '#1b1b1b',
@@ -739,6 +746,7 @@ export default class ThreadCommentScreen extends Component {
                                                 >{item.username}</Text>
                                                 <Autolink
                                                     component={Text}
+                                                    stripPrefix={false}
                                                     text={item.commentText}
                                                     style={{
                                                         color: '#1b1b1b',

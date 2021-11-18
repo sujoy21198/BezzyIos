@@ -285,7 +285,7 @@ export default class SignUpScreen extends React.Component {
         })
         console.log(formData._parts,"formdata")
 
-        let response = await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData);
+        let response = await axios.post(DataAccess.BaseUrl+DataAccess.Registration,formData, DataAccess.AuthenticationHeader);
         if(response.data.resp === "true") {
             Toast.show({
                 text: response.data.reg_msg,

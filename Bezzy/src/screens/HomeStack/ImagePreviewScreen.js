@@ -62,7 +62,8 @@ export default class ImagePreviewScreen extends React.Component {
         let userId = await AsyncStorage.getItem("userId");
         let response =  await axios.get(
             DataAccess.BaseUrl + DataAccess.getPostDetails + "/" + 
-            this.props.route.params.image.post_id + "/" + userId
+            this.props.route.params.image.post_id + "/" + userId, 
+            DataAccess.AuthenticationHeader
         );
         if(response.data.status === 'success') {
             if(response.data.post_details.log_user_like_status === "No") {
@@ -107,7 +108,7 @@ export default class ImagePreviewScreen extends React.Component {
                         let response = await axios.post(DataAccess.BaseUrl + DataAccess.deletePost, {
                             "imgvideoID" : this.props.route.params.image.id,
                             "post_type" : this.props.route.params.image.post_type
-                        });
+                        }, DataAccess.AuthenticationHeader);
                         if(response.data.status === "success") {
                             this.RBSheet.close();
                             Toast.show({
@@ -142,7 +143,7 @@ export default class ImagePreviewScreen extends React.Component {
     likeImage = async () => {
         this.setState({isLoading: true})
         let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.likePost + "/" + userId + "/" + this.props.route.params.image.post_id);
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.likePost + "/" + userId + "/" + this.props.route.params.image.post_id, DataAccess.AuthenticationHeader);
         if(response.data.status === "success") {
             if(this.state.isLiked) {
                 this.setState({
@@ -170,7 +171,7 @@ export default class ImagePreviewScreen extends React.Component {
                 "post_id" : this.props.route.params.image.post_id,
                 "post_type" : this.props.route.params.image.post_type,
                 "post_caption_text" : this.state.postCaption
-            });
+            }, DataAccess.AuthenticationHeader);
             this.setState({isUpdatingCaption: false})
             if(response.data.resp === "success") {
                 this.setState({captionEditable: false})
@@ -196,7 +197,7 @@ export default class ImagePreviewScreen extends React.Component {
                         this.RBSheet.open()
                         let userId = await AsyncStorage.getItem("userId");
                         console.warn(userId);
-                        await axios.get(DataAccess.BaseUrl + DataAccess.reportPost + "/" + userId + "/" + this.props.route.params.image.post_id)
+                        await axios.get(DataAccess.BaseUrl + DataAccess.reportPost + "/" + userId + "/" + this.props.route.params.image.post_id, DataAccess.AuthenticationHeader)
                             .then(res => {
                                 console.log("Report Post Response ==> ", res.data);
                                 if(res.data.resp === "true") {
@@ -239,6 +240,442 @@ export default class ImagePreviewScreen extends React.Component {
     }
 
     render = () => (
+        Platform.OS === 'android' ?
+        <ScrollView style={{flex:1, backgroundColor: '#1b1b1b'}}>
+            <StatusBar backgroundColor="#69abff" barStyle="light-content" />            
+            <LinearGradient
+                style={{paddingTop: heightToDp(`${this.state.postUrl.length !== 0 ? this.state.postType === "image" ? 4 : 0 : 90}%`)}}
+                colors={['#fff', '#1b1b1b']}
+            >
+                {
+                    (this.state.postUrl && this.state.postUrl.length > 0) &&
+                    <FlatList
+                        data={this.state.postUrl}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        ItemSeparatorComponent={() => <View style={{width: widthToDp("5%")}}/>}
+                        renderItem={({item, index}) => (
+                            this.state.postType === "image" ?
+                            <Image
+                                resizeMode="contain"
+                                style={{ height: heightToDp("80%"), width: widthToDp("100%") }}
+                                source={{ uri: item.post_url}}
+                                /> :
+                                <View
+                                    style={{
+                                        height: (this.props.route && this.props.route.params && this.props.route.params.hideFunctionalities) ? heightToDp("100%") : heightToDp("80%")
+                                    }}
+                                >
+                                    <VideoPlayer
+                                        source={{ uri: item.post_url }}
+                                        ref={(ref) => {
+                                            this.player = ref
+                                        }}
+                                        ignoreSilentSwitch="ignore"
+                                        onLoadStart={() => this.setState({isLoading: true})}
+                                        onLoad={() => this.setState({isLoading: false})}
+                                        // onBuffer={this.onBuffer}
+                                        // onError={this.videoError}
+                                        // paused={this.state.isPaused}
+                                        // muted={this.state.isMuted}
+                                        // onProgress={({currentTime, playableDuration, seekableDuration}) => {
+                                        //     this.setState({
+                                        //         videoPlayTimes: {
+                                        //             currentTime,
+                                        //             seekableDuration
+                                        //         }
+                                        //     })
+                                        //     // console.warn(currentTime, playableDuration, seekableDuration)
+                                        // }}
+                                        // onSeek={({currentTime, seekTime}) => {
+                                        //     console.warn(currentTime, seekTime);
+                                        // }}
+                                        // paused
+                                        navigator={this.props.navigation}
+                                        repeat
+                                        style={{
+                                            height: heightToDp("70%"),
+                                            width: widthToDp("100%"),
+                                            alignSelf: 'center',
+                                        }}
+                                        resizeMode="contain"
+                                    />
+                                    {/* <View style={{
+                                        height: heightToDp("10%"),
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingLeft: Dimensions.get("window").width / 2 
+                                    }}>
+                                        <TouchableOpacity
+                                            onPress={() => this.setState({isPaused: !this.state.isPaused})}
+                                        >
+                                            {
+                                                this.state.isPaused ?
+                                                <Icon2
+                                                    name={Platform.OS==='android' ? "md-play-circle-outline" : "ios-play-circle-outline"}
+                                                    size={45}
+                                                    color="#fff"
+                                                /> :
+                                                <Icon2
+                                                    name={Platform.OS==='android' ? "md-pause-circle-outline" : "ios-pause-circle-outline"}
+                                                    size={45}
+                                                    color="#fff"
+                                                />
+                                            }
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => this.setState({isMuted: !this.state.isMuted})}
+                                            style={{
+                                                paddingLeft: "10%"
+                                            }}
+                                        >
+                                            {
+                                                this.state.isMuted ?
+                                                <Icon2
+                                                    name={Platform.OS==='android' ? "md-volume-high-outline" : "ios-volume-high-outline"}
+                                                    size={25}
+                                                    color="#fff"
+                                                /> :
+                                                <Icon2
+                                                    name={Platform.OS==='android' ? "md-volume-mute-outline" : "ios-volume-mute-outline"}
+                                                    size={25}
+                                                    color="#fff"
+                                                />
+                                            }
+                                        </TouchableOpacity>
+                                    </View> */}
+                                    {/* {
+                                        this.state.isLoading &&
+                                        <ActivityIndicator
+                                            size="large"
+                                            color="#4977b2"
+                                            style={{
+                                                position: "absolute",
+                                                top: Dimensions.get("window").width / 2,
+                                                left: Dimensions.get("window").width / 2,
+                                                alignSelf: "center"
+                                            }}
+                                        />
+                                    } */}
+                                    {/* <View
+                                        style={{
+                                            width: "100%",
+                                            position: "absolute",
+                                            bottom: 20,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            justifyContent: "space-between",
+                                            paddingHorizontal: "3%"
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                width: "15%",
+                                                fontFamily: "Poopins-Regular",
+                                                color: "#fff"
+                                            }}
+                                        >{
+                                            `${
+                                                parseInt(this.state.videoPlayTimes.currentTime) >= 60 ? (
+                                                    parseInt(this.state.videoPlayTimes.currentTime / 60).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.currentTime / 60) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.currentTime / 60)
+                                                ) : "00"
+                                            }:${
+                                                parseInt(this.state.videoPlayTimes.currentTime) >= 60 ? (
+                                                    parseInt(this.state.videoPlayTimes.currentTime % 60).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.currentTime % 60) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.currentTime % 60)
+                                                ) : (
+                                                    parseInt(this.state.videoPlayTimes.currentTime).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.currentTime) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.currentTime)
+                                                )
+                                            }`
+                                        }</Text>
+                                        <Slider
+                                            step={0.01}
+                                            value={this.state.videoPlayTimes.currentTime} 
+                                            onValueChange={value => {
+                                                this.setState({isLoading: true})
+                                                let seekTime = value * (this.state.videoPlayTimes.currentTime / this.state.videoPlayTimes.seekableDuration) * 1000;
+                                                this.player.seek(seekTime);
+                                                this.state.videoPlayTimes.currentTime = seekTime;
+                                                this.setState({isLoading: false})
+                                            }} 
+                                            onSlidingComplete={() => console.log("Slide complete")}
+                                            minimumValue={0}
+                                            maximumValue={this.state.videoPlayTimes.seekableDuration}
+                                            style={{
+                                                width: "65%",
+                                                height: 10,
+                                                borderRadius: 5,
+                                            }}
+                                            minimumTrackTintColor="blue"
+                                            maximumTrackTintColor="gray"
+                                        />
+                                        <Text
+                                            style={{
+                                                width: "15%",
+                                                paddingLeft: "3%",
+                                                fontFamily: "Poopins-Regular",
+                                                color: "#fff"
+                                            }}
+                                        >{
+                                            `${
+                                                parseInt(this.state.videoPlayTimes.seekableDuration) >= 60 ? (
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration / 60).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration / 60) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.seekableDuration / 60)
+                                                ) : "00"
+                                            }:${
+                                                parseInt(this.state.videoPlayTimes.seekableDuration) >= 60 ? (
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration % 60).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration % 60) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.seekableDuration % 60)
+                                                ) : (
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration).toString().length === 2 ? 
+                                                    parseInt(this.state.videoPlayTimes.seekableDuration) : 
+                                                    "0" + parseInt(this.state.videoPlayTimes.seekableDuration)
+                                                )
+                                            }`
+                                        }</Text>
+                                    </View> */}
+                                </View>
+                        )}
+                    />
+                }                
+            </LinearGradient>   
+            {
+                this.state.postType === 'image' &&
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        top: heightToDp(`${this.state.postType === "video" ? 10 : 2}%`),
+                        left: widthToDp("3.5%"),
+                        backgroundColor: "#1b1b1b",
+                        height: 50, 
+                        width: 50,
+                        borderRadius: 50 / 2,
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                    activeOpacity={0.7}
+                    onPress={() => this.props.navigation.goBack()}
+                >
+                    <Icon
+                        name="chevron-left"
+                        color="#fff"
+                        size={Platform.isPad ? 30 : 20}                    
+                    />  
+                </TouchableOpacity> 
+            }
+            {
+                !(this.props.route && this.props.route.params && this.props.route.params.hideFunctionalities) &&
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: '#1b1b1b',
+                        paddingTop: heightToDp("5%"),
+                        paddingHorizontal: widthToDp("3%")
+                    }}
+                >           
+                    {
+                        this.state.captionEditable ? 
+                        <TextInput
+                            style={{
+                                color: '#fff',
+                                fontSize: widthToDp("3.5%"),
+                                width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
+                                borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                                borderBottomColor: '#fff',
+                                fontFamily: "Poppins-Regular"
+                            }}
+                            multiline
+                            defaultValue={this.state.postCaption}
+                            editable={this.state.captionEditable}
+                            onChangeText={text => this.setState({postCaption: text.trim()})}
+                        /> :
+                        <Autolink
+                            component={Text}
+                            stripPrefix={false}
+                            text={
+                                (
+                                    this.state.postCaption === null || this.state.postCaption === "null"
+                                ) ? "" : this.state.postCaption
+                            }
+                            style={{
+                                color: '#fff',
+                                fontSize: widthToDp("3.5%"),
+                                width: widthToDp((this.props.route.params.type === "otherUserPost" || this.props.route.params.noEditCaption) ? "88%" : "83%"),
+                                borderBottomWidth: (this.state.captionEditable && this.props.route.params.type !== "otherUserPost") ? 1 : 0,
+                                borderBottomColor: '#fff',
+                                fontFamily: "Poppins-Regular"
+                            }}
+                            email
+                            url
+                            linkStyle={{
+                                color: '#fff', 
+                                textDecorationLine: "underline",
+                                fontFamily: "Poppins-Regular", 
+                                fontSize: widthToDp("3.5%")
+                            }}
+                        />  
+                    }
+                    {
+                        this.props.route.params.type !== "otherUserPost" && !this.props.route.params.noEditCaption &&
+                        <TouchableOpacity
+                            activeOpacity={0.7}
+                            style={{
+                                marginLeft: widthToDp("5%")
+                            }}
+                            disabled={this.state.isUpdatingCaption}
+                            onPress={this.updateCaption}
+                        >
+                            {
+                                this.state.otherProfile === false ? ((this.state.isUpdatingCaption) ? <ActivityIndicator size="small" color="#fff"/> :<Icon
+                                name={this.state.captionEditable ? "paper-plane" : "pen"}
+                                color="#fff"
+                                size={Platform.isPad ? 25 : 20}                    
+                            />):null
+                            } 
+                        </TouchableOpacity>  
+                    }                              
+                </View>  
+            }      
+            {
+                !(this.props.route && this.props.route.params && this.props.route.params.hideFunctionalities) &&
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#1b1b1b',
+                        alignSelf: 'flex-end',
+                        paddingHorizontal: widthToDp("3%"),
+                        paddingTop: this.state.postType === "image" ? heightToDp("3%") : heightToDp("5%"),
+                        paddingBottom: heightToDp("1%"),
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                >
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={this.likeImage}
+                        disabled={this.state.isLoading || (this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost")}
+                    >
+                        {
+                            this.state.isLiked ?
+                            <Icon1
+                                name="heart"
+                                color={"#ff0000"}
+                                size={Platform.isPad ? 30 : 20}
+                            /> :
+                            <Icon
+                                name="heart"
+                                color={"#fff"}
+                                size={Platform.isPad ? 30 : 20}
+                            />
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if(this.player) this.player = undefined;
+                            this.props.navigation.navigate("PostLikedUsersList", {postId: this.props.route.params.image.post_id});
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: Platform.OS==='android' ? widthToDp("2.5%") : Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
+                                paddingLeft: widthToDp("2%"),
+                                fontFamily: "Poppins-Regular"
+                            }}
+                        >{this.state.numberOfLikes}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        style={{paddingLeft: widthToDp("4%")}}
+                        onPress={() => {
+                            if(this.player) this.player = undefined;
+                            this.props.navigation.navigate("CommentScreen", {post: this.props.route.params.image});
+                        }}
+                        disabled={!this.state.otherProfile && this.props.route && this.props.route.params && this.props.route.params.type === "otherUserPost"}
+                    >
+                        <Icon
+                            name="comment"
+                            color="#fff"
+                            size={Platform.isPad ? 30 : 20}
+                        />
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            color: "#fff",
+                            fontSize: Platform.OS==='android' ? widthToDp("2.5%") : Platform.isPad ? widthToDp("3%") : widthToDp("3.5%"),
+                            paddingLeft: widthToDp("2%"),
+                            fontFamily: "Poppins-Regular"
+                        }}
+                    >{this.props.route.params.commentCount ? this.props.route.params.commentCount : this.state.numberOfComments}</Text>
+                    
+                    {
+                        this.state.otherProfile === false ? (
+                            (this.props.route.params.type !== "otherUserPost") ? 
+                            <TouchableOpacity
+                                style={{paddingLeft: widthToDp("4%")}}
+                                onPress={this.deleteImage}
+                            >
+                                <Icon
+                                    name="trash-alt"
+                                    color="#fff"
+                                    size={Platform.isPad ? 30 : 20}
+                                />
+                            </TouchableOpacity> : 
+                            null
+                        ) : (
+                            <TouchableOpacity
+                                style={{paddingLeft: widthToDp("4%")}}
+                                onPress={this.reportPost}
+                            >
+                                <Icon2
+                                    name={Platform.OS === 'android' ? 'md-alert-circle-outline' : 'ios-alert-circle-outline'}
+                                    color="#fff"
+                                    size={Platform.isPad ? 40 : 25}
+                                />
+                            </TouchableOpacity>
+                        )
+                    }            
+                </View> 
+            }
+             
+            <RBSheet
+                ref={ref => {
+                    this.RBSheet = ref;
+                }}
+                height={heightToDp("6%")}
+                closeOnPressMask={false}
+                closeOnPressBack={false}
+                // openDuration={250}
+                customStyles={{
+                    container: {
+                        width: "14%",
+                        position: 'absolute',
+                        top: "40%",
+                        alignSelf: "center",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#fff',
+                        borderRadius: 10
+                    },
+                }}
+            >
+                <ActivityIndicator
+                    size="large"
+                    color="#69abff"
+                />
+            </RBSheet>   
+            <PushNotificationController navigation={this.props.navigation}/> 
+        </ScrollView> :
         <KeyboardAvoidingView behavior="padding" style={{flex:1, backgroundColor: '#1b1b1b'}}>
             <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />            
             <LinearGradient
@@ -346,6 +783,7 @@ export default class ImagePreviewScreen extends React.Component {
                             /> :
                             <Autolink
                                 component={Text}
+                                stripPrefix={false}
                                 text={
                                     (
                                         this.state.postCaption === null || this.state.postCaption === "null"
@@ -498,8 +936,8 @@ export default class ImagePreviewScreen extends React.Component {
                 <TouchableOpacity
                     style={{
                         position: 'absolute',
-                        top: heightToDp(`${this.state.postType === "video" ? 10 : 2}%`),
-                        left: widthToDp("3.5%"),
+                        top: "8%",
+                        left: "3%",
                         backgroundColor: "#1b1b1b",
                         height: 50, 
                         width: 50,

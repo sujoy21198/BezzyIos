@@ -60,7 +60,8 @@ export default class ForgotPassword extends React.Component {
         this.RBSheet.open();
         let response = await axios.post(DataAccess.BaseUrl+DataAccess.ForgotPass,{
             email: this.state.email
-        });
+        }, DataAccess.AuthenticationHeader);
+        console.log(response.config);
         if(response.data.resp === "true"){
             Toast.show({
                 text: response.data.reg_msg,

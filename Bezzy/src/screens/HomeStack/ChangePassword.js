@@ -83,7 +83,7 @@ export default class ChangePassword extends React.Component {
             "userID": userId,
             "current_password": this.state.currentPassword.trim(),
             "password": this.state.newPassword.trim(),
-        });
+        }, DataAccess.AuthenticationHeader);
         this.RBSheet.close();
         this.setState({
             showNewPassword: false,

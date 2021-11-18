@@ -13,7 +13,7 @@ export default class BottomTab extends React.Component {
         await axios.post(DataAccess.BaseUrl + DataAccess.setUserActiveStatus, {
             "userID" : userID,
             "user_active_status" : "true"
-        }).then(res => {
+        }, DataAccess.AuthenticationHeader).then(res => {
             // console.log(res.data);
         }).catch(err => {
             // console.log(err);

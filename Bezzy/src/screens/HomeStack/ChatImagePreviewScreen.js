@@ -31,8 +31,8 @@ export default class ChatImagePreviewScreen extends Component {
                 <TouchableOpacity
                     style={{
                         position: 'absolute',
-                        top: heightToDp("2%"),
-                        left: widthToDp("3.5%"),
+                        top: "8%",
+                        left: "3%",
                         backgroundColor: "#1b1b1b",
                         height: 50, 
                         width: 50,

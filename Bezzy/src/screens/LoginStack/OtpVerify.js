@@ -42,7 +42,7 @@ export default class OtpVerify extends React.Component {
                 "otp_code": this.state.otp,
                 "userID": this.props.route.params.userId,
                 "device_token": null
-            });
+            }, DataAccess.AuthenticationHeader);
             if(response.data.resp === "true"){                
                 this.RBSheet.close()
                 if(this.props.route.params.type === "verify" || this.props.route.params.type === "loginVerify") {
@@ -106,7 +106,7 @@ export default class OtpVerify extends React.Component {
         this.RBSheet.open();
         let response = await axios.post(DataAccess.BaseUrl + DataAccess.resendOtp, {
             "userID": this.props.route.params.userId
-        });
+        }, DataAccess.AuthenticationHeader);
         this.RBSheet.close();
         if(response.data.resp === "true") {
             return Toast.show({

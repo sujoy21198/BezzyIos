@@ -39,12 +39,22 @@ const App = () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', remoteMessage);
       AsyncStorage.setItem("notification", JSON.stringify(remoteMessage.data))
-      PushNotification.getChannels(channelIds => {
-        if(channelIds.length === 0) {
-          PushNotification.createChannel({
-            channelId: Date.now().toString(),
-            channelName: "Channel"
-          }, created => {
+      if(Platform.OS==='android') {
+        PushNotification.getChannels(channelIds => {
+          if(channelIds.length === 0) {
+            PushNotification.createChannel({
+              channelId: Date.now().toString(),
+              channelName: "Channel"
+            }, created => {
+              PushNotification.getChannels(channelIds => {
+                PushNotification.localNotification({
+                  channelId: channelIds[0],
+                  title: remoteMessage.notification.title,
+                  message: remoteMessage.notification.body,
+                });
+              })
+            }) 
+          } else {
             PushNotification.getChannels(channelIds => {
               PushNotification.localNotification({
                 channelId: channelIds[0],
@@ -52,17 +62,14 @@ const App = () => {
                 message: remoteMessage.notification.body,
               });
             })
-          }) 
-        } else {
-          PushNotification.getChannels(channelIds => {
-            PushNotification.localNotification({
-              channelId: channelIds[0],
-              title: remoteMessage.notification.title,
-              message: remoteMessage.notification.body,
-            });
-          })
-        }
-      })
+          }
+        })
+      } else {
+        PushNotification.localNotification({
+          title: remoteMessage.notification.title,
+          message: remoteMessage.notification.body,
+        });
+      }
     });
 
     if(Platform.OS === "ios") {

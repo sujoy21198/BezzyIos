@@ -264,7 +264,7 @@ export default class PostScreen extends React.Component {
                     // formData.append('userID', '232')
                     // formData.append('post_content', this.state.caption)
                     // console.log(formData._parts)
-                    await axios.post('http://bezzy-app.com/admin/api/PostImage', formData)
+                    await axios.post('https://bezzy-app.com/admin/api/PostImage', formData, DataAccess.AuthenticationHeader)
                         .then(async response => {
                             console.log(response.data)
                             if(this.state.tagUserId.length > 0) {
@@ -274,7 +274,7 @@ export default class PostScreen extends React.Component {
                                     "post_content" : this.state.caption,
                                     "post_type_id" : '1',
                                     "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
-                                }).then(res => {
+                                }, DataAccess.AuthenticationHeader).then(res => {
                                     console.log(res.data);
                                     this.setState({tagUserId: []})
                                 }).catch(err => console.log(err))
@@ -431,7 +431,7 @@ export default class PostScreen extends React.Component {
                 formDataCamera.append('post_content', this.state.caption)
                 console.log(formDataCamera._parts)
 
-                await axios.post('http://bezzy-app.com/admin/api/PostImage', formDataCamera)
+                await axios.post('https://bezzy-app.com/admin/api/PostImage', formDataCamera, DataAccess.AuthenticationHeader)
                     .then(async response => {
                         console.log(response.data, "CAMERA", this.state, this.state.tagUserId)
                         if(this.state.tagUserId.length > 0) {
@@ -441,7 +441,7 @@ export default class PostScreen extends React.Component {
                                 "post_content" : this.state.caption,
                                 "post_type_id" : '1',
                                 "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
-                            }).then(res => {
+                            }, DataAccess.AuthenticationHeader).then(res => {
                                 console.log(res.data);
                                 this.setState({tagUserId: []})
                             }).catch(err => console.log(err))
@@ -604,7 +604,7 @@ export default class PostScreen extends React.Component {
                 fromDataVideo.append('post_content', this.state.caption)
                 fromDataVideo.append('userID', userID)
 
-                await axios.post('http://bezzy-app.com/admin/api/PostVideo', fromDataVideo)
+                await axios.post('https://bezzy-app.com/admin/api/PostVideo', fromDataVideo, DataAccess.AuthenticationHeader)
                     .then(async response => {
                         console.log(response.data, "VIDEO")
                         if(this.state.tagUserId.length > 0) {
@@ -614,7 +614,7 @@ export default class PostScreen extends React.Component {
                                 "post_content" : this.state.caption,
                                 "post_type_id" : '3',
                                 "tag_user_id" : JSON.stringify(this.state.tagUserId).split("[")[1].split("]")[0]
-                            }).then(res => {
+                            }, DataAccess.AuthenticationHeader).then(res => {
                                 console.log(res.data);
                                 this.setState({tagUserId: []})
                             }).catch(err => console.log(err))
@@ -728,7 +728,7 @@ export default class PostScreen extends React.Component {
         this.setState({followingList: []})
         let userId = await AsyncStorage.getItem("userId");
         let followingList = []
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId});
+        let response = await axios.post(DataAccess.BaseUrl + DataAccess.userFollowingList, {"loguser_id" : userId}, DataAccess.AuthenticationHeader);
         if(response.data.resp === "success") {
             console.warn(response.data);
             // console.warn(response.data.total_feed_response.friend_list, mention.split("@")[1].toLowerCase());
@@ -756,7 +756,7 @@ export default class PostScreen extends React.Component {
         return (
             <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"}/>
-                <Header isHomeStackInnerPage isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
+                <Header isHomeStackInnerPage isPostScreen isBackButton navigation={this.props.navigation} headerText={this.state.focusedTab === "photo" ? "Photo" : "Video"} />
 
                 <View
                     style={{

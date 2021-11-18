@@ -14,7 +14,8 @@ export default class Terms extends React.Component {
 
     componentDidMount = async () => {
         this.setState({isLoading: true})
-        let response = await axios.get(DataAccess.BaseUrl + DataAccess.terms);
+        let response = await axios.get(DataAccess.BaseUrl + DataAccess.terms, DataAccess.AuthenticationHeader);
+        console.log(response.config);
         this.setState({isLoading: false})
 
         if(response.data.status === "success") {

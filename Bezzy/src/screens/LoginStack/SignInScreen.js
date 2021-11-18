@@ -36,6 +36,10 @@ export default class SignInScreen extends React.Component {
         }
     }
 
+    componentDidMount = async () => {
+        await AsyncStorage.setItem("token", null);
+    } 
+
     setEmail = (text) => {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!emailRegex.test(text.trim())) {
@@ -86,7 +90,7 @@ export default class SignInScreen extends React.Component {
             "username": this.state.email.trim(),
             "password": this.state.password.trim(),
             "device_token": deviceId
-        });
+        }, DataAccess.AuthenticationHeader);
         if (response.data.resp === "true") {
             this.RBSheet.close()
             AsyncStorage.setItem("userDetails", JSON.stringify(response.data.usedetails));

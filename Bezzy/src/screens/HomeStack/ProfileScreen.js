@@ -72,7 +72,7 @@ export default class ProfileScreen extends React.Component {
         if (this.state.otherProfile === false) {
             await axios.post(DataAccess.BaseUrl + DataAccess.getSharePostData, {
                 "profile_id": value
-            }).then(function (response) {
+            }, DataAccess.AuthenticationHeader).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function (error) {
                 console.log(error + " " + DataAccess.BaseUrl + DataAccess.getSharePostData)
@@ -82,7 +82,7 @@ export default class ProfileScreen extends React.Component {
         } else {
             await axios.post(DataAccess.BaseUrl + DataAccess.getSharePostData, {
                 "profile_id": this.state.friendsProfileId
-            }).then(function (response) {
+            }, DataAccess.AuthenticationHeader).then(function (response) {
                 sharedMedia = response.data.user_all_posts[response.data.user_all_posts.length - 1];
             }).catch(function (error) {
                 console.log(error + " " + DataAccess.BaseUrl + DataAccess.getSharePostData)
@@ -106,18 +106,18 @@ export default class ProfileScreen extends React.Component {
         if (this.state.otherProfile === true) {
             await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
                 "profile_id": this.state.friendsProfileId
-            }).then(res => {
+            }, DataAccess.AuthenticationHeader).then(res => {
                 // console.warn(res);
                 userDetails = res.data.usedetails;
                 userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
             }).catch(err => console.warn(err))
-            this.setState({ userDetails, userPosts })
+            this.setState({ userDetails, userPosts }, () => this.detectUrls(this.state.userDetails.bio))
             this.setState({ isLoading: false, isRefreshing: false })
             this.RBSheet.close()
         } else {
             await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
                 "profile_id": userId
-            }).then(res => {
+            }, DataAccess.AuthenticationHeader).then(res => {
                 //console.log(res.data)
                 userDetails = res.data.usedetails;
                 userPosts = res.data.user_all_posts[res.data.user_all_posts.length - 1];
