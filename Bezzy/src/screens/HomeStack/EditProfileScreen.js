@@ -1,593 +1,754 @@
-import React from 'react';
-import { ActivityIndicator, Image, Platform, SafeAreaView, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import Header from '../../components/Header';
-import { heightToDp, widthToDp } from '../../components/Responsive';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DataAccess from '../../components/DataAccess';
-import axios from 'axios';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import RBSheet1 from 'react-native-raw-bottom-sheet';
-import { ActionSheet, Toast } from 'native-base';
-import NetInfo from '@react-native-community/netinfo';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { checkMultiple, PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
-import ImagePicker from 'react-native-image-crop-picker';
-import ImgToBase64 from 'react-native-image-base64';
-import ButtonComponent from '../../components/ButtonComponent';
+import React from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Header from "../../components/Header";
+import { heightToDp, widthToDp } from "../../components/Responsive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import DataAccess from "../../components/DataAccess";
+import axios from "axios";
+import RBSheet from "react-native-raw-bottom-sheet";
+import RBSheet1 from "react-native-raw-bottom-sheet";
+import { ActionSheet, Toast } from "native-base";
+import NetInfo from "@react-native-community/netinfo";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import {
+  checkMultiple,
+  PERMISSIONS,
+  requestMultiple,
+  RESULTS,
+} from "react-native-permissions";
+import ImagePicker from "react-native-image-crop-picker";
+import ImgToBase64 from "react-native-image-base64";
+import ButtonComponent from "../../components/ButtonComponent";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import PushNotificationController from '../../components/PushNotificationController';
+import PushNotificationController from "../../components/PushNotificationController";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
-export default class EditProfileScreen extends React.Component {
-    state = {
-        name: "",
-        email: "",
-        isEmailValid: false,
-        showDatePicker: false,
-        image: "",
-        name: "",
-        email: "",
-        dob: "",
-        gender: "",
-        bio: "",
-        base64:''
+class EditProfileScreen extends React.Component {
+  state = {
+    name: "",
+    email: "",
+    isEmailValid: false,
+    showDatePicker: false,
+    image: "",
+    name: "",
+    email: "",
+    dob: "",
+    gender: "",
+    bio: "",
+    base64: "",
+    isAccountPrivate: false,
+    settingPrivate: false
+  };
+
+  //SET EMAIL FUNCTION
+  setEmail = (text) => {
+    let emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(text.trim())) {
+      this.setState({ isEmailValid: false, email: text.trim() });
+    } else {
+      this.setState({ email: text.trim(), isEmailValid: true });
     }
+  };
 
-    //SET EMAIL FUNCTION
-    setEmail = (text) => {
-        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (!emailRegex.test(text.trim())) {
-            this.setState({ isEmailValid: false, email: text.trim() })
-        } else {
-            this.setState({ email: text.trim(), isEmailValid: true });
-        }
+  //SET THE DATE FUNCTION
+  setDate = (date) => {
+    let dateObject = new Date(date);
+    let onlyDate = dateObject.getDate();
+    let onlyMonth = dateObject.getMonth();
+    let onlyYear = dateObject.getFullYear();
+    this.setState({
+      dob: onlyDate + "-" + onlyMonth + "-" + onlyYear,
+      showDatePicker: false,
+    });
+    // if (date.type === "set") {
+    //     let dateString = String(date.nativeEvent.timestamp);
+    //     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    //     let day = dateString.split(" ")[2];
+    //     let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
+    //     let year = dateString.split(" ")[3];
+    //     this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
+    // } else {
+    //     this.setState({ dob: this.state.dob, showDatePicker: false })
+    // }
+  };
+
+  componentDidMount() {
+    this.getProfileData();
+  }
+
+  getProfileData = async () => {
+    this.RBSheet.open();
+    var image,
+      name,
+      email,
+      dob,
+      gender,
+      bio,
+      userDob = new Date();
+    let userId = await AsyncStorage.getItem("userId");
+    await axios
+      .post(
+        DataAccess.BaseUrl + DataAccess.getProfileDetails,
+        {
+          profile_id: userId,
+        },
+        DataAccess.AuthenticationHeader
+      )
+      .then(async (res) => {
+        await AsyncStorage.setItem("userDetails", JSON.stringify(res.data.usedetails));
+        image = res.data.usedetails.profile_pic;
+        name = res.data.usedetails.get_name;
+        email = res.data.usedetails.get_email;
+        this.setEmail(email);
+        gender = res.data.usedetails.get_gender;
+        dob =
+          res.data.usedetails.get_dateofbirth !== null
+            ? res.data.usedetails.get_dateofbirth
+            : "";
+        bio = res.data.usedetails.bio || "";
+        userDob.setDate(Number(dob.split("-")[0]));
+        userDob.setMonth(Number(dob.split("-")[1]));
+        userDob.setFullYear(Number(dob.split("-")[2]));
+        this.setState({isAccountPrivate: res.data.usedetails.private_account === "1"})
+      })
+      .catch((err) => console.log(err));
+    this.setState({ image, name, email, gender, dob, bio, userDob });
+    this.RBSheet.close();
+  };
+
+  updateProfile = async () => {
+    let isOnline = await NetInfo.fetch().then((state) => state.isConnected);
+    if (!isOnline) {
+      return Toast.show({
+        text: "Please be online to login to the app.",
+        style: {
+          backgroundColor: "#777",
+        },
+      });
     }
-
-    //SET THE DATE FUNCTION
-    setDate = (date) => {
-        let dateObject = new Date(date);
-        let onlyDate = dateObject.getDate();
-        let onlyMonth = dateObject.getMonth();
-        let onlyYear = dateObject.getFullYear();
-        this.setState({
-            dob: onlyDate + "-" + onlyMonth + "-" + onlyYear, 
-            showDatePicker: false
-        })
-        // if (date.type === "set") {
-        //     let dateString = String(date.nativeEvent.timestamp);
-        //     let monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        //     let day = dateString.split(" ")[2];
-        //     let month = monthArray.indexOf(dateString.split(" ")[1]) + 1;
-        //     let year = dateString.split(" ")[3];
-        //     this.setState({ dob: day + "-" + month + "-" + year, showDatePicker: false });
-        // } else {
-        //     this.setState({ dob: this.state.dob, showDatePicker: false })
-        // }
+    let emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (this.state.image === "") {
+      return Toast.show({
+        text: "Please choose a profile picture",
+        style: {
+          backgroundColor: "#777",
+        },
+      });
     }
-
-    componentDidMount() {
-        this.getProfileData()
+    if (this.state.name.trim() === "") {
+      return Toast.show({
+        text: "Please enter name",
+        style: {
+          backgroundColor: "#777",
+        },
+      });
     }
-
-    getProfileData = async () => {
-        this.RBSheet.open();
-        var image, name, email, dob, gender, bio, userDob = new Date();
-        let userId = await AsyncStorage.getItem("userId");
-        await axios.post(DataAccess.BaseUrl + DataAccess.getProfileDetails, {
-            "profile_id" : userId
-        }, DataAccess.AuthenticationHeader).then(res => {
-            image = res.data.usedetails.profile_pic;
-            name = res.data.usedetails.get_name;
-            email = res.data.usedetails.get_email;
-            this.setEmail(email);
-            gender = res.data.usedetails.get_gender;
-            dob = res.data.usedetails.get_dateofbirth !== null ? res.data.usedetails.get_dateofbirth : "";
-            bio = res.data.usedetails.bio || "";
-            userDob.setDate(Number(dob.split("-")[0]));
-            userDob.setMonth(Number(dob.split("-")[1]));
-            userDob.setFullYear(Number(dob.split("-")[2]));
-        }).catch(err => console.log(err))
-        this.setState({image, name, email, gender, dob, bio, userDob});
-        this.RBSheet.close();
+    if (this.state.email.trim() === "") {
+      return Toast.show({
+        text: "Please enter email",
+        style: {
+          backgroundColor: "#777",
+        },
+      });
     }
-
-    updateProfile = async () => {
-        let isOnline = await NetInfo.fetch().then(state => state.isConnected);
-        if(!isOnline) {
-            return Toast.show({
-                text: "Please be online to login to the app.",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if(this.state.image==="") {
-            return Toast.show({
-                text: "Please choose a profile picture",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        if(this.state.name.trim()==="") {
-            return Toast.show({
-                text: "Please enter name",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        if(this.state.email.trim()==="") {
-            return Toast.show({
-                text: "Please enter email",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        if(!emailRegex.test(this.state.email.trim())) {
-            return Toast.show({
-                text: "Please enter a valid email",
-                style: {
-                    backgroundColor: '#777',
-                }
-            })
-        }
-        // if(this.state.gender === "") {
-        //     return Toast.show({
-        //         text: "Please select your gender",
-        //         style: {
-        //             backgroundColor: '#777',
-        //         }
-        //     })
-        // }
-        // if(this.state.dob === "") {
-        //     return Toast.show({
-        //         text: "Please select your date of birth",
-        //         style: {
-        //             backgroundColor: '#777',
-        //         }
-        //     })
-        // }
-        // if(this.state.bio.trim() === "") {
-        //     return Toast.show({
-        //         text: "Please write few of your bio",
-        //         style: {
-        //             backgroundColor: '#777',
-        //         }
-        //     })
-        // }
-        this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-
-        let response = await axios.post(DataAccess.BaseUrl+DataAccess.updateProfile, {
-            "userID" : userId,
-            "username" : null,
-            "fullname" : this.state.name.trim(),
-            "email" : this.state.email.trim(),
-            "dob" : this.state.dob, 
-            "gender" : this.state.gender, 
-            "user_bio" : this.state.bio !== "" ? this.state.bio.trim() : ""
-        }, DataAccess.AuthenticationHeader);
-        if(response.data.resp === "success") {           
-            // console.warn(response.data);
-            if(this.state.image.startsWith("https://")) {
-                Toast.show({
-                    text: "Profile has been updated successfully",
-                    type: "success",
-                    duration: 3000
-                });
-                this.RBSheet.close()
-                this.props.navigation.reset({
-                    index: 3,
-                    routes: [
-                        { name: "ProfileScreen" , params:{profile_id : ''}}
-                    ]
-                })                
-            } else {
-                this.convertImage()
-            }      
-        } else {
-            Toast.show({
-                text: response.data.message,
-                type: "danger",
-                duration: 3000
-            });
-            this.RBSheet.close()
-        } 
+    if (!emailRegex.test(this.state.email.trim())) {
+      return Toast.show({
+        text: "Please enter a valid email",
+        style: {
+          backgroundColor: "#777",
+        },
+      });
     }
+    // if(this.state.gender === "") {
+    //     return Toast.show({
+    //         text: "Please select your gender",
+    //         style: {
+    //             backgroundColor: '#777',
+    //         }
+    //     })
+    // }
+    // if(this.state.dob === "") {
+    //     return Toast.show({
+    //         text: "Please select your date of birth",
+    //         style: {
+    //             backgroundColor: '#777',
+    //         }
+    //     })
+    // }
+    // if(this.state.bio.trim() === "") {
+    //     return Toast.show({
+    //         text: "Please write few of your bio",
+    //         style: {
+    //             backgroundColor: '#777',
+    //         }
+    //     })
+    // }
+    this.RBSheet.open();
+    let userId = await AsyncStorage.getItem("userId");
 
-    uploadPicture = async () => {
-        const buttons = ['Camera', 'Photo Library', 'Cancel'];
-        ActionSheet.show(
-            {
-                options: buttons,
-                cancelButtonIndex: 2,
-            },
-            buttonIndex => {
-                switch (buttonIndex) {
-                    case 0:
-                        this.takePhotoFromCamera();
-                        break;
-                    case 1:
-                        this.choosePhotosFromGallery();
-                        break;
-                    default:
-                        break;
-                }
-            },
-        );
-    }
-
-    //OPEN CAMERA TO SELECT IMAGE FUNCTION
-    takePhotoFromCamera = async () => {
-        let userId = await AsyncStorage.getItem("userId");
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-        })
-        .then(async image => {
-            //this.RBSheet.open()
-            let oldImage = this.state.image;
-            this.setState({image: image.path});
-        })
-        .catch(err => {
-            console.log('Error fetching image from Camera roll', err);
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.updateProfile,
+      {
+        userID: userId,
+        username: null,
+        fullname: this.state.name.trim(),
+        email: this.state.email.trim(),
+        dob: this.state.dob,
+        gender: this.state.gender,
+        user_bio: this.state.bio !== "" ? this.state.bio.trim() : "",
+      },
+      DataAccess.AuthenticationHeader
+    );
+    if (response.data.resp === "success") {
+      // console.warn(response.data);
+      if (this.state.image.startsWith("https://")) {
+        Toast.show({
+          text: "Profile has been updated successfully",
+          type: "success",
+          duration: 3000,
         });
+        this.RBSheet.close();
+        this.props.navigation.reset({
+          index: 3,
+          routes: [{ name: "ProfileScreen", params: { profile_id: "" } }],
+        });
+      } else {
+        this.convertImage();
+      }
+    } else {
+      Toast.show({
+        text: response.data.message,
+        type: "danger",
+        duration: 3000,
+      });
+      this.RBSheet.close();
     }
+  };
 
-    //OPEN GALLERY TO SELECT IMAGE
-    choosePhotosFromGallery = async () => {
-        var filepath
-        ImagePicker.openPicker({
-            width: 300,
-            height: 200,
-            cropping: true,
-        })
-            .then(async images => {
-                let oldImage = this.state.image;
-                filepath = images.path
-                this.setState({image: images.path});
-            })
-            .catch(err => {
-                console.log(' Error fetching images from gallery ', err);
-            });
-    }
-
-    //convert image to base64
-    convertImage = async() => {
-        var filepath = this.state.image
-        ImgToBase64.getBase64String(filepath)
-        .then(base64String => {
-            this.updateProfilePicture(base64String)
-            // console.log(base64String)
-            //this.setState({base64 : base64String})
-        })
-        .catch(err => console.log(err))
-        //console.log(this.state.base64,"poppopopopopopop")
-    }
-
-    //upload converted image function
-    updateProfilePicture = async(base64ImageName) => {
-        let userID = await AsyncStorage.getItem('userId')
-        let response = await axios.post(DataAccess.BaseUrl+DataAccess.UpdateProfilePicture,{
-            'userID' : userID,
-            'profile_picture' : base64ImageName
-        }, DataAccess.AuthenticationHeader)
-        this.RBSheet.close()
-        if(response.data.resp === "true") {
-            Toast.show({
-                text: "Profile has been updated successfully",
-                type: "success",
-                duration: 3000
-            });
-            this.RBSheet.close()
-            this.props.navigation.reset({
-                index: 3,
-                routes: [
-                    { name: "ProfileScreen" , params:{profile_id : ''}}
-                ]
-            })
-        } else {
-            this.RBSheet.close()
-            Toast.show({
-                text: response.data.reg_msg,
-                type: "danger",
-                duration: 3000
-            });
+  uploadPicture = async () => {
+    const buttons = ["Camera", "Photo Library", "Cancel"];
+    ActionSheet.show(
+      {
+        options: buttons,
+        cancelButtonIndex: 2,
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            this.takePhotoFromCamera();
+            break;
+          case 1:
+            this.choosePhotosFromGallery();
+            break;
+          default:
+            break;
         }
-    }
+      }
+    );
+  };
 
-    //GRANT PERMISSION FUNCTION
-    askPermission = async () => {
-        requestMultiple([PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE, PERMISSIONS.ANDROID.READ_PHONE_STATE, PERMISSIONS.ANDROID.CAMERA, PERMISSIONS.IOS.READ_EXTERNAL_STORAGE, PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE, PERMISSIONS.IOS.READ_PHONE_STATE, PERMISSIONS.IOS.CAMERA]).then((result) => {
-            console.log(result)
-            return;
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
+  //OPEN CAMERA TO SELECT IMAGE FUNCTION
+  takePhotoFromCamera = async () => {
+    let userId = await AsyncStorage.getItem("userId");
+    ImagePicker.openCamera({
+      width: Dimensions.get("window").width,
+      height: (16 / 9) * Dimensions.get("window").width,
+      cropping: true,
+    })
+      .then(async (image) => {
+        //this.RBSheet.open()
+        let oldImage = this.state.image;
+        this.setState({ image: image.path });
+      })
+      .catch((err) => {
+        console.log("Error fetching image from Camera roll", err);
+      });
+  };
 
-    render = () => (
-        <SafeAreaView style={{flex: 1}}>       
-            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
-            {/* <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/> */}
-            <Header isHomeStackInnerPage isBackButton block={true} headerText={"Edit Profile"} navigation={this.props.navigation}/>
-            <KeyboardAwareScrollView
-                keyboardShouldPersistTaps="handled"
-            >
-                <TouchableOpacity
-                    style={{
-                        marginVertical: heightToDp("5%")
-                    }}
-                    activeOpacity={0.7}
-                    onPress={() => this.uploadPicture()}
-                >
-                    {
-                        this.state.image!=="" ?
-                            <Image
-                                source={{ uri: this.state.image }}
-                                style={{
-                                    height: 80, 
-                                    width: 80,
-                                    borderRadius: 80 / 2,
-                                    alignSelf: "center",
-                                    borderWidth: 1,
-                                    borderColor: '#69abff'
-                                }}
-                            /> :
-                            <Image
-                                source={require("../../../assets/sign_up.png")}
-                                resizeMode="contain"
-                                style={{
-                                    height: heightToDp("7%"),
-                                    width: widthToDp("14%"),
-                                    alignSelf: "center",
-                                }}
-                            />
-                    }
-                </TouchableOpacity>
-                
-                <View
-                    style={{
-                        alignItems: 'center',
-                        marginHorizontal: widthToDp("3.5%")
-                    }}
-                >
-                    <TextInput
-                        style={{
-                            color: '#808080',
-                            fontSize: widthToDp("3.3%"),
-                            paddingBottom: heightToDp("1%"),
-                            width: widthToDp("95%"),
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            fontFamily: "Poppins-Regular",
-                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
-                        }}
-                        defaultValue={this.state.name}
-                        placeholder="Name"
-                        placeholderTextColor="#808080"
-                        onChangeText={text => this.setState({ name: text })}
-                    />
-                </View>
-                <View
-                    style={{
-                        alignItems: 'center',
-                        marginTop: heightToDp("4%"),
-                        marginHorizontal: widthToDp("3.5%")
-                    }}
-                >
-                    <TextInput
-                        style={{
-                            color: '#808080',
-                            fontSize: widthToDp("3.3%"),
-                            paddingBottom: heightToDp("1%"),
-                            borderBottomWidth: 1,
-                            borderBottomColor: '#a9a9a9',
-                            width: widthToDp("95%"),
-                            fontFamily: "Poppins-Regular",
-                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
-                        }}
-                        defaultValue={this.state.email}
-                        placeholder="Email Address"
-                        keyboardType="email-address"
-                        placeholderTextColor="#808080"
-                        onChangeText={(text) => this.setEmail(text)}
-                    />
-                </View>
-                {
-                    !this.state.isEmailValid && this.state.email !== "" &&
-                    <Text
-                        style={[{
-                            color: "#ff0000",
-                            marginHorizontal: Platform.isPad ? widthToDp("2.5%") : widthToDp("3%"),
-                            fontFamily: "Poppins-Regular",
-                        }, Platform.isPad && {fontSize: widthToDp("3%")}]}
-                    >Entered email address is not valid</Text>
-                }
-                <TouchableOpacity
-                    style={{
-                        marginTop: heightToDp("4%"),
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#a9a9a9',
-                        alignItems: "flex-start",
-                        marginHorizontal: widthToDp("3%")
-                    }}
-                    activeOpacity={0.7}
-                    onPress={() => this.setState({ showDatePicker: true })}
-                >
-                    <Text
-                        style={{
-                            color: '#808080',
-                            fontSize: widthToDp("3.3%"),
-                            paddingBottom: heightToDp("1%"),
-                            width: widthToDp("87%"),
-                            fontFamily: "Poppins-Regular"
-                        }}
-                    >
-                        {this.state.dob !== "" ? this.state.dob : 'Date of Birth (Optional)'}
-                    </Text>
-                </TouchableOpacity>
-                <DateTimePickerModal
-                    isVisible={this.state.showDatePicker}
-                    mode="date"
-                    onConfirm={this.setDate}
-                    onCancel={() => this.setState({showDatePicker: !this.state.showDatePicker})}
-                />
-                <TouchableOpacity
-                    style={{
-                        marginTop: heightToDp("4%"),
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#a9a9a9',
-                        alignItems: "flex-start",
-                        width: widthToDp("95%"),
-                        marginHorizontal: widthToDp("3%")
-                    }}
-                    activeOpacity={0.7}
-                    onPress={() => this.RBSheet1.open()}
-                >
-                    <Text
-                        style={{
-                            color: "#808080",
-                            fontSize: widthToDp("3.4%"),
-                            paddingBottom: heightToDp("1%"),
-                            width: widthToDp("87%"),
-                            fontFamily: "Poppins-Regular"
-                        }}
-                    >
-                        {
-                            this.state.gender === "0" ? "Male" :
-                            this.state.gender === "1" ? "Female" :
-                            "Select Your Gender (Optional)"
-                        }
-                    </Text>
-                </TouchableOpacity>
-                
-                <View
-                    style={{
-                        marginTop: heightToDp("4%"),
-                        marginHorizontal: widthToDp("3.5%")
-                    }}
-                >
-                    <TextInput
-                        style={{
-                            color: '#808080',
-                            fontSize: widthToDp("3.3%"),
-                            borderBottomWidth: 1,
-                            paddingBottom: heightToDp("1%"),
-                            borderBottomColor: '#a9a9a9',
-                            width: widthToDp("95%"),
-                            fontFamily: "Poppins-Regular",
-                            paddingLeft: Platform.OS==='android' ? widthToDp("-1%") : undefined
-                        }}
-                        defaultValue={this.state.bio}
-                        placeholder="Bio"
-                        placeholderTextColor="#808080"
-                        onChangeText={text => this.setState({ bio: text })}
-                    />
-                    <View 
-                        style={{
-                            flexDirection: "row",
-                            alignItems: "flex-start",
-                            paddingTop: 10,
-                            paddingHorizontal: 5
-                        }}
-                    >
-                        <Ionicons
-                            name={Platform.OS==="android" ? "md-alert-circle" : "ios-alert-circle"}
-                            size={15}
-                            color="#a1aab8"
-                        />
-                        <Text
-                            style={{
-                                paddingLeft: 10,
-                                fontSize: 13,
-                                color: "#a1aab8"
-                            }}
-                        >For any link in bio, please add www for example www.facebook.com</Text>
-                    </View>
-                </View>
-                <View style={{height: heightToDp("1%")}}/>
-                <ButtonComponent
-                    onPressButton={this.updateProfile}
-                    buttonText={"Update"}
-                    updateProfile={true}
-                />
-                <RBSheet
-                    ref={ref => {
-                        this.RBSheet = ref;
-                    }}
-                    height={heightToDp("6%")}
-                    closeOnPressMask={false}
-                    closeOnPressBack={false}
-                    // openDuration={250}
-                    customStyles={{
-                        container: {
-                            width: "14%",
-                            position: 'absolute',
-                            top: "40%",
-                            alignSelf: "center",
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#fff',
-                            borderRadius: 10
-                        },
-                    }}
-                >
-                    <ActivityIndicator
-                        size="large"
-                        color="#69abff"
-                    />
-                </RBSheet> 
-            </KeyboardAwareScrollView>
-            <RBSheet1
-                ref={ref => {
-                    this.RBSheet1 = ref;
-                }}
-                height={heightToDp("15%")}
-                // openDuration={250}
-                customStyles={{
-                    container: {
-                        alignItems: 'flex-start',
-                        justifyContent: 'center',
-                        paddingLeft: widthToDp("5%"),
-                        backgroundColor: '#fff',
-                        borderRadius: 30
-                    }
-                }}
-            >
-                <TouchableOpacity 
-                    onPress={() => {
-                        this.setState({ gender: "0" });
-                        this.RBSheet1.close()
-                    }}
-                    style={{width: '100%'}}
-                >
-                    <Text
-                        style={{
-                            fontSize: widthToDp("4.6%"),
-                        }}
-                    >Male</Text>
-                </TouchableOpacity>
-                <View style={{ height: heightToDp("1.3%") }} />
-                <TouchableOpacity
-                    style={{width: '100%'}}
-                    onPress={() => {
-                        this.setState({ gender: "1" })
-                        this.RBSheet1.close()
-                    }}>
-                    <Text
-                        style={{
-                            fontSize: widthToDp("4.6%"),
-                            
-                        }}
-                    >Female</Text>
-                </TouchableOpacity>
-            </RBSheet1>
-            <PushNotificationController navigation={this.props.navigation}/>
-        </SafeAreaView>
+  //OPEN GALLERY TO SELECT IMAGE
+  choosePhotosFromGallery = async () => {
+    var filepath;
+    ImagePicker.openPicker({
+      width: Dimensions.get("window").width,
+      height: (16 / 9) * Dimensions.get("window").width,
+      cropping: true,
+    })
+      .then(async (images) => {
+        let oldImage = this.state.image;
+        filepath = images.path;
+        this.setState({ image: images.path });
+      })
+      .catch((err) => {
+        console.log(" Error fetching images from gallery ", err);
+      });
+  };
+
+  //convert image to base64
+  convertImage = async () => {
+    var filepath = this.state.image;
+    ImgToBase64.getBase64String(filepath)
+      .then((base64String) => {
+        this.updateProfilePicture(base64String);
+        // console.log(base64String)
+        //this.setState({base64 : base64String})
+      })
+      .catch((err) => console.log(err));
+    //console.log(this.state.base64,"poppopopopopopop")
+  };
+
+  //upload converted image function
+  updateProfilePicture = async (base64ImageName) => {
+    let userID = await AsyncStorage.getItem("userId");
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.UpdateProfilePicture,
+      {
+        userID: userID,
+        profile_picture: base64ImageName,
+      },
+      DataAccess.AuthenticationHeader
+    );
+    // console.log(response);
+    if (response.data.resp === "true") {
+      Toast.show({
+        text: "Profile has been updated successfully",
+        type: "success",
+        duration: 3000,
+      });
+      this.RBSheet.close();
+      this.props.navigation.reset({
+        index: 3,
+        routes: [{ name: "ProfileScreen", params: { profile_id: "" } }],
+      });
+    } else {
+      this.RBSheet.close();
+      Toast.show({
+        text: response.data.reg_msg,
+        type: "danger",
+        duration: 3000,
+      });
+    }
+  };
+
+  //GRANT PERMISSION FUNCTION
+  askPermission = async () => {
+    requestMultiple([
+      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+      PERMISSIONS.ANDROID.READ_PHONE_STATE,
+      PERMISSIONS.ANDROID.CAMERA,
+      PERMISSIONS.IOS.READ_EXTERNAL_STORAGE,
+      PERMISSIONS.IOS.WRITE_EXTERNAL_STORAGE,
+      PERMISSIONS.IOS.READ_PHONE_STATE,
+      PERMISSIONS.IOS.CAMERA,
+    ])
+      .then((result) => {
+        console.log(result);
+        return;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  setUnsetAccountPrivate = async () => {
+    this.setState({settingPrivate: true});
+    let userDetails = JSON.parse(await AsyncStorage.getItem("userDetails"));
+    let userId = await AsyncStorage.getItem("userId");
+    await axios.post(
+      DataAccess.BaseUrl + DataAccess.setAccountPrivate, {
+        "userId": userId,
+        "is_private": userDetails.private_account === "0" ? "1" : "0"
+      }, DataAccess.AuthenticationHeader
     )
+    .then(async res => {
+      if(res.data.resp === "success") {
+        
+        this.setState({settingPrivate: false}, async () => {
+          userDetails.private_account = userDetails.private_account === "0" ? "1" : "0";
+          await AsyncStorage.setItem("userDetails", JSON.stringify(userDetails));
+        })
+        Toast.show({
+          type: "success",
+          text: Number(userDetails.private_account) === 1 ? "Your account is made private" : "Your account is made public",
+          duration: 2000
+        })
+      } else {
+        Toast.show({
+          type: "danger",
+          text: "Account Status Update Failure !!!",
+          duration: 2000
+        })
+      }
+    })
+    .catch(err => {
+      console.warn(err)
+    })
+    console.log(await AsyncStorage.getItem("userDetails"))
+  }
+
+  render = () => (
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <View style={{ height: this.props.insets.top, backgroundColor: "#fff" }}>
+        <StatusBar backgroundColor="#fff" barStyle={"dark-content"} animated />
+      </View>
+      {/* <Header isBackButton isHomeStackInnerPage backToProfile={true} headerText={"Edit Profile"} navigation={this.props.navigation}/> */}
+      <Header
+        isHomeStackInnerPage
+        isBackButton
+        block={true}
+        headerText={"Edit Profile"}
+        navigation={this.props.navigation}
+      />
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+        <TouchableOpacity
+          style={{
+            marginVertical: heightToDp("5%"),
+          }}
+          activeOpacity={0.7}
+          onPress={() => this.uploadPicture()}
+        >
+          {this.state.image !== "" ? (
+            <Image
+              source={{ uri: this.state.image }}
+              style={{
+                height: 80,
+                width: 80,
+                borderRadius: 80 / 2,
+                alignSelf: "center",
+                borderWidth: 1,
+                borderColor: "#69abff",
+              }}
+            />
+          ) : (
+            <Image
+              source={require("../../../assets/sign_up.png")}
+              resizeMode="contain"
+              style={{
+                height: heightToDp("7%"),
+                width: widthToDp("14%"),
+                alignSelf: "center",
+              }}
+            />
+          )}
+        </TouchableOpacity>
+
+        <View
+          style={{
+            alignItems: "center",
+            marginHorizontal: widthToDp("3.5%"),
+          }}
+        >
+          <TextInput
+            style={{
+              color: "#808080",
+              fontSize: widthToDp("3.3%"),
+              paddingBottom: heightToDp("1%"),
+              width: widthToDp("95%"),
+              borderBottomWidth: 1,
+              borderBottomColor: "#a9a9a9",
+              fontFamily: "Poppins-Regular",
+              paddingLeft:
+                Platform.OS === "android" ? widthToDp("-1%") : undefined,
+            }}
+            defaultValue={this.state.name}
+            placeholder="Name"
+            placeholderTextColor="#808080"
+            onChangeText={(text) => this.setState({ name: text })}
+          />
+        </View>
+        <View
+          style={{
+            alignItems: "center",
+            marginTop: heightToDp("4%"),
+            marginHorizontal: widthToDp("3.5%"),
+          }}
+        >
+          <TextInput
+            style={{
+              color: "#808080",
+              fontSize: widthToDp("3.3%"),
+              paddingBottom: heightToDp("1%"),
+              borderBottomWidth: 1,
+              borderBottomColor: "#a9a9a9",
+              width: widthToDp("95%"),
+              fontFamily: "Poppins-Regular",
+              paddingLeft:
+                Platform.OS === "android" ? widthToDp("-1%") : undefined,
+            }}
+            defaultValue={this.state.email}
+            placeholder="Email Address"
+            keyboardType="email-address"
+            placeholderTextColor="#808080"
+            onChangeText={(text) => this.setEmail(text)}
+          />
+        </View>
+        {!this.state.isEmailValid && this.state.email !== "" && (
+          <Text
+            style={[
+              {
+                color: "#ff0000",
+                marginHorizontal: Platform.isPad
+                  ? widthToDp("2.5%")
+                  : widthToDp("3%"),
+                fontFamily: "Poppins-Regular",
+              },
+              Platform.isPad && { fontSize: widthToDp("3%") },
+            ]}
+          >
+            Entered email address is not valid
+          </Text>
+        )}
+        <TouchableOpacity
+          style={{
+            marginTop: heightToDp("4%"),
+            borderBottomWidth: 1,
+            borderBottomColor: "#a9a9a9",
+            alignItems: "flex-start",
+            marginHorizontal: widthToDp("3%"),
+          }}
+          activeOpacity={0.7}
+          onPress={() => this.setState({ showDatePicker: true })}
+        >
+          <Text
+            style={{
+              color: "#808080",
+              fontSize: widthToDp("3.3%"),
+              paddingBottom: heightToDp("1%"),
+              width: widthToDp("87%"),
+              fontFamily: "Poppins-Regular",
+            }}
+          >
+            {this.state.dob !== ""
+              ? this.state.dob
+              : "Date of Birth (Optional)"}
+          </Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={this.state.showDatePicker}
+          mode="date"
+          onConfirm={this.setDate}
+          onCancel={() =>
+            this.setState({ showDatePicker: !this.state.showDatePicker })
+          }
+        />
+        <TouchableOpacity
+          style={{
+            marginTop: heightToDp("4%"),
+            borderBottomWidth: 1,
+            borderBottomColor: "#a9a9a9",
+            alignItems: "flex-start",
+            width: widthToDp("95%"),
+            marginHorizontal: widthToDp("3%"),
+          }}
+          activeOpacity={0.7}
+          onPress={() => this.RBSheet1.open()}
+        >
+          <Text
+            style={{
+              color: "#808080",
+              fontSize: widthToDp("3.4%"),
+              paddingBottom: heightToDp("1%"),
+              width: widthToDp("87%"),
+              fontFamily: "Poppins-Regular",
+            }}
+          >
+            {this.state.gender === "0"
+              ? "Male"
+              : this.state.gender === "1"
+              ? "Female"
+              : "Select Your Gender (Optional)"}
+          </Text>
+        </TouchableOpacity>
+
+        <View
+          style={{
+            marginTop: heightToDp("4%"),
+            marginHorizontal: widthToDp("3.5%"),
+          }}
+        >
+          <TextInput
+            style={{
+              color: "#808080",
+              fontSize: widthToDp("3.3%"),
+              borderBottomWidth: 1,
+              paddingBottom: heightToDp("1%"),
+              borderBottomColor: "#a9a9a9",
+              width: widthToDp("95%"),
+              fontFamily: "Poppins-Regular",
+              paddingLeft:
+                Platform.OS === "android" ? widthToDp("-1%") : undefined,
+            }}
+            defaultValue={this.state.bio}
+            placeholder="Bio"
+            placeholderTextColor="#808080"
+            onChangeText={(text) => this.setState({ bio: text })}
+          />
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              paddingTop: 10,
+              paddingHorizontal: 5,
+            }}
+          >
+            <Ionicons
+              name={
+                Platform.OS === "android"
+                  ? "md-alert-circle"
+                  : "ios-alert-circle"
+              }
+              size={15}
+              color="#a1aab8"
+            />
+            <Text
+              style={{
+                paddingLeft: 10,
+                fontSize: 13,
+                color: "#a1aab8",
+              }}
+            >
+              For any link in bio, please add www for example www.facebook.com
+            </Text>
+          </View>
+        </View>
+        <View style={{ height: heightToDp("1%") }} />
+        
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            margin: heightToDp("2%"),
+            borderRadius: 5,
+          }}
+          activeOpacity={0.7}
+          // onPress={() => this.props.navigation.navigate("Terms")}
+        >
+          <Text
+            style={{
+              fontSize: widthToDp("3.8%"),
+              fontFamily: "Poppins-Regular",
+            }}
+          >
+            Account Private
+          </Text>
+          {
+            this.state.settingPrivate ?
+            <ActivityIndicator size={"small"} color={"#69abff"} /> :
+            <Switch
+              trackColor={{ false: "#808080", true: "#69abff" }}
+              thumbColor={this.state.isAccountPrivate ? "#007dfe" : "#cdcdcd"}
+              // ios_backgroundColor="#3e3e3e"
+              onValueChange={() => {
+                this.setState({
+                  isAccountPrivate: !this.state.isAccountPrivate
+                }, this.setUnsetAccountPrivate)
+              }}
+              value={this.state.isAccountPrivate}
+            />
+          }
+        </TouchableOpacity>
+        <ButtonComponent
+          onPressButton={this.updateProfile}
+          buttonText={"Update"}
+          updateProfile={true}
+          marginTop
+        />
+        <RBSheet
+          ref={(ref) => {
+            this.RBSheet = ref;
+          }}
+          height={heightToDp("6%")}
+          closeOnPressMask={false}
+          closeOnPressBack={false}
+          // openDuration={250}
+          customStyles={{
+            container: {
+              width: "14%",
+              position: "absolute",
+              top: "40%",
+              alignSelf: "center",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#fff",
+              borderRadius: 10,
+            },
+          }}
+        >
+          <ActivityIndicator size="large" color="#69abff" />
+        </RBSheet>
+      </KeyboardAwareScrollView>
+      <RBSheet1
+        ref={(ref) => {
+          this.RBSheet1 = ref;
+        }}
+        height={heightToDp("15%")}
+        // openDuration={250}
+        customStyles={{
+          container: {
+            alignItems: "flex-start",
+            justifyContent: "center",
+            paddingLeft: widthToDp("5%"),
+            backgroundColor: "#fff",
+            borderRadius: 30,
+          },
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            this.setState({ gender: "0" });
+            this.RBSheet1.close();
+          }}
+          style={{ width: "100%" }}
+        >
+          <Text
+            style={{
+              fontSize: widthToDp("4.6%"),
+            }}
+          >
+            Male
+          </Text>
+        </TouchableOpacity>
+        <View style={{ height: heightToDp("1.3%") }} />
+        <TouchableOpacity
+          style={{ width: "100%" }}
+          onPress={() => {
+            this.setState({ gender: "1" });
+            this.RBSheet1.close();
+          }}
+        >
+          <Text
+            style={{
+              fontSize: widthToDp("4.6%"),
+            }}
+          >
+            Female
+          </Text>
+        </TouchableOpacity>
+      </RBSheet1>
+      <PushNotificationController navigation={this.props.navigation} />
+    </SafeAreaProvider>
+  );
 }
+export default (props) => {
+  const insets = useSafeAreaInsets();
+  return <EditProfileScreen {...props} insets={insets} />;
+};

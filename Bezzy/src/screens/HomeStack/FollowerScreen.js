@@ -1,237 +1,299 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { Toast } from 'native-base';
-import React from 'react';
-import { ActivityIndicator, FlatList, Image, Platform, SafeAreaView, StatusBar, Text, Touchable, TouchableOpacity, View } from 'react-native';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import DataAccess from '../../components/DataAccess';
-import Header from '../../components/Header';
-import { heightToDp, widthToDp } from '../../components/Responsive';
-import PushNotificationController from '../../components/PushNotificationController';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { Toast } from "native-base";
+import React from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import RBSheet from "react-native-raw-bottom-sheet";
+import DataAccess from "../../components/DataAccess";
+import Header from "../../components/Header";
+import { heightToDp, widthToDp } from "../../components/Responsive";
+import PushNotificationController from "../../components/PushNotificationController";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
-export default class FollowerScreen extends React.Component {
-    state = {
-        followerList: [],
-        isLoading: false
+class FollowerScreen extends React.Component {
+  state = {
+    followerList: [],
+    isLoading: false,
+  };
+
+  componentDidMount = async () => {
+    this.setState({ isLoading: true });
+    let userId = await AsyncStorage.getItem("userId");
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.followerList,
+      {
+        loguser_id: userId,
+      },
+      DataAccess.AuthenticationHeader
+    );
+    console.warn(response.data);
+    if (response.data.resp === "success") {
+      this.setState({ followerList: response.data.follower_user_list });
+    } else {
+      this.setState({ followerList: [] });
     }
+    this.setState({ isLoading: false });
+  };
 
-    componentDidMount = async () => {
-        this.setState({isLoading: true})
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followerList, {
-            "loguser_id" : userId
-        }, DataAccess.AuthenticationHeader);
-        if(response.data.resp === "success") {
-            this.setState({followerList: response.data.follower_user_list});
-        } else {
-            this.setState({followerList: []});
-        }
-        this.setState({isLoading: false})
+  followBack = async (item, index) => {
+    this.RBSheet.open();
+    let userId = await AsyncStorage.getItem("userId");
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.followBack,
+      {
+        login_userID: userId,
+        userID: item.following_user_id,
+      },
+      DataAccess.AuthenticationHeader
+    );
+    if (response.data.status === "success") {
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
+    } else {
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
+      // this.setState({followingList: []});
     }
+    this.RBSheet.close();
+  };
 
-    followBack = async (item, index) => {
-        this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.followBack, {
-            "login_userID" : userId,
-            "userID" : item.following_user_id
-        }, DataAccess.AuthenticationHeader);
-        if(response.data.status === "success") {
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-        } else {
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-            // this.setState({followingList: []});
-        }
-        this.RBSheet.close()
+  removeUser = async (item, index) => {
+    this.RBSheet.open();
+    let userId = await AsyncStorage.getItem("userId");
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.removeUser,
+      {
+        loginUserID: userId,
+        removeuserID: item.following_user_id,
+      },
+      DataAccess.AuthenticationHeader
+    );
+    if (response.data.resp === "success") {
+      let followerList = this.state.followerList;
+      followerList.splice(index, 1);
+      this.setState({ followerList });
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
+    } else {
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
     }
+    this.RBSheet.close();
+  };
 
-    removeUser = async (item, index) => {
-        this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.removeUser, {
-            "loginUserID" : userId,
-            "removeuserID" : item.following_user_id
-        }, DataAccess.AuthenticationHeader);
-        if(response.data.resp === "success") {
-            let followerList = this.state.followerList;
-            followerList.splice(index, 1);
-            this.setState({followerList});
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-        } else {
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-        }
-        this.RBSheet.close()
+  blockUser = async (item, index) => {
+    this.RBSheet.open();
+    let userId = await AsyncStorage.getItem("userId");
+    let response = await axios.post(
+      DataAccess.BaseUrl + DataAccess.blockUser,
+      {
+        loginUserID: userId,
+        blockuserID: item.following_user_id,
+      },
+      DataAccess.AuthenticationHeader
+    );
+    if (response.data.status === "success") {
+      let followerList = this.state.followerList;
+      followerList.splice(index, 1);
+      this.setState({ followerList });
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
+    } else {
+      Toast.show({
+        type: "success",
+        text: response.data.message,
+        duration: 3000,
+      });
     }
+    this.RBSheet.close();
+  };
 
-    blockUser = async (item, index) => {
-        this.RBSheet.open();
-        let userId = await AsyncStorage.getItem("userId");
-        let response = await axios.post(DataAccess.BaseUrl + DataAccess.blockUser, {
-            "loginUserID" : userId,
-            "blockuserID" : item.following_user_id
-        }, DataAccess.AuthenticationHeader);
-        if(response.data.status === "success") {
-            let followerList = this.state.followerList;
-            followerList.splice(index, 1);
-            this.setState({followerList});
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-        } else {
-            Toast.show({
-                type: "success",
-                text: response.data.message,
-                duration: 3000
-            })
-        }
-        this.RBSheet.close()
-    }
-
-    render = () => (
-        <SafeAreaView style={{flex: 1}}>       
-            <StatusBar backgroundColor="#69abff" barStyle={Platform.OS==='android' ? "light-content" : "dark-content"} />
-            <Header isHomeStackInnerPage isBackButton block={true} headerText={this.props.route.params.user} navigation={this.props.navigation}/>
-            {
-                this.state.isLoading ?
-                <View 
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                >
-                    <ActivityIndicator size="large" color="#007dfe"/>
-                </View>:
-                <FlatList
-                    contentContainerStyle={{
-                        padding: widthToDp("2%")
-                    }}
-                    data={this.state.followerList}
-                    ListFooterComponent={<View style={{height: heightToDp("1%")}}/>}
-                    ItemSeparatorComponent={() => <View style={{height: heightToDp("1%")}}/>}
-                    renderItem={({item, index}) => (
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                backgroundColor: "#fff",
-                                padding: widthToDp("3%"),
-                                borderRadius: 10
-                            }}
-                        >
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    width: widthToDp("63%")
-                                }}
-                            >
-                                <Image
-                                    source={{uri: item.image}}
-                                    style={{height: Platform.isPad ? 80 : 40, width: Platform.isPad ? 80 : 40, borderRadius: Platform.isPad ? 80 / 1 : 40 / 2, borderWidth: 1, borderColor: '#69abff'}}
-                                />
-                                <Text
-                                    style={{
-                                        marginLeft: widthToDp("2%"),
-                                        fontSize: widthToDp("3%"),
-                                        fontFamily: "Poppins-Regular"
-                                    }}
-                                >{item.name}</Text>
-                            </View>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    width: widthToDp("30%")
-                                }}
-                            >
-                                <TouchableOpacity
-                                    activeOpacity={0.7}
-                                    onPress={() => this.followBack(item, index)}
-                                >
-                                    <Image
-                                        source={require("../../../assets/unfollow.png")}
-                                        style={{height: heightToDp("2.5%"), width: widthToDp("8%")}}
-                                        resizeMode="contain"
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={0.7}
-                                    style={{
-                                        marginLeft: widthToDp("2%")
-                                    }}
-                                    onPress={() => this.removeUser(item, index)}
-                                >
-                                    <Image
-                                        source={require("../../../assets/remove.png")}
-                                        style={{height: heightToDp("2.5%"), width: widthToDp("8%")}}
-                                        resizeMode="contain"
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    activeOpacity={0.7}
-                                    style={{
-                                        marginLeft: widthToDp("2%")
-                                    }}
-                                    onPress={() => this.blockUser(item, index)}
-                                >
-                                    <Image
-                                        source={require("../../../assets/block.png")}
-                                        style={{height: heightToDp("2.5%"), width: widthToDp("8%")}}
-                                        resizeMode="contain"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-                />
-            }
-            <RBSheet
-                ref={ref => {
-                    this.RBSheet = ref;
-                }}
-                height={heightToDp("6%")}
-                closeOnPressMask={false}
-                closeOnPressBack={false}
-                // openDuration={250}
-                customStyles={{
-                    container: {
-                        width: widthToDp("15%"),
-                        position: 'absolute',
-                        top: heightToDp("45%"),
-                        left: widthToDp("40%"),
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#fff',
-                        borderRadius: 10
-                    },
-                }}
+  render = () => (
+    <SafeAreaProvider style={{ flex: 1 }}>
+      <View style={{ height: this.props.insets.top, backgroundColor: "#fff" }}>
+        <StatusBar backgroundColor="#fff" barStyle={"dark-content"} animated />
+      </View>
+      <Header
+        isHomeStackInnerPage
+        isBackButton
+        block={true}
+        headerText={this.props.route.params.user}
+        navigation={this.props.navigation}
+      />
+      {this.state.isLoading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#007dfe" />
+        </View>
+      ) : (
+        <FlatList
+          contentContainerStyle={{
+            padding: widthToDp("2%"),
+          }}
+          initialNumToRender={1000}
+          data={this.state.followerList}
+          ListFooterComponent={<View style={{ height: heightToDp("1%") }} />}
+          ItemSeparatorComponent={() => (
+            <View style={{ height: heightToDp("1%") }} />
+          )}
+          renderItem={({ item, index }) => (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#fff",
+                padding: widthToDp("3%"),
+                borderRadius: 10,
+              }}
             >
-                <ActivityIndicator
-                    size="large"
-                    color="#69abff"
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: widthToDp("63%"),
+                }}
+              >
+                <Image
+                  source={{ uri: item.image }}
+                  style={{
+                    height: Platform.isPad ? 80 : 40,
+                    width: Platform.isPad ? 80 : 40,
+                    borderRadius: Platform.isPad ? 80 / 1 : 40 / 2,
+                    borderWidth: 1,
+                    borderColor: "#69abff",
+                  }}
                 />
-            </RBSheet> 
-            <PushNotificationController navigation={this.props.navigation}/>
-        </SafeAreaView>
-    )
+                <Text
+                  style={{
+                    marginLeft: widthToDp("2%"),
+                    fontSize: widthToDp("3%"),
+                    fontFamily: "Poppins-Regular",
+                  }}
+                >
+                  {item.name}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  width: widthToDp("30%"),
+                }}
+              >
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => this.followBack(item, index)}
+                >
+                  <Image
+                    source={require("../../../assets/unfollow.png")}
+                    style={{
+                      height: heightToDp("2.5%"),
+                      width: widthToDp("8%"),
+                    }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={{
+                    marginLeft: widthToDp("2%"),
+                  }}
+                  onPress={() => this.removeUser(item, index)}
+                >
+                  <Image
+                    source={require("../../../assets/remove.png")}
+                    style={{
+                      height: heightToDp("2.5%"),
+                      width: widthToDp("8%"),
+                    }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={{
+                    marginLeft: widthToDp("2%"),
+                  }}
+                  onPress={() => this.blockUser(item, index)}
+                >
+                  <Image
+                    source={require("../../../assets/block.png")}
+                    style={{
+                      height: heightToDp("2.5%"),
+                      width: widthToDp("8%"),
+                    }}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        />
+      )}
+      <RBSheet
+        ref={(ref) => {
+          this.RBSheet = ref;
+        }}
+        height={heightToDp("6%")}
+        closeOnPressMask={false}
+        closeOnPressBack={false}
+        // openDuration={250}
+        customStyles={{
+          container: {
+            width: widthToDp("15%"),
+            position: "absolute",
+            top: heightToDp("45%"),
+            left: widthToDp("40%"),
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#fff",
+            borderRadius: 10,
+          },
+        }}
+      >
+        <ActivityIndicator size="large" color="#69abff" />
+      </RBSheet>
+      <PushNotificationController navigation={this.props.navigation} />
+    </SafeAreaProvider>
+  );
 }
+
+export default (props) => {
+  const insets = useSafeAreaInsets();
+  return <FollowerScreen {...props} insets={insets} />;
+};

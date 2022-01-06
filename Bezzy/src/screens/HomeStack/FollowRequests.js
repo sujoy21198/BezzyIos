@@ -1,81 +1,79 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import Header from "../../components/Header";
-import { heightToDp, widthToDp } from "../../components/Responsive";
-import DataAccess from "../../components/DataAccess";
+import { ActivityIndicator, FlatList, Image, Platform, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import { Toast } from "native-base";
-import PushNotificationController from "../../components/PushNotificationController";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import DataAccess from "../../components/DataAccess";
+import Header from "../../components/Header";
+import PushNotificationController from "../../components/PushNotificationController";
+import { heightToDp, widthToDp } from "../../components/Responsive";
+import Ionicons from "react-native-vector-icons/Ionicons"
+import { Toast } from "native-base";
 
-class FollowingScreen extends React.Component {
+class FollowRequests extends React.Component {
   state = {
-    followingList: [],
-    isLoading: false,
-  };
+    followRequests: [],
+    isLoading: false
+  }
 
   componentDidMount = async () => {
     this.setState({ isLoading: true });
     let userId = await AsyncStorage.getItem("userId");
     let response = await axios.post(
-      DataAccess.BaseUrl + DataAccess.userFollowingList,
-      { loguser_id: userId },
+      DataAccess.BaseUrl + DataAccess.followRequests,
+      { toId: userId },
       DataAccess.AuthenticationHeader
     );
-    console.warn(response.data);
-    if (response.data.resp === "success") {
-      this.setState({ followingList: response.data.following_user_list });
+    console.log(response.data);
+    if (response.data && response.data.length > 0) {
+      this.setState({ followRequests: response.data });
     } else {
-      this.setState({ followingList: [] });
+      this.setState({ followRequests: [] });
     }
     this.setState({ isLoading: false });
   };
 
-  unfollow = async (item, index) => {
+  approveOrReject = async (item, index, type) => {
     this.RBSheet.open();
+    console.log({
+      fromId: userId,
+      toId: item.id,
+      appoval_status: type === "accept" ? 1 : 0
+    })
     let userId = await AsyncStorage.getItem("userId");
     let response = await axios.post(
-      DataAccess.BaseUrl + DataAccess.unfollow,
+      DataAccess.BaseUrl + DataAccess.approveFollowRequest,
       {
-        loginUserID: userId,
-        unfriendID: item.following_user_id,
+        fromId: item.id,
+        toId: userId,
+        appoval_status: type === "accept" ? 1 : 0
       },
       DataAccess.AuthenticationHeader
     );
-    if (response.data.status === "success") {
-      let followingList = this.state.followingList;
-      followingList.splice(index, 1);
-      this.setState({ followingList });
+    console.warn(response.data);
+    if (response.data.resp === "success") {
+      let followRequests = this.state.followRequests;
+      followRequests.splice(index, 1);
+      this.setState({ followRequests });
       Toast.show({
         type: "success",
-        text: response.data.alert_msg,
+        text: type === "accept" ? item.name + " is now my follower." : "Rejected the follow request.",
         duration: 3000,
       });
     } else {
       Toast.show({
         type: "success",
-        text: response.data.alert_msg,
+        text: response.data.message,
         duration: 3000,
       });
       // this.setState({followingList: []});
     }
     this.RBSheet.close();
-  };
+  }
 
   render = () => (
     <SafeAreaProvider style={{ flex: 1 }}>
@@ -85,8 +83,8 @@ class FollowingScreen extends React.Component {
       <Header
         isHomeStackInnerPage
         isBackButton
-        block={true}
-        headerText={this.props.route.params.user}
+        settings
+        headerText={"Follow Requests"}
         navigation={this.props.navigation}
       />
       {this.state.isLoading ? (
@@ -104,7 +102,7 @@ class FollowingScreen extends React.Component {
           contentContainerStyle={{
             padding: widthToDp("2%"),
           }}
-          data={this.state.followingList}
+          data={this.state.followRequests}
           initialNumToRender={1000}
           ListFooterComponent={<View style={{ height: heightToDp("1%") }} />}
           ItemSeparatorComponent={() => (
@@ -148,16 +146,33 @@ class FollowingScreen extends React.Component {
                   {item.name}
                 </Text>
               </View>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => this.unfollow(item, index)}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
               >
-                <Image
-                  source={require("../../../assets/unfriend.png")}
-                  resizeMode="contain"
-                  style={{ height: heightToDp("7%"), width: widthToDp("7%") }}
-                />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.approveOrReject(item, index, "accept")}
+                >
+                  <Ionicons
+                    name={Platform.OS==='android' ? 'md-checkmark-outline' : 'ios-checkmark-outline'}
+                    size={Platform.isPad ? 40 : 20}
+                    color="#008000"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{paddingLeft: 10}}
+                  onPress={() => this.approveOrReject(item, index, "reject")}
+                >
+                  <Ionicons
+                    name={Platform.OS==='android' ? 'md-close-outline' : 'ios-close-outline'}
+                    size={Platform.isPad ? 40 : 20}
+                    color="#ff0000"
+                  />
+                </TouchableOpacity>
+              </View>
               <RBSheet
                 ref={(ref) => {
                   this.RBSheet = ref;
@@ -192,5 +207,5 @@ class FollowingScreen extends React.Component {
 
 export default (props) => {
   const insets = useSafeAreaInsets();
-  return <FollowingScreen {...props} insets={insets} />;
+  return <FollowRequests {...props} insets={insets} />;
 };
